@@ -584,6 +584,11 @@ Typical use cases:
   side-by-side comparison.
 - Branch / variant: capture the starting state for a parallel
   exploration of an alternative design.
+- Process-driven migration (automatic): when the constitution
+  and glossary themselves change and existing artifacts are
+  migrated forward to conform (REQ-0140), an automatic baseline
+  preserves the pre-migration state of all affected artifacts.
+  This is the default behavior, not an opt-in.
 ```
 
 Relationship to REQ-0140 (forward migration): per-artifact-version preservation is the default *avoided* state under REQ-0140; baselining is an explicit, justified exception in which the artifact versions referenced by the baseline are preserved (or made reconstructible) for as long as the baseline itself is referenced. The owner described baselining as "akin to tagging a commit in git history" — the baseline is the tag; the artifacts at the tag are reconstructible from it.

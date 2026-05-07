@@ -109,6 +109,75 @@ ACT     — the requirement is actionable directly: select an
 
 **Research investigation handoff.** Research investigations (glossary §15B) may be opened from any point in the design — DECIDE evaluation when the catalog lacks needed information, an open question that requires research to resolve, an assumption that needs validation, a contract definition that needs further information, or as a standalone task. Research investigations are *not* exclusive to DECIDE; they are a general mechanism for gathering information whenever the design needs it. The artifact that triggered the investigation waits on the findings, or proceeds under a recorded assumption (glossary §15) if waiting would block productive work. Findings typically update or create catalog entries (constitution §5.2) and feed back into the triggering artifact. Investigations are themselves of two kinds (glossary §15B.1): *survey investigations* search what already exists, while *constructive investigations* develop something new.
 
+**Requirement reconsideration.** At any point in the loop, the project may discover that holding a requirement as currently stated makes the design infeasible, sub-optimal, or excessively expensive given what has been learned. The response in such cases is not always "fulfill the requirement at any cost" — it may be to **revise the requirement**. Revision is itself a decision with tradeoffs: *what is given up by holding the requirement as it stands* versus *what is gained by relaxing, redefining, narrowing, or otherwise altering it*. The structured option-criterion evaluation (§9.1) is the right vehicle for the tradeoff analysis. The change itself is governed by §13 (change classification per §30A — a revision if the essence of the requirement is preserved with adjusted bounds, a replacement if the new requirement is materially different). The requirement's owner approves the change.
+
+Requirement reconsideration is not an escape hatch from process discipline; it is a recognition that requirements are themselves design artifacts, subject to revision when better information arrives during the loop's iterations. *Holding a requirement is itself a tradeoff* — even when the requirement is simply restated unchanged, that restatement is an implicit decision to keep paying the cost the requirement imposes. Making that implicit decision explicit when the cost has grown is the move this paragraph names.
+
+**Gap analysis.** When evaluating an *existing solution* — a tool, mechanism, framework, or third-party offering — as a candidate to satisfy some or all of the project's requirements, perform a **gap analysis**: enumerate the requirements relevant to the solution and, for each, determine whether the solution satisfies it as-is, partially satisfies it (with what remaining gap), or does not satisfy it at all.
+
+The gap analysis is the requirements-as-criteria specialization of the option-criterion evaluation (§9.1): the *option* is the existing solution being considered, and the *criteria* are the project's requirements. The output is *the gap* — the set of requirements not met by the solution, along with the cost characterization of closing each one.
+
+```text
+Steps:
+1. Identify the existing solution under consideration.
+2. List the requirements relevant to the scope of consideration
+   (often a subset; rarely the entire requirement set is relevant
+   to a single existing solution).
+3. For each requirement, assess one of:
+     - SATISFIED — the solution meets the requirement as-is
+     - PARTIAL  — the solution meets part; record what's missing
+                  and the cost to close it
+     - UNMET    — the solution does not meet the requirement;
+                  record cost to add it (extension, integration,
+                  or workaround)
+     - N/A      — the requirement is outside the solution's scope
+                  and is expected to be met elsewhere
+4. Sum the gap: total cost of closing all PARTIAL and UNMET items
+   under the option.
+5. Compare against alternatives — most importantly, against
+   building (or against another existing solution).
+6. Decide: adopt-and-extend, build, or relax requirements (if
+   specific gaps point at requirements that may be over-strict —
+   see Requirement reconsideration above).
+```
+
+Gap analysis is the disciplined alternative to "this looks similar enough" or "let's build, surely" judgment. The constitution does not require it for every option considered — it is a tool that becomes load-bearing when the option being considered is substantial enough that getting the build/adopt decision wrong would be costly. When applied, the gap analysis output becomes part of the relevant decision record (§9), informing the option-criterion evaluation.
+
+**Tie-breaking questions.** An option-criterion evaluation (§9.1) sometimes does not produce a dominant option. Two or more options survive with comparable overall strengths, each strong on different dimensions. When this happens, the next move is **not** for the analyst to implicitly choose — it is to formulate **tie-breaking questions** for the decision's owner, targeted at the specific dimensions where the surviving options differ, and ask which dimension matters most for the project's objectives.
+
+```text
+A tie-breaking question is:
+- short and targeted at one differentiating dimension;
+- expressed in terms of project objectives, not implementation
+  preferences;
+- paired with a concrete consequence ("if X matters more, we
+  prefer option A; if Y matters more, we prefer option B").
+```
+
+Common tie-breaking dimensions include long-term strategic commitments (technology platform, ecosystem reach), risk tolerance, deployment preferences, team or operational expertise, and the relative weight of distinct project goals. The owner's answers to the tie-breaking questions become part of the decision record's reasoning so that the basis for the tie-breaker is preserved alongside the matrix.
+
+Tie-breaking questions are not abdication of analysis. They are a recognition that some calls genuinely depend on owner judgment about priorities the matrix cannot encode — and that surfacing those judgments explicitly is more honest than letting the analyst's defaults stand in for them silently.
+
+**Insulation by abstraction.** When a decision has been made — an option-criterion evaluation completed, tie-breaking questions answered, a choice settled with reasonable confidence — but rejected alternatives remain *viable* and the choice has long-term consequences, the *tool's architecture* can be designed to **insulate** dependent components from the chosen option. A *boundary abstraction* is placed between the chosen option and the components that depend on it. Dependents interact with the abstraction's interface rather than with the option's idioms directly.
+
+The benefit is **reversibility**. If the chosen option's risks later materialize, or a substantially-better alternative emerges, or the requirements shift, the option can be replaced by writing a new implementation against the same abstraction. Dependent components do not change.
+
+The cost is real but bounded:
+
+```text
+- Design work to shape the abstraction's interface to the
+  project's domain rather than to a specific option's idioms.
+- A layer of indirection between dependents and the option.
+- Discipline to prevent option-specific features from leaking
+  through the abstraction.
+- Some abstraction-defying capabilities of the chosen option
+  may be hidden, duplicated, or surfaced only via escape hatches.
+```
+
+This technique is most useful when (a) multiple options remain viable after the option-criterion matrix and tie-breaking, (b) the long-term consequences of the choice are uncertain, or (c) the requirements may evolve in ways that affect the choice. It is **not** a default — premature abstraction has its own costs, and an interface shaped before the project understands its real needs is usually wrong. Apply when the value of preserving optionality is concrete (a real second option exists; a real reason to prefer flexibility exists), not as a default architectural posture.
+
+The technique generalizes the contract concept of §10 — a contract is itself a kind of abstraction, defining the shell within which a delegate has freedom. Insulation by abstraction applies the same idea specifically at decision boundaries where the decision could plausibly need to be revisited.
+
 **Recursion at delegated scopes.** When DECIDE produces a contract (§10), the contract's **delegate** (glossary §27A) treats their assigned shell as a fresh root and runs the loop inside it. The contract owner retains authority over the shell; the delegate has freedom inside the shell but cannot alter it. Each contract therefore creates a fresh mini-project at its delegation level. A delegate may itself author sub-contracts, becoming the contract owner of those sub-contracts.
 
 **Choosing which requirement to address next.** Among unfulfilled requirements, prefer the one whose **design space** (glossary §11A) is smallest — the most-constrained requirement, with the fewest viable solutions. Committing to a wide-design-space requirement before a constrained one risks eliminating the overlap with the constrained requirement's viable solutions. This is a feasibility-risk heuristic; it parallels the minimum-remaining-values strategy used in constraint-satisfaction problem solvers. When design spaces are comparable, break ties by (in order): what unblocks the most other work, what reduces the most project uncertainty, owner priority.
