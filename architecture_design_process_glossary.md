@@ -14,6 +14,8 @@ The term *artifact* is the umbrella under which the process's specific types liv
 
 A reference from one artifact to another is an **artifact reference**. An artifact reference points at its target by the target's eternal global identifier; any human-readable type decoration accompanying the reference (e.g., the `REQ-` in `REQ-90`) is a display convention and not the basis of resolution. References therefore continue to resolve correctly even when the target's type decoration changes.
 
+An artifact reference may optionally carry a **semantic role** drawn from a project-extensible vocabulary — for example: *supports*, *refutes*, *supersedes*, *satisfies*, *derives-from*, *depends-on*, *addresses*, *justifies*, *invalidates*. The role indicates the nature of the relationship between the referencing and referenced artifacts. Roles are optional; the reference's polymorphism is preserved when no role is set. When roles are present, queries and reasoning may rely on them to make traceability questions precise (e.g., *"which requirements does this contract satisfy?"*). The role vocabulary is itself a project artifact (see §17 for analogous catalog handling).
+
 An artifact reference is distinct from a **traceability link** (§28), which is a labeled, typed edge derived from artifact references for the purpose of querying the design.
 
 ## 2. Requirement
@@ -349,6 +351,36 @@ The following pattern has worked well in practice and is recommended (not mandat
 
 The same lifecycle pattern is appropriate for other commentary-style artifacts that surface during design — for example, observations about gaps or refinements in the process documents themselves. A project may use a parallel file (such as a `process_observations.md` with `PO-1`, `PO-2`, ... entries) following the same incrementing-ID and inline-resolution rules.
 
+## 15B. Research Investigation
+
+A **research investigation** is a recorded effort to gather information needed to drive a decision, clarify a requirement, evaluate a candidate mechanism, or refine the catalog. It is a context artifact: it does not by itself create authority over the design, but its findings inform decisions, requirements, catalog entries, or other artifacts.
+
+Each research investigation records:
+
+```text
+- the question(s) being researched
+- the scope of the investigation (what is in/out)
+- the findings produced (accumulating inline as research happens)
+- the artifacts that depend on or were updated by the findings
+  (decisions, requirements, catalog entries, etc.)
+- a status indicating whether the investigation is open, blocked,
+  or closed
+```
+
+Research investigations follow the incrementing-ID-with-inline-resolution lifecycle described in §15A: an investigation is opened with a unique identifier, findings accumulate inline as the research is performed, and the investigation is marked closed with a summary of what it produced. Closed investigations are retained, not deleted, so the source of any finding remains traceable.
+
+A research investigation may be opened from within an open question (when the answer requires research), from within a decision (when a candidate's evaluation requires information not currently in the catalog), as a result of a clarification or assumption that needs validation, from within a contract definition that requires more information, or as a standalone task assigned by an owner. Investigations are not tied to any one process step.
+
+### 15B.1 Two kinds of research investigation
+
+Research investigations come in two distinct kinds:
+
+- **Survey investigation** — investigates what already exists that could be used to satisfy a requirement, off-the-shelf or with modification. Findings are typically captured as new or updated catalog entries; the investigation surveys the real-world solution space (per constitution §5.1's catalog-as-snapshot framing) and brings useful findings into the catalog.
+
+- **Constructive investigation** — investigates whether and how something *new* can be developed to satisfy a requirement when nothing existing fits well enough. Constructive investigations are open-ended: their scope is design and development work that produces a new mechanism. They may spawn sub-decisions, sub-contracts, and delegated scopes of their own. Findings include the new mechanism (eventually captured as a catalog entry) and the design rationale that produced it.
+
+Both kinds follow the same artifact lifecycle described above. They differ in scope and expected output: a survey investigation chooses among existing options; a constructive investigation produces a new option.
+
 ## 16. Mechanism
 
 A **mechanism** is a known way to provide a capability or produce a required effect.
@@ -405,7 +437,7 @@ Typical inputs include:
 - Risk analysis
 - Constraints
 - Evaluation criteria
-- Tradeoffs considered
+- Option-criterion evaluation matrix (see constitution §9.1)
 ```
 
 Typical outputs may include:
@@ -534,6 +566,29 @@ The terms **revision** and **replacement** are preferred in everyday use; the pa
 The classification of a change (revision vs. replacement) is currently the responsibility of the artifact's owner. This is the simplest rule but has a known weakness: a small textual edit that the owner of artifact A views as a *revision* may, when read by the owner of an artifact B that references A, change enough of the meaning to be a *replacement* from B's perspective. A and B may legitimately disagree on the class of the same change.
 
 This concern is recorded as a known limitation. A more conservative mechanism — for example, requiring every artifact that references A to evaluate any revision of A and either accept the unchanged reference or raise a concern to A's owner — would be safer but more costly. The process does not yet require this; it is captured here so that the issue is not silently absorbed and can be revisited as the process gains experience.
+
+## 30B. Baseline
+
+A **baseline** is a *named, dated, frozen, cross-artifact snapshot* that records the joint state of multiple artifacts at a specific point in time. A baseline references each included artifact at the version current at baseline-creation time; it captures who created it and why, and is itself a first-class artifact that can be referenced thereafter.
+
+Baselines are distinct from per-artifact versioning (§30 Version) and from per-artifact change classification (§30A Revision / Replacement). Per-artifact versioning concerns the change history of a single artifact; baselining concerns the joint state of *many artifacts at once*.
+
+Typical use cases:
+
+```text
+- Regulatory submission: capture the project state submitted for
+  compliance review.
+- Milestone capture: record the project state at a named milestone
+  (V1 release, design review, gate review).
+- Before/after comparison: capture two states for explicit
+  side-by-side comparison.
+- Branch / variant: capture the starting state for a parallel
+  exploration of an alternative design.
+```
+
+Relationship to REQ-0140 (forward migration): per-artifact-version preservation is the default *avoided* state under REQ-0140; baselining is an explicit, justified exception in which the artifact versions referenced by the baseline are preserved (or made reconstructible) for as long as the baseline itself is referenced. The owner described baselining as "akin to tagging a commit in git history" — the baseline is the tag; the artifacts at the tag are reconstructible from it.
+
+Baselines and replacements (§30A) interact: a baseline created before a replacement records the state in which the original artifact was present; after the replacement, the baseline still resolves to that original. Baselines therefore preserve a record of both per-artifact identity transitions and the project's joint state at named moments.
 
 ## 31. Change Request
 

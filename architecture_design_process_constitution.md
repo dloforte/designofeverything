@@ -20,6 +20,16 @@ The process exists to address three concerns that recur in real projects:
 
 These motivations apply beyond software. The process is intended to be amenable to the design of anything where requirements, contracts, and bounded scopes are useful concepts.
 
+### 1.2 Intellectual Provenance
+
+The process described in this document is not novel in spirit; several established methodologies cover adjacent ground. Two are worth acknowledging explicitly because their structures are visible in the process here:
+
+**IBIS — Issue-Based Information System.** Introduced by Horst Rittel in the 1970s for collaborative work on *wicked problems*, IBIS models a design dialogue as a graph of *issues*, *positions* (proposed responses to issues), and *arguments* (supporting or opposing positions). It is the direct intellectual ancestor of this process's open-question, clarification, and decision lifecycle (glossary §15A, §9, §20). The Compendium tool (and its continuation as CompendiumNG) operationalized IBIS in software form.
+
+**QOC — Questions, Options, Criteria (Design Space Analysis).** Developed in the early 1990s by MacLean, Young, Bellotti, and Moran. Represents reasoning as a graph of *questions* about the design, *options* responding to each question, and *criteria* used to evaluate options against one another. QOC explicitly names the *design space* — the set of options considered for a question — a term this document arrived at independently (glossary §11A) before the QOC parallel was identified.
+
+This process draws on the IBIS and QOC traditions and extends them with explicit machinery for contracts (§10), catalogs of mechanisms (§5), change governance (§13), polymorphic references, forward migration, and AI-first multi-user operation. The intent is not to replace these methodologies but to integrate their insights into a tool-mediated system that meets modern operational expectations.
+
 ## 2. Core Principle
 
 Architecture is a governed chain of reasoning from requirements to contracts.
@@ -94,6 +104,10 @@ ACT     — the requirement is actionable directly: select an
 ```
 
 **Rejection-driven refinement.** When the right exit is unclear, a useful heuristic is to propose any plausible solution that could fulfill the requirement (treat as ACT even when underspecified). The owner or relevant authority will usually reject the proposal because something specific is missing — and the rejection itself surfaces the missing constraint or specificity, which drives the next SPLIT or DECIDE. The heuristic uses rejection as a generator of design information rather than a setback.
+
+**Category-first generation.** When the candidate space is large or unfamiliar, generate candidates at the *category* or *class* level first (file-tree approaches, graph databases, relational with polymorphic associations, RDF triplestores, etc.) rather than jumping to specific products or implementations. Evaluate categories against the most-constraining requirements; only after a category is selected, drill down to specific products or implementations within it. This is complementary to rejection-driven refinement: where rejection-driven refinement uses a rejected proposal to surface missing constraints, category-first generation reduces evaluation cost by eliminating whole classes of options before investing in product-specific detail.
+
+**Research investigation handoff.** Research investigations (glossary §15B) may be opened from any point in the design — DECIDE evaluation when the catalog lacks needed information, an open question that requires research to resolve, an assumption that needs validation, a contract definition that needs further information, or as a standalone task. Research investigations are *not* exclusive to DECIDE; they are a general mechanism for gathering information whenever the design needs it. The artifact that triggered the investigation waits on the findings, or proceeds under a recorded assumption (glossary §15) if waiting would block productive work. Findings typically update or create catalog entries (constitution §5.2) and feed back into the triggering artifact. Investigations are themselves of two kinds (glossary §15B.1): *survey investigations* search what already exists, while *constructive investigations* develop something new.
 
 **Recursion at delegated scopes.** When DECIDE produces a contract (§10), the contract's **delegate** (glossary §27A) treats their assigned shell as a fresh root and runs the loop inside it. The contract owner retains authority over the shell; the delegate has freedom inside the shell but cannot alter it. Each contract therefore creates a fresh mini-project at its delegation level. A delegate may itself author sub-contracts, becoming the contract owner of those sub-contracts.
 
@@ -178,6 +192,30 @@ The intended workflow is:
 ```
 
 Treating the catalog as a cache rather than a limit ensures the project benefits from accumulated knowledge without being trapped by it.
+
+### 5.2 Catalog Scope
+
+Catalog entries should be **project-agnostic** where possible: they capture the relevant general aspects of the technology, mechanism, or pattern, without limiting their description to the current project's potential use of them. The catalog is intended for reuse across projects.
+
+Project-specific considerations — *how* a particular catalog option fits the current project's specific requirements, constraints, or tradeoffs — belong in decision records, research investigations (glossary §15B), or tradeoff-analysis artifacts, not in the catalog entry itself.
+
+When adding or updating a catalog entry, capture only the information needed for the current decision. Comprehensive coverage is not required; entries grow incrementally as additional projects encounter additional aspects. What is added should remain generic to the option, not specific to the current project's use of it.
+
+### 5.3 Catalog Bootstrapping
+
+A project's first DECIDE encounter with the catalog will frequently find no relevant entries — particularly early in the project's life or when the catalog is shared across only a small set of projects. In that case, the project **bootstraps** the catalog as part of opening the decision: candidate mechanisms are recorded as new catalog entries with the information available, then evaluated as part of the decision. The bootstrapped entries remain in the catalog after the decision is made, available for reuse by future iterations of this project or by other projects.
+
+Bootstrapping is a normal part of the DECIDE step, not an exception. The same project-agnostic scope rule (§5.2) applies to bootstrap entries: they record the option's general character, not its fit to the current project.
+
+### 5.4 Considered Options Become Catalog Entries
+
+Any option that the project considers as a candidate to satisfy a requirement — whether or not it is investigated in depth, and whether or not it is selected — should result in a catalog entry. This applies whether the option is selected, rejected, deferred, or considered and dismissed.
+
+The catalog therefore grows with the project's reasoning history. Options that have been *considered and rejected* are valuable to keep recorded — both for the rejecting decision (so the rationale is traceable) and for future projects (which may face the same candidate set and benefit from prior consideration).
+
+Rejection rationale belongs in the **decision record** that rejected the option (§9), not in the catalog entry. The catalog entry remains project-agnostic and captures only the option's general character (per §5.2).
+
+When a topic comes up for consideration without prior catalog presence, add a catalog entry — minimal is acceptable — before the consideration is resolved. The entry records the option's character; the decision records why it was selected, rejected, or deferred. A research investigation (glossary §15B) may or may not be opened to fill in the entry further; the existence of the entry does not require the investigation.
 
 ## 6. Handling Underspecified Requirements
 
@@ -267,6 +305,23 @@ A decision record should include:
 ```
 
 Decision records should not be overwritten. When a decision changes, the previous decision is preserved and marked as superseded. The new decision records why the prior reasoning no longer governs.
+
+### 9.1 Option-Criterion Evaluation
+
+When a decision involves choosing among multiple options against multiple criteria, the *Tradeoffs* and *Selection criteria* fields above should be structured as an **option-criterion evaluation** rather than free prose. Each (option, criterion) pair is recorded as:
+
+```text
+- option: <option ID or short name>
+- criterion: <criterion ID or short name>
+- sign: positive | negative | neutral
+- weight or note: (optional) magnitude or short rationale
+```
+
+Reading the matrix, an evaluator can see immediately which options satisfy which criteria, where each option's strengths and weaknesses lie, and which criteria are decisive. The structured form supports the §8.1 justification-quality rule (no typicality-only justifications): every cell either has a justification or its absence is itself the rationale for the cell's verdict.
+
+This pattern is borrowed from QOC (Questions, Options, Criteria; MacLean et al., 1991), where signed edges between options and criteria are central to the design-rationale notation. See glossary §1.2 for the lineage and glossary §20 for the decision-record artifact.
+
+The form is not mandatory for trivial decisions (one option, no real comparison), but is the recommended default whenever options are genuinely being compared.
 
 ## 10. Architecture Contracts
 
