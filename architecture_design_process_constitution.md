@@ -81,7 +81,38 @@ The question is evaluated against the design and all available artifacts. The ev
 
 If the answer is *yes*, the design (or sub-design under a contract) is complete; see *Termination* below. If *no*, the loop continues.
 
-**Three exits per node.** For each unfulfilled requirement, choose one of three exits according to the requirement's current state:
+**Two modes — implementer and decomposer.** At each iteration, the designer of the current scope is in one of two modes:
+
+- **Implementer mode** — the current scope is small enough and well-understood enough that a single worker (human or AI) is producing the design and implementation directly. The three exits below — SPLIT, DECIDE, ACT — operate within this mode.
+- **Decomposer mode** — the current scope is large or admits independent sub-areas. The work is to partition the scope into bounded sub-contracts and delegate each to a separate worker. The detailed workflow is **§10A *Decomposition and Delegation Workflow*** — the *primary mode* of this process for any scope large enough to admit it.
+
+The two modes interleave in any non-trivial project: upper levels in decomposer mode, lower levels in implementer mode. The choice of mode at any iteration is itself an instance of DECIDE, weighted toward the *independent-development* criterion of §7. The remainder of this section (the three exits and the named heuristics) is the implementer-mode toolkit. The decomposer-mode toolkit is §10A.
+
+**Three exits per node.** For each unfulfilled requirement, choose one of three exits. The exits are not strictly ordered in priority — they trigger on different conditions of the requirement's current state. The designer's first task is to triage: which condition does this requirement currently match?
+
+```text
+Triage questions for choosing the exit:
+
+  Q1. Is the requirement specific enough to be acted on directly
+      — does an existing solution map onto it, can a contract
+      be drawn around it, can a verification be defined for it?
+      If YES -> ACT.
+
+  Q2. Are there multiple plausible solutions worth weighing —
+      does the catalog or the design space contain alternatives
+      that satisfy the requirement, and does the choice among
+      them have consequences worth recording?
+      If YES -> DECIDE.
+
+  Q3. Does the requirement bundle multiple obligations, or
+      contain ambiguity in scope or intent, or rest on an
+      uncertainty about what the project even needs?
+      If YES -> SPLIT.
+```
+
+A rebuttable preference applies: when the same requirement could plausibly be ACT (existing fitting solution available) or DECIDE (multiple options to weigh), prefer ACT — *reuse beats reinvention* (see §10A.9 on shared modules). The preference is rebutted when the apparent fit is superficial or when a comparison would surface useful information.
+
+For each unfulfilled requirement, the chosen exit is one of the following:
 
 ```text
 SPLIT   — the requirement bundles multiple obligations or contains
@@ -143,7 +174,17 @@ Steps:
 
 Gap analysis is the disciplined alternative to "this looks similar enough" or "let's build, surely" judgment. The constitution does not require it for every option considered — it is a tool that becomes load-bearing when the option being considered is substantial enough that getting the build/adopt decision wrong would be costly. When applied, the gap analysis output becomes part of the relevant decision record (§9), informing the option-criterion evaluation.
 
-**Tie-breaking questions.** An option-criterion evaluation (§9.1) sometimes does not produce a dominant option. Two or more options survive with comparable overall strengths, each strong on different dimensions. When this happens, the next move is **not** for the analyst to implicitly choose — it is to formulate **tie-breaking questions** for the decision's owner, targeted at the specific dimensions where the surviving options differ, and ask which dimension matters most for the project's objectives.
+**Hybrid synthesis.** When the option-criterion matrix (§9.1) leaves two or more contenders that are strong on *different* dimensions, ask — before invoking tie-breaking questions — whether a **hybrid** candidate can be constructed that takes the best of each contender. Examine the matrix cell by cell: where contender X scores well and Y poorly, take X's approach for that dimension; where Y scores well and X poorly, take Y's approach; where both score equally well, pick whichever fits the project's constraints better.
+
+A hybrid is not always available. Some contender approaches are *mutually exclusive* — a system cannot be both service-oriented and monolithic for the same component, for example. But often the contenders differ on multiple dimensions and only some of those dimensions are interlocked. The hybrid candidate inhabits the dimensions that don't interlock and takes the better of each.
+
+When a viable hybrid emerges, **evaluate it as a new candidate in the matrix**. If it dominates the original contenders — wins on every cell where one of them won, ties or wins everywhere else — it becomes the selected option, and tie-breaking questions are not needed. If it merely matches the contenders on different cells without dominating, the original tie-breaking dimensions still apply and tie-breaking questions are the next move.
+
+Apply with care: a poorly-constructed hybrid can combine *weaknesses* rather than strengths if the synthesis is sloppy. The matrix is the discipline that prevents this — every hybrid claim is checkable cell-by-cell against the criteria, and the hybrid must be added to the matrix as a real evaluated candidate, not asserted as superior.
+
+Hybrid synthesis is complementary to the other techniques in this section. Category-first generation produces the initial candidate set; hybrid synthesis combines candidates within or across categories when their strengths are partially separable; tie-breaking questions handle the case where synthesis is not possible or not sufficient; insulation by abstraction preserves optionality after a decision is made. Hybrid synthesis comes *before* tie-breaking in the workflow — it is the move that may obviate the need for tie-breaking entirely.
+
+**Tie-breaking questions.** An option-criterion evaluation (§9.1) sometimes does not produce a dominant option even after hybrid synthesis (above) has been attempted. Two or more options survive with comparable overall strengths, each strong on different dimensions. When this happens, the next move is **not** for the analyst to implicitly choose — it is to formulate **tie-breaking questions** for the decision's owner, targeted at the specific dimensions where the surviving options differ, and ask which dimension matters most for the project's objectives.
 
 ```text
 A tie-breaking question is:
@@ -178,7 +219,7 @@ This technique is most useful when (a) multiple options remain viable after the 
 
 The technique generalizes the contract concept of §10 — a contract is itself a kind of abstraction, defining the shell within which a delegate has freedom. Insulation by abstraction applies the same idea specifically at decision boundaries where the decision could plausibly need to be revisited.
 
-**Recursion at delegated scopes.** When DECIDE produces a contract (§10), the contract's **delegate** (glossary §27A) treats their assigned shell as a fresh root and runs the loop inside it. The contract owner retains authority over the shell; the delegate has freedom inside the shell but cannot alter it. Each contract therefore creates a fresh mini-project at its delegation level. A delegate may itself author sub-contracts, becoming the contract owner of those sub-contracts.
+**Recursion at delegated scopes.** When DECIDE (or decomposer mode) produces a contract (§10), the contract's **delegate** (glossary §27A) treats their assigned shell as a fresh root and runs this loop inside it — including the choice between implementer and decomposer modes for their own scope. The contract owner retains authority over the shell; the delegate has freedom inside the shell but cannot alter it. The full handoff and handback workflow connecting parent to delegate iterations is **§10A *Decomposition and Delegation Workflow***.
 
 **Choosing which requirement to address next.** Among unfulfilled requirements, prefer the one whose **design space** (glossary §11A) is smallest — the most-constrained requirement, with the fewest viable solutions. Committing to a wide-design-space requirement before a constrained one risks eliminating the overlap with the constrained requirement's viable solutions. This is a feasibility-risk heuristic; it parallels the minimum-remaining-values strategy used in constraint-satisfaction problem solvers. When design spaces are comparable, break ties by (in order): what unblocks the most other work, what reduces the most project uncertainty, owner priority.
 
@@ -441,13 +482,309 @@ As long as you meet these requirements, you may choose the implementation inside
 
 The delegate owns implementation decisions inside the contract. The contract owner retains authority over changes to the contract boundary, objective, inputs, outputs, constraints, and externally visible behavior.
 
+## 10A. Decomposition and Delegation Workflow
+
+The contract concept of §10 enables this process's *primary mode* of operation: **decomposing a scope into bounded sub-scopes, drafting a contract for each, and delegating the work — to separate workers (human or AI), in parallel where possible — under contracts that prevent design drift**. This section specifies the workflow connecting §10 (contracts as boundary objects) to §11 (the architecture tree as structure).
+
+### 10A.1 Implementer mode vs. decomposer mode
+
+At any iteration of the design loop (§3.2), the designer of the current scope is in one of two modes:
+
+**Implementer mode.** The current scope is small enough and well-understood enough that a single worker is producing the design and implementation directly. The three exits of §3.2 — SPLIT, DECIDE, ACT — operate within this mode.
+
+**Decomposer mode.** The current scope is large, multi-faceted, or contains sub-areas that admit independent development. The work is to partition the scope into sub-contracts and delegate each. This section is the workflow.
+
+The two modes are not mutually exclusive in time. A non-trivial project's loop alternates between them: upper levels typically in decomposer mode (carving the work into sub-systems), lower levels in implementer mode (building leaf functionality). The choice between modes is itself an instance of DECIDE — among the §7 criteria (cohesion, coupling, ownership clarity, contract clarity, independent development, testability, etc.), the criterion most relevant to mode selection is **independent development**: if sub-areas can be worked on without continuous coordination, decomposition is favored; if coordination would be so tight that workers would block each other constantly, implementation in one scope is favored.
+
+This document treats decomposer mode as the default for any scope large enough to admit it. Implementation-as-a-single-worker is appropriate at the *leaves* of the contract tree; everywhere else, decomposition into bounded sub-contracts is the preferred move. The contract concept (§10) is what makes parallel delegated work safe: each sub-contract proscribes a shell of design space within which the delegate has full freedom and outside which they have none.
+
+### 10A.2 The decomposition workflow
+
+When decomposer mode is selected, the designer produces sub-contracts as follows:
+
+```text
+1. Identify candidate decompositions.
+   Generate two or more ways the scope could be partitioned. Use
+   category-first generation (§3.2) to keep candidates at the
+   architectural level (e.g., "by capability layer", "by user-
+   facing function", "by data domain") rather than committing to
+   product-level details prematurely.
+
+2. Evaluate candidates against §7's criteria.
+   Apply the option-criterion matrix (§9.1). Cohesion, coupling,
+   independent-development, contract clarity, and ownership
+   clarity are the most discriminating criteria for decomposition.
+
+3. Select a decomposition.
+   Record the selection as a decision record (§9). The
+   decomposition itself becomes a structural artifact of the
+   project.
+
+4. Draft a contract for each sub-scope.
+   Per §10's structure: objective, inputs, outputs, owns, does
+   not own, constraints, related requirements, related decisions,
+   change authority, etc. The contracts together must cover the
+   parent scope's requirements without overlap or gap. Where
+   overlap or gap exists, the decomposition is not yet correct
+   and step 1 should be revisited.
+
+   *Tools implementing this constitution may support an automated
+   check that the union of sub-contracts' owns covers the parent's
+   scope without overlap. The check is helpful but not infallible —
+   semantic overlap (two contracts that nominally own different
+   areas but in practice need the same artifact) escapes
+   syntactic checks. Treat the check as an aid, not as a guarantee.*
+
+5. The parent owner approves each contract.
+   Approval transitions the contract from drafted to approved
+   (per REQ-0290's lifecycle states).
+
+6. Assign each contract to a delegate.
+   The delegate may be a human or an AI agent. Assignment may
+   precede or follow approval depending on project conventions.
+```
+
+### 10A.3 The handoff package
+
+When a contract is assigned and approved, the delegate receives a **handoff package** — the bounded context within which they will operate. The package comprises:
+
+```text
+- The contract itself (full §10 / glossary §21 fields).
+- The current version of the constitution and glossary.
+- The parent's artifacts that the contract references, plus those
+  the delegate must read to understand the contract's context
+  (transitively reachable via reference roles per glossary §1A
+  and the project's role vocabulary).
+- Read-only awareness of in-flight sibling contracts under the
+  same parent.
+- A clearly-stated "definition of done" for the contract — the
+  conditions under which the delegate's iteration of the §3.2
+  loop terminates (typically: all requirements within the
+  contract's scope are fulfilled per §3.2's termination criteria,
+  plus any contract-specific deliverables).
+```
+
+The delegate's writes are scoped to their contract per §10 and the project's REQ-0080 / REQ-0300 enforcement. Reads of artifacts outside the contract's scope are permitted (the delegate must understand the surrounding project) but writes are not. Tool-level support for assembling and presenting the handoff package is required (REQ-0280 in the project tracking this constitution).
+
+### 10A.4 The delegate's iteration
+
+Within their contract's scope, the delegate runs their own iteration of the §3.2 loop. The driving question becomes scoped: *Are all requirements within this contract fulfilled?* The three exits SPLIT / DECIDE / ACT operate on the contract's scope. The delegate may further decompose if their scope is itself large enough — they then become a contract owner for those sub-contracts, applying §10A.2 recursively.
+
+The delegate is **not** authorized to modify the contract itself. If the delegate determines the contract is wrong (insufficient, infeasible, internally contradictory, or in conflict with a discovered constraint), they raise a change request to the contract's owner per §13 and the project's REQ-0310 — they do not unilaterally amend the contract. While the change request is pending, the delegate may pause or continue under a recorded provisional assumption (per glossary §15.1).
+
+### 10A.5 The handback
+
+When the delegate's scoped driving question answers YES with rationale, the delegate produces a **handback** to the parent:
+
+```text
+- The implementation or design output the contract called for.
+- A verification record demonstrating the contract's requirements
+  have been met (per the verification expectation in glossary §2).
+- The decisions made internally during the delegate's iteration —
+  these decisions inherit visibility to the parent for review and
+  remain part of the project's reasoning history.
+- Any sub-contracts the delegate authored, in their final state.
+- The contract's lifecycle state transition: in-design or
+  implementing → fulfilled (per REQ-0290).
+```
+
+The parent reviews the handback. If the parent is satisfied, the parent accepts and updates their own state — the requirements the contract covered are now fulfilled at the parent level. If not satisfied, the parent either negotiates revisions (the contract returns to in-design) or rejects (the contract transitions to rejected; a new contract may be drafted to cover the same scope).
+
+### 10A.6 Coordination among parallel delegates
+
+Multiple delegates working on sibling contracts under a common parent will sometimes discover dependencies that were not captured when the contracts were drafted. The constitution's discipline:
+
+```text
+- Direct delegate-to-delegate writes are NOT permitted. Each
+  delegate's writes are scoped to their own contract per §10
+  and the project's REQ-0080.
+
+- The tool makes each delegate aware of sibling contracts'
+  current state read-only, so cross-delegate dependencies surface
+  early.
+
+- When a delegate's work would create or rely on a dependency
+  not documented in the contracts, the delegate raises a change
+  request to the common parent. The parent decides how to
+  resolve: amend one or both contracts, absorb the dependency
+  into the parent's scope, or reject the request.
+
+- In the meantime, the delegate may proceed under a recorded
+  assumption (per glossary §15.1) if waiting would block work.
+```
+
+The principle: **coordination flows through the common parent, not laterally between delegates**. This preserves the contract concept's integrity. Each delegate is bound to their contract; only the parent has authority to alter it.
+
+### 10A.7 Integration and re-evaluation at the parent
+
+When the parent accepts a delegate's handback, the parent integrates the result into their own scope. The parent's next iteration of the §3.2 loop re-asks the driving question with the delegate's contribution included. As more sibling contracts complete and are accepted, the parent's unfulfilled-requirements count decreases. When the parent's scope's driving question answers YES — all requirements fulfilled, all sub-contracts in the fulfilled state, all assumptions accepted, all open questions resolved, all decisions recorded, all verification methods defined — the parent's contract itself is fulfilled. The parent then hands back to *their* parent, and so on, until the recursion bottoms out at the project root.
+
+### 10A.8 Project initiation under decomposition-as-primary
+
+A project applying decomposition-as-primary starts as follows:
+
+```text
+1. Identify the external authority and elicit the root-level
+   requirement(s) — §3.1.
+2. Run an initial fulfillment check against the root (§3.2). For
+   any non-trivial project this answers: not fulfilled.
+3. At the root, choose mode (§10A.1). Almost always decomposer
+   mode for a project at scale.
+4. Apply the §10A.2 decomposition workflow. Produce the top-level
+   sub-contracts — typically a small number of major sub-systems.
+5. Approve each top-level contract; assign delegates.
+6. Each top-level delegate runs §3.2 inside their contract,
+   typically entering their own decomposer mode at first and
+   transitioning to implementer mode at lower levels.
+7. The project becomes a tree of contracts and delegates working
+   in parallel where independent and serializing through change
+   requests where they must coordinate.
+8. Driving questions answer YES at every level over time; the
+   project terminates when the root's question answers YES.
+```
+
+The depth of the contract tree is determined by the project's scale and the complexity of its sub-areas. Some projects are flat — a single contract; most non-trivial projects have multiple levels of nested sub-contracts.
+
+### 10A.9 Reuse and shared modules
+
+A specialized but important case in decomposer mode: when a candidate sub-scope, capability, or module is needed by **more than one** consuming contract — sibling contracts under the same parent, or contracts at different levels of the tree — the project should prefer **reuse** of a single shared sub-contract over redundant parallel implementations. Reuse-first is the default when the same capability would otherwise be implemented multiple times.
+
+```text
+Benefits of reuse:
+- Less work overall.
+- Consistent behavior across the project (one implementation,
+  one verification record, one canonical contract).
+- A single set of design decisions for the module rather than
+  several with risk of divergence.
+- Lower long-term maintenance burden.
+
+Costs of reuse:
+- Coordination — multiple consumers must agree on the module's
+  contract; changes must be negotiated.
+- Coupling — consumers depend on the shared module; the
+  module's failures or breaking changes ripple outward.
+- Ownership — the module needs an explicit owner accountable
+  for it, distinct from the consumers.
+```
+
+When the workflow encounters a candidate module that could be shared:
+
+```text
+1. Search before building.
+   The first question a delegate should ask, when identifying a
+   needed sub-capability, is NOT "how do I build this?" but
+   "does this already exist or is anyone else planning it?".
+   The tool (per project requirements supporting this
+   constitution) shall make existing and planned modules
+   discoverable across the project.
+
+2. Identify or assign an owner for the shared module.
+   The owner is responsible for the module's contract, its
+   evolution under change requests, and its fulfillment.
+
+3. Each consumer references the shared module's contract from
+   their own contract — typically with a "depends-on" reference
+   role (per the project's reference vocabulary).
+
+4. The shared module participates in the architecture tree as
+   a node referenced by multiple parents — strictly speaking,
+   the architecture is no longer a tree but a directed acyclic
+   graph (DAG). See §11.
+
+5. Changes to the shared module's contract are governed by §13,
+   with the consumers explicitly notified — the consumers'
+   designs depend on the module's contract.
+```
+
+**Ownership models for shared modules.** A shared module's ownership may be structured in one of several ways; the choice is itself a decision (§9) and should be recorded in the module's contract.
+
+```text
+- Single owner. One delegate owns the shared module's contract
+  and implementation. Consumers raise change requests to the
+  owner if they need amendments. Simplest model; appropriate
+  when the module's design is stable and one delegate has the
+  expertise.
+
+- Coordinator owner. One delegate has nominal ownership but acts
+  as a coordinator among multiple stakeholders (consumers and
+  contributors). Change requests go to the coordinator who runs
+  alignment with stakeholders before approving. Appropriate
+  when the module's contract is still evolving and consumer
+  needs vary.
+
+- Multiple co-owners. Two or more delegates share ownership.
+  Change governance applies — major changes require the consent
+  of all co-owners. Most coordination cost; reserved for modules
+  where governance authority must genuinely be shared.
+```
+
+**The duplication-avoidance discipline.** Symmetrically: a delegate considering implementation of a module that *might* be useful elsewhere in the project should announce it as a candidate shared module (in a form discoverable by the tool's project-wide search) before building. The cost is a brief moment of broadcasting; the benefit is preventing parallel duplicate implementations that have to be reconciled later.
+
+This discipline reframes the delegate's mental sequence:
+
+```text
+Old (build-first):    "What do I need? -> I'll build it."
+New (reuse-first):    "What do I need? -> Does it exist? Is it
+                       planned? -> Reuse if so; build only if
+                       not, and announce what I'm building so
+                       others can find it."
+```
+
 ## 11. Architecture Tree
 
-The architecture tree decomposes the system into contracts, components, modules, subsystems, and submodules.
+The **architecture tree** decomposes the system into contracts, components, modules, subsystems, and submodules. It is the structural artifact produced by repeated application of the decomposition workflow (§10A) at successive levels of detail.
 
-Each child contract is constrained by its parent contract. A delegated owner may further decompose their assigned contract, but may not change the outer contract without approval from the owner of that contract.
+### 11.1 Structure
 
-The approval path for boundary changes follows ownership of the affected contract.
+A contract appears in the tree at the level its delegate operates. Each child contract is constrained by its parent contract: the child's objective, inputs, outputs, owns, does not own, and constraints must be consistent with the parent's contract. A delegate may further decompose their assigned scope into sub-contracts, becoming the contract owner for those sub-contracts (§27A). The recursion bottoms out at *leaf contracts*, where the delegate is in implementer mode (§27B) and is producing the design or implementation directly rather than delegating further.
+
+The tree's depth and breadth are project-dependent. Some projects are flat — a single contract; most non-trivial projects have multiple levels.
+
+### 11.2 The tree is generally a tree, but may be a DAG
+
+Strictly, the architecture is a tree only when every sub-contract has exactly one parent. **Shared modules** (§10A.9) introduce nodes that are referenced by multiple parents — making the architecture a *directed acyclic graph* (DAG) rather than a strict tree. The terminology "architecture tree" is retained for clarity in the common case; in projects with shared modules, the structure should be understood as a tree-with-shared-leaves.
+
+Visually:
+
+```text
+                    Root contract
+                   /      |      \
+                  /       |       \
+              Sub-A    Sub-B    Sub-C
+              /  \      |       /
+             /    \     |      /
+          Leaf-1  Shared-Leaf-X    Leaf-3
+                  (used by Sub-A and Sub-B)
+```
+
+The DAG structure is not a violation of the contract concept — each consumer of a shared module references the module's contract in their own contract, and the shared module has an explicit owner per §10A.9.
+
+### 11.3 Authority and approval paths
+
+The approval path for changes follows ownership of the affected contract:
+
+```text
+- A delegate may modify artifacts within their own contract's
+  scope (subject to REQ-0080 enforcement on the boundary).
+
+- A delegate may NOT modify their own contract — that requires
+  a change request to the contract's owner (the parent).
+
+- A delegate may NOT modify a sibling's contract or any
+  contract outside their own scope — coordination flows
+  through the common parent (§10A.6).
+
+- For a shared module, change governance follows the module's
+  declared ownership model (§10A.9) — single owner, coordinator
+  owner, or co-owners. Consumers of the shared module are
+  notified of proposed changes that may affect them.
+```
+
+### 11.4 The tree is a designed artifact, not a found one
+
+The architecture tree does not pre-exist the project; it is produced *by* the project's iterations of the §3.2 loop in decomposer mode. Each pass of decomposition adds nodes (sub-contracts) and edges (parent-child references, depends-on references for shared modules). The tree at any point reflects the project's current understanding of how the system is being structured. Like any design artifact, the tree is subject to revision — sub-contracts may be merged, split, replaced, or relocated as understanding evolves, all under change governance (§13 and glossary §30A).
+
+A key implication: the tree is *queryable* — designers can ask "what is the current architecture tree?" and "what would the tree look like as of baseline X?" (per glossary §30B). The tool implementing this constitution must support these queries (per the project's REQ-0060 traceability and REQ-0220 search).
 
 ## 12. Traceability Graph
 

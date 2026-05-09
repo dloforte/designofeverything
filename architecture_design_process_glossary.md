@@ -474,6 +474,14 @@ The core contract principle is:
 As long as you meet these requirements, you may choose the implementation inside this boundary.
 ```
 
+## 21A. Definition of Done
+
+A **definition of done** is a specific, recorded statement of the conditions under which a contract is considered fulfilled. It is a refinement of the general termination criteria stated in constitution §3.2 (driving question answers *yes*; assumptions resolved; open questions resolved; load-bearing decisions recorded; verification methods defined) scoped to the particular requirements and deliverables of one contract.
+
+The definition of done is part of the contract artifact. The delegate uses it to determine when their iteration of the design loop terminates and the contract may be transitioned to *fulfilled* (per the contract lifecycle in REQ-0290 of projects implementing this constitution).
+
+Without an explicit definition of done, fulfillment becomes a judgment call rather than a recorded condition — and judgment calls about completion are easy to drift on. The definition of done makes "are we done?" answerable by reference to the contract rather than by negotiation.
+
 ## 22. Component
 
 A **component** is an architectural unit that performs responsibilities within a contract boundary.
@@ -513,6 +521,53 @@ A **delegate** is the person, role, group, or AI agent responsible for working *
 The contract owner has authority over the *shell* — the contract's objective, inputs, outputs, and constraints. The **delegate** has authority over implementation choices *inside* the shell. The delegate does not have authority to modify the shell itself; any change to the shell must be routed back to the contract owner via change governance (§13 of the constitution).
 
 When the design loop recurses inside a contract (constitution §3.2), the role running the loop within that scope is the delegate, not the contract owner. A delegate may itself produce sub-contracts in the course of decomposing the work — and becomes the contract owner for those sub-contracts, delegating further. Roles therefore flip at each delegation level: the delegate of an outer contract is the contract owner of any inner contracts they author.
+
+## 27B. Implementer Mode
+
+A **mode** of operation in the design loop (constitution §3.2). The designer of the current scope is in implementer mode when the scope is small enough and well-understood enough that a single worker (human or AI) is producing the design and implementation directly. The three exits of §3.2 — SPLIT, DECIDE, ACT — operate within this mode. Contrast with *decomposer mode* (§27C).
+
+At the *leaves* of the contract tree, where the work is direct construction or selection of a known solution, implementer mode is appropriate. Higher in the tree, where scopes are larger and admit independent sub-areas, decomposer mode is generally preferred.
+
+## 27C. Decomposer Mode
+
+A **mode** of operation in the design loop. The designer of the current scope is in decomposer mode when the scope is large, multi-faceted, or contains sub-areas that admit independent development. The work is to partition the scope into bounded sub-contracts and delegate each to a separate worker; the detailed workflow is constitution §10A. Contrast with *implementer mode* (§27B).
+
+Decomposer mode is the *primary mode* for any scope large enough to admit it (constitution §10A.1). The contract concept of §21 makes parallel delegated work safe — each sub-contract proscribes a shell within which a delegate has freedom and outside which they have none.
+
+## 27D. Handoff Package
+
+The bounded context delivered to a **delegate** (§27A) when a contract is assigned. It comprises:
+
+```text
+- The contract itself (the §21 fields).
+- The current version of the constitution and glossary.
+- The parent's artifacts that the contract references, plus those
+  the delegate must read to understand the contract's context
+  (transitively reachable via reference roles per §1A).
+- Read-only awareness of in-flight sibling contracts under the
+  same parent.
+- The contract's definition of done (§21A).
+```
+
+The handoff package is what makes a delegate's iteration self-contained — within the package, the delegate has everything they need to run the §3.2 loop within their contract's scope, while remaining bounded by the contract's shell. Tool-level support for the handoff package is required by REQ-0280 in projects tracking this constitution.
+
+## 27E. Handback
+
+The set of artifacts a delegate returns to the parent when their contract's scoped driving question answers *yes* with rationale and the contract is ready to transition to *fulfilled*. It comprises:
+
+```text
+- The implementation or design output the contract called for.
+- A verification record demonstrating the contract's requirements
+  have been met (per the verification expectation of §2).
+- The decisions made internally during the delegate's iteration —
+  these become visible to the parent for review and remain part
+  of the project's reasoning history.
+- Any sub-contracts the delegate authored, in their final state.
+- The contract's lifecycle state transition: in-design /
+  implementing → fulfilled.
+```
+
+The parent reviews the handback. If the parent is satisfied, the contract transitions to fulfilled and the parent integrates the result into their own scope. If not satisfied, the parent either negotiates revisions (the contract returns to in-design) or rejects the handback (the contract transitions to rejected; a new contract may be drafted for the same scope).
 
 ## 28. Traceability Link
 
