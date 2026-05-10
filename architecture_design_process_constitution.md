@@ -219,6 +219,26 @@ This technique is most useful when (a) multiple options remain viable after the 
 
 The technique generalizes the contract concept of §10 — a contract is itself a kind of abstraction, defining the shell within which a delegate has freedom. Insulation by abstraction applies the same idea specifically at decision boundaries where the decision could plausibly need to be revisited.
 
+**AI agents must not make assumptions.** AI agents operating under this process face the same epistemic discipline as human delegates: when a decision or specification is needed, the agent **must not** fill gaps with implicit assumptions.
+
+```text
+- If existing artifacts (constitution, glossary, requirements,
+  decisions, contracts, etc.) provide a definitive answer, the
+  agent uses them and cites the basis.
+- If they do not, the agent raises a question — an open question
+  per §15A, a clarification per §9, or a change request per §13 —
+  to the appropriate authority (the contract owner, the project
+  owner, or the relevant artifact's owner).
+- The agent records an explicit assumption per glossary §15 only
+  when waiting for owner action would block productive work, and
+  the assumption remains unverified until the owner accepts it
+  per §15.1.
+```
+
+What is forbidden is *silent assumption* — proceeding as if a decision had been made when it has not. AI agents are particularly prone to this because they can reasonably infer "what the user probably wants" from training-data priors; this process explicitly prohibits substituting inference-from-priors for design discipline. **Only requirements and the artifacts that derive from them have authority to drive the design.**
+
+This rule applies equally to humans, but is stated explicitly here because the inference-from-priors failure mode is more available to AI agents.
+
 **Recursion at delegated scopes.** When DECIDE (or decomposer mode) produces a contract (§10), the contract's **delegate** (glossary §27A) treats their assigned shell as a fresh root and runs this loop inside it — including the choice between implementer and decomposer modes for their own scope. The contract owner retains authority over the shell; the delegate has freedom inside the shell but cannot alter it. The full handoff and handback workflow connecting parent to delegate iterations is **§10A *Decomposition and Delegation Workflow***.
 
 **Choosing which requirement to address next.** Among unfulfilled requirements, prefer the one whose **design space** (glossary §11A) is smallest — the most-constrained requirement, with the fewest viable solutions. Committing to a wide-design-space requirement before a constrained one risks eliminating the overlap with the constrained requirement's viable solutions. This is a feasibility-risk heuristic; it parallels the minimum-remaining-values strategy used in constraint-satisfaction problem solvers. When design spaces are comparable, break ties by (in order): what unblocks the most other work, what reduces the most project uncertainty, owner priority.
@@ -482,6 +502,42 @@ As long as you meet these requirements, you may choose the implementation inside
 
 The delegate owns implementation decisions inside the contract. The contract owner retains authority over changes to the contract boundary, objective, inputs, outputs, constraints, and externally visible behavior.
 
+### 10.1 Reference Stability in Contract Prose
+
+Contracts and other artifacts at higher levels of the architecture tree should describe their scope in terms of *stable referential anchors* — the requirements that justify them and the decisions that constrain them — rather than by embedding specific lower-level implementation choices in prose.
+
+When a contract's scope depends on a decision recorded elsewhere (e.g., "the data-model backend is X"), the contract should cite the decision (e.g., *"the data-model backend specified in DEC-XXXX"*) rather than name the specific choice directly. This:
+
+```text
+- Improves traceability — impact analysis can find every contract
+  affected by a decision change.
+- Reduces churn when the underlying decision is revisited or
+  superseded.
+- Keeps the contract at the correct level of abstraction for its
+  position in the tree; specific implementation choices remain at
+  the level where they are decided.
+```
+
+Specific implementation choices may still appear directly in lower-level contracts whose scope is exactly that decision. A contract whose objective is "implement the persistence layer using X" may name X in its prose, because at *that* level, X is the relevant referent.
+
+This principle is closely related to *Last responsible moment* (§10A.10): higher-level contracts are necessarily more abstract; concrete implementation choices belong at the lowest level where the choice is binding, and references in higher-level contracts should reflect that.
+
+### 10.2 The Contract Is the Parent's Specification of the Delegate's Scope
+
+The contract is fully the **parent's** specification of the delegate's scope. The delegate **cannot** modify the contract; only the parent can. The contract defines the boundary within which the delegate has freedom and outside which they have none.
+
+A parent-authored contract specifies what the parent has determined about the sub-scope: its objective, what it owns, what it does not own, what constraints it must honor, what requirements it must satisfy, and (to whatever level of detail the parent has chosen to specify) its inputs, outputs, and exposed interface.
+
+The contract does **not** specify the delegate's *internal* structure — implementation, internal interfaces, internal data structures, file layout, etc. Those remain the delegate's freedom inside the contract's boundary.
+
+A contract may be deliberately abstract in places when the parent has not yet determined the specifics. The *Provided Interface* and *Required Interface* fields of the contract template, in particular, are often left abstract or constraint-level at decomposition time — the parent specifies what the interface must accomplish ("must support persisting artifacts under transactional ACID guarantees per REQ-XXXX") without committing to specific signatures.
+
+When the delegate's work surfaces a need for greater specificity in the contract — for example, the delegate has designed concrete interface signatures and the dependents need to know them, or the delegate has discovered a requirement the contract did not anticipate — the delegate raises a **change request** to the parent (per §13 and §10A.11). The change request typically *proposes* the specifics. The parent reviews the proposal and decides; if the parent accepts, the parent **updates the contract** to reflect the new specifics. The change is recorded as a Decision per §9 and the contract's version increments.
+
+The asymmetry — *parent updates contract; delegate proposes via change request* — is a fundamental rule of this process. The delegate's design output is real engineering work, but it does not become *part of the contract* until the parent has accepted and recorded the update. This preserves the contract's role as the boundary of authority: the parent owns the contract; the delegate works within it.
+
+In the typical lifecycle, contract specificity *increases over time*: the contract starts abstract; the delegate's work surfaces specifics; the parent refines the contract via change requests; eventually the contract is concrete enough for implementation against. By the implementation-done milestone (§10A.5), the contract reflects the actual interfaces the delegate has built, having been refined through this loop.
+
 ## 10A. Decomposition and Delegation Workflow
 
 The contract concept of §10 enables this process's *primary mode* of operation: **decomposing a scope into bounded sub-scopes, drafting a contract for each, and delegating the work — to separate workers (human or AI), in parallel where possible — under contracts that prevent design drift**. This section specifies the workflow connecting §10 (contracts as boundary objects) to §11 (the architecture tree as structure).
@@ -536,8 +592,14 @@ When decomposer mode is selected, the designer produces sub-contracts as follows
    syntactic checks. Treat the check as an aid, not as a guarantee.*
 
 5. The parent owner approves each contract.
-   Approval transitions the contract from drafted to approved
-   (per REQ-0290's lifecycle states).
+   Approval is itself a Decision recorded per §9: the parent
+   verifies that each sub-contract's role, scope, and constraints
+   are consistent with the parent's own scope, with related
+   requirements, and with the project's broader context. Approval
+   transitions the contract from drafted to approved (per the
+   project's lifecycle states; see REQ-0290 in this project's
+   tracking). Rejection — or approval with required modifications —
+   is also recorded as a Decision with rationale per §9.
 
 6. Assign each contract to a delegate.
    The delegate may be a human or an AI agent. Assignment may
@@ -572,23 +634,51 @@ Within their contract's scope, the delegate runs their own iteration of the §3.
 
 The delegate is **not** authorized to modify the contract itself. If the delegate determines the contract is wrong (insufficient, infeasible, internally contradictory, or in conflict with a discovered constraint), they raise a change request to the contract's owner per §13 and the project's REQ-0310 — they do not unilaterally amend the contract. While the change request is pending, the delegate may pause or continue under a recorded provisional assumption (per glossary §15.1).
 
-### 10A.5 The handback
+### 10A.5 The handback (design-done and implementation-done milestones)
 
-When the delegate's scoped driving question answers YES with rationale, the delegate produces a **handback** to the parent:
+A delegate's iteration of the loop terminates in **two distinct milestones**, each with its own handback to the parent.
+
+**Design-done milestone.** The design within the contract's scope is complete: the *shape* of the work has been determined, even though no implementation work has been performed yet. The criteria are:
 
 ```text
-- The implementation or design output the contract called for.
-- A verification record demonstrating the contract's requirements
-  have been met (per the verification expectation in glossary §2).
-- The decisions made internally during the delegate's iteration —
-  these decisions inherit visibility to the parent for review and
-  remain part of the project's reasoning history.
-- Any sub-contracts the delegate authored, in their final state.
-- The contract's lifecycle state transition: in-design or
-  implementing → fulfilled (per REQ-0290).
+- All design decisions in scope have been made and recorded (§9).
+- Sub-contracts (if the delegate further decomposed) are authored,
+  approved, and assigned.
+- Verification methods (per glossary §2's IATD set: Inspection,
+  Analysis, Test, Demonstration) have been assigned to every
+  requirement in scope.
+- All open questions in scope have been resolved.
+- All assumptions in scope have been accepted, rejected, or
+  converted (per glossary §15.1).
+- Concrete interface specifications produced by the delegate's
+  design work have been *proposed to the parent* (typically as
+  part of the design-done handback) and the parent has refined
+  the contract's *Provided Interface* and *Required Interface*
+  fields accordingly via change governance (per §10.2 and §10A.11).
+  The delegate does not modify the contract; the parent's
+  acceptance is what makes the proposed specifics canonical.
 ```
 
-The parent reviews the handback. If the parent is satisfied, the parent accepts and updates their own state — the requirements the contract covered are now fulfilled at the parent level. If not satisfied, the parent either negotiates revisions (the contract returns to in-design) or rejects (the contract transitions to rejected; a new contract may be drafted to cover the same scope).
+At design-done, the contract may transition (per the project's lifecycle states) from `in-design` to `implementing`. The delegate produces a **design-done handback** containing the design decisions, sub-contracts, verification methods, and the proposed concrete interfaces. The parent reviews the handback, decides whether to accept, and on acceptance updates the contract to reflect the now-concrete specifics. The contract evolves under §10A.11's normal revision discipline.
+
+**Implementation-done milestone.** The implementation work the design specifies has been produced and verified:
+
+```text
+- Every requirement in scope has been verified by its assigned
+  method. For software, this is typically automated test (per
+  glossary §2's note on the software primary tool); other
+  methods apply where appropriate.
+- Failure modes have been analyzed and either mitigated or
+  accepted with rationale.
+- The driving question (§3.2) for the contract's scope answers
+  YES.
+```
+
+At implementation-done, the contract transitions to `fulfilled`. The delegate produces an **implementation-done handback** containing the implementation, the verification evidence, and any decisions made during implementation that affect the parent.
+
+The parent reviews each handback. Acceptance at design-done allows the delegate to proceed to implementation; acceptance at implementation-done closes the contract. Rejection — or required revision — is recorded as a Decision per §9 with rationale, and returns the contract to `in-design` or `implementing` as appropriate.
+
+The two-milestone separation matters because the *design* of a sub-scope is generally a prerequisite for any implementation work to begin coherently, and parent review at design-done can catch scope misunderstandings before substantial implementation effort is invested. Some projects may collapse the two milestones (a delegate proceeds straight through both with one combined handback) when the design is small or trivial; the constitution treats them as distinct milestones by default.
 
 ### 10A.6 Coordination among parallel delegates
 
@@ -696,26 +786,63 @@ When the workflow encounters a candidate module that could be shared:
    designs depend on the module's contract.
 ```
 
-**Ownership models for shared modules.** A shared module's ownership may be structured in one of several ways; the choice is itself a decision (§9) and should be recorded in the module's contract.
+**Primary parenthood — most-significant dependence rules ownership.** A shared module has a **primary parent**: the parent contract whose dependence on the module is most significant (highest impact, most relevant context for evaluating module changes). The primary parent owns the module's contract and arbitrates change requests from other dependents.
+
+The most-significant-dependence rule is a recommendation, not a hard procedure. It says: among the contracts that depend on the shared module, the one most affected by the module's behavior — the one whose own scope would be most disrupted if the module changed — is the right place for ownership authority to sit. That parent has the strongest context for deciding what changes are acceptable.
+
+**Transferability of primary parenthood.** Primary parenthood may transfer from one parent contract to another over a project's life. As the project evolves, the most-significant-dependent may change; the transfer is recorded as a Decision per §9 with rationale (e.g., *"primary parenthood of M-XXXX transfers from F-A to F-B because B's scope now exercises M-XXXX in ways A's does not"*).
+
+**Ownership transfer is always parent-to-parent — never to the module's own delegate.** Ownership remains with a contract role at a level of the architecture tree that has the proper scope and context to make decisions about the module *in light of the other elements at that level*. A module's delegate has authority over the module's *implementation*, never over its *contract*. Transferring contract ownership downward to the delegate would dissolve the boundary between contract authority and implementation authority that the contract concept exists to maintain.
+
+The eligible recipients of an ownership transfer are other parent contracts in the architecture tree — typically, sibling parents at the same level as the current owner (when dependence has shifted between siblings), or the parent of the current owner (when the module's relevance has expanded beyond the current owner's scope). In rare cases ownership may transfer further up to a grandparent or higher.
+
+**Validation rights of dependents.** When any dependent requests a change to a shared module, **all** dependents have validation rights. Each must respond — accepting the change, raising their own change request, or pursuing an alternative:
 
 ```text
-- Single owner. One delegate owns the shared module's contract
-  and implementation. Consumers raise change requests to the
-  owner if they need amendments. Simplest model; appropriate
-  when the module's design is stable and one delegate has the
-  expertise.
+- Accept. The change is applied; the dependent updates its own
+  contract or implementation as needed.
 
-- Coordinator owner. One delegate has nominal ownership but acts
-  as a coordinator among multiple stakeholders (consumers and
-  contributors). Change requests go to the coordinator who runs
-  alignment with stakeholders before approving. Appropriate
-  when the module's contract is still evolving and consumer
-  needs vary.
+- Fork. The dependent severs from the shared module and creates
+  its own version (a §30A class-1 change to the dependent's
+  reference: the relationship to the original is replaced rather
+  than revised). Forking is a strong move; it removes the
+  consistency benefit of sharing and doubles maintenance burden,
+  but is appropriate when the dependent's needs have genuinely
+  diverged from the shared module's primary use cases.
 
-- Multiple co-owners. Two or more delegates share ownership.
-  Change governance applies — major changes require the consent
-  of all co-owners. Most coordination cost; reserved for modules
-  where governance authority must genuinely be shared.
+- Recommend splitting. If the change request reveals that the
+  shared module is taking on multiple distinct roles that should
+  be separated — i.e., the module's cohesion has decayed — the
+  dependent recommends splitting the module into separate
+  modules with their own contracts and primary parents. Splitting
+  is itself a decomposition decision per §10A.2 applied to the
+  shared module's existing scope.
+```
+
+The validation right ensures that no single consumer's needs override the others' silently. Reuse depends on consensus among consumers; the right to fork or recommend splitting is the safety valve when consensus cannot be reached.
+
+**Detection of role accumulation.** A shared module that accumulates roles becomes a "kitchen sink" — a single module with several distinct purposes that should have been separate. The detection criterion is the same as §7's *cohesion* criterion: if the module's role can no longer be described in one cohesive sentence, splitting is a candidate. Periodic review of shared modules for cohesion is good hygiene.
+
+**Sub-contracts within a shared module.** A shared module's primary parent may further decompose the shared module's scope per §10A.2. The module's *external interface* (what dependents see) is the primary-parent-level concern; *internal structure* is the delegate's. Internal sub-contracts of the shared module are not visible to the module's dependents.
+
+**Ownership-implementation models.** Within the primary-parent rule above, the *implementation* arrangement may follow one of several models; the choice is itself a decision (§9) and should be recorded in the module's contract:
+
+```text
+- Single delegate. The primary parent assigns one delegate. The
+  most common case for stable, well-understood modules.
+
+- Coordinator delegate. The primary parent assigns one delegate
+  who serves as a coordinator among contributors (which may
+  include personnel from other dependents' teams). Change
+  requests still flow to the primary parent for governance, but
+  the coordinator drives alignment among contributors.
+
+- Multiple co-delegates. Two or more delegates share
+  implementation responsibility under the same primary parent's
+  governance. Change governance applies — major changes need
+  consent of all co-delegates. Most coordination cost; reserved
+  for modules where implementation authority must genuinely be
+  shared (rare).
 ```
 
 **The duplication-avoidance discipline.** Symmetrically: a delegate considering implementation of a module that *might* be useful elsewhere in the project should announce it as a candidate shared module (in a form discoverable by the tool's project-wide search) before building. The cost is a brief moment of broadcasting; the benefit is preventing parallel duplicate implementations that have to be reconciled later.
@@ -729,6 +856,62 @@ New (reuse-first):    "What do I need? -> Does it exist? Is it
                        not, and announce what I'm building so
                        others can find it."
 ```
+
+### 10A.10 Last Responsible Moment
+
+Decisions about implementation should be deferred to the **latest level and latest time** at which the decision is actually needed. Higher-level contracts and architecture should describe scope and constraint *without committing* to lower-level implementation choices that should be made by the delegate at the appropriate level.
+
+The benefit is **maximum flexibility and minimum premature constraint**. When a decision must be made, the maximum amount of information is available, and earlier decisions have not pre-committed the lower level to specific approaches that may later prove suboptimal. The detail gradient of the architecture tree naturally follows: project-root contracts are abstract; leaf contracts are concrete; the gradient sharpens with depth.
+
+This is **not procrastination**. The decision is made *when its time comes* — driven by the design loop's progression — not before. The principle is "do not make decisions before they are needed," not "do not make decisions."
+
+The principle interacts directly with two others:
+
+- *AI agents must not make assumptions* (§3.2). When a parent's contract is silent on a lower-level concern, the delegate does not invent an answer. The delegate either applies the loop in their scope to derive one through proper artifacts, or raises the question if it depends on the parent's authority.
+- *Reference stability in contract prose* (§10.1). Higher-level contracts cite decisions and requirements rather than embedding specific implementation choices, so deferred decisions remain deferable until they are actually made.
+
+A practical consequence: a parent-authored contract typically *does not* specify the delegate's interface methods, internal structure, or implementation choices — those are the delegate's design work. The parent specifies the *role*, the *scope*, the *requirements that must be satisfied*, and the *constraints that must be honored*. The delegate produces the rest, going through the §3.2 loop within their scope.
+
+### 10A.11 Contracts Evolve
+
+A contract authored at decomposition time is a *draft* that captures the parent's understanding of the sub-scope's role at the moment of decomposition. As the delegate (and any further delegates of theirs) proceed through their iterations, they will surface obstacles, needs, and constraints that the original contract did not anticipate. **The contract is expected to be revised — sometimes many times — as the design progresses.**
+
+Contract revisions follow §13 change governance and §30A classification:
+
+```text
+- Minor refinements preserving the contract's role and objective
+  are *revisions* (class-2). The contract retains its identifier;
+  its version increments.
+
+- Material changes to the contract's role or objective are
+  *replacements* (class-1). A new contract with a new identifier
+  replaces the original; the original is preserved as superseded.
+```
+
+Repeated revision is **normal, not pathological**. A contract may go through many drafts during its scope's design — that is the design process working as intended.
+
+Revisions may also be triggered by *change requests from the delegate*. When a delegate determines that fulfilling their contract requires an amendment to the contract itself, they raise a change request to the parent rather than proceeding under an unstated assumption (per §3.2 *AI agents must not make assumptions*). The parent's response is itself a Decision recorded per §9: accept, reject, or modify the requested change with rationale (per §10A.2 step 5).
+
+The expected pattern: an early contract is sparse and abstract; subsequent revisions add concreteness as lower-level work surfaces what is needed. By the time implementation-done is reached (per §10A.5), the contract's *Provided Interface* and *Required Interface* fields have been populated by the delegate's own design work and accepted by the parent.
+
+### 10A.12 Delegate Reporting
+
+Delegates report up to the parent **when there is something to report**. Reporting is **event-driven, not time-based**:
+
+```text
+- A question that requires the parent's answer (open question per
+  §15A or clarification per §9).
+- A change request that affects the contract's boundary or
+  another contract's scope (per §13 and §10A.11).
+- A handback at the design-done or implementation-done milestone
+  (per §10A.5).
+- A risk or assumption that escalates to the parent's level (per
+  §15.1 — owner-of-scope addresses every assumption).
+```
+
+Between these events, the delegate proceeds without reporting. Continuous status reporting (e.g., daily standups regardless of need) is **not** a requirement of this process; individual projects may add it as a practice, but it is not part of the constitutional discipline.
+
+When a delegate produces **artifacts that may be reusable across the project** — modules, decisions, contracts, catalog entries, role vocabulary additions — these become available to the project's search and discovery layer (per the project's REQ-0330-style discoverability requirements). Other delegates can find and consider them for reuse rather than re-deriving the same work. The reporting cadence here is automatic — the act of recording the artifact in the project tooling makes it discoverable; the delegate does not need to *announce* it explicitly.
 
 ## 11. Architecture Tree
 

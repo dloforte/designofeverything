@@ -38,7 +38,34 @@ Every requirement should have:
 - One or more verification methods (or a recorded justification if intentionally unverified)
 ```
 
-A good design expects every requirement to be verified at some level. Common verification methods are **analysis**, **testing**, **inspection**, and **demonstration**. The method appropriate to a given requirement depends on its character: behavioral requirements are typically tested; structural or interface requirements are inspected; mathematical or property-based requirements are analyzed; end-to-end objectives are demonstrated. A requirement that is intentionally not verified should record a justification for the waiver, so the absence of verification is itself an explicit decision.
+A good design expects every requirement to be verified at some level. The standard set of verification methods, drawn from systems-engineering practice (see, e.g., the NASA Systems Engineering Handbook; the INCOSE Systems Engineering Handbook; ISO/IEC/IEEE 15288), is **IATD**:
+
+```text
+- Inspection   — examining the artifact (often visually or by
+                 review) against defined criteria. Suited to
+                 structural, interface, or static-property
+                 requirements.
+
+- Analysis     — deriving the verification result through
+                 calculation, modeling, simulation, formal
+                 reasoning, or static analysis. Suited to
+                 mathematical, property-based, or
+                 difficult-to-test requirements.
+
+- Test         — exercising the artifact under controlled inputs
+                 and observing outputs against defined expected
+                 results. Suited to behavioral requirements.
+
+- Demonstration — operating the artifact in a representative
+                  setting and confirming end-to-end behavior.
+                  Suited to user-journey and end-to-end objectives.
+```
+
+For software projects specifically, the **primary tool is automated test** — most behavioral requirements admit test-based verification, and automated tests are the most efficient path to repeatable verification. Inspection (code review, static analysis tooling), analysis (formal verification, type checking, property-based testing), and demonstration (end-to-end user-journey playthroughs) remain valid for cases test does not cover.
+
+Each requirement may have one or more verification methods assigned. A requirement that is intentionally not verified should record a justification for the waiver, so the absence of verification is itself an explicit decision.
+
+Verification methods are typically assigned at the **design-done** milestone of the contract that owns the requirement (per constitution §10A.5), and verification is performed at the **implementation-done** milestone.
 
 ## 3. Requirement Classification
 
