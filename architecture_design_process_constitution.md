@@ -453,6 +453,51 @@ This pattern is borrowed from QOC (Questions, Options, Criteria; MacLean et al.,
 
 The form is not mandatory for trivial decisions (one option, no real comparison), but is the recommended default whenever options are genuinely being compared.
 
+**Criterion selection happens first** (per PO-17). Before constructing the matrix or evaluating options, the analyst identifies **what matters for this decision** — the criteria the options should be graded against. Then weights are assigned (if criteria differ materially in importance), pre-committed before scoring. Only then are options scored.
+
+The criterion-selection step is a distinct phase that has been underweighted in practice; the discipline is explicit:
+
+```text
+1. What matters for this decision (criteria) is drawn from:
+   - The requirements + objectives the decision must fulfill.
+   - Load-bearing artifacts (§10.5) — but only when they
+     discriminate for THIS decision. Load-bearing status does
+     not automatically include the artifact as a criterion.
+   - Decision-local concerns specific to this decision.
+
+2. Criteria are NOT carried forward from prior decisions by
+   default. Each decision audits its own criteria. Criteria
+   that mattered for a previous decision may or may not matter
+   for this one; the analyst checks.
+
+3. Weights are pre-committed (per §9.2 when criteria differ in
+   importance; otherwise treated as equal).
+
+4. THEN options are scored against the criteria.
+
+5. If no clear winner emerges, examine what differentiates
+   contenders — surface latent criteria honestly (per the
+   matrix-readability paragraph below), invoke tie-breaking
+   questions (§3.2), or apply §9.2 weighted evaluation.
+```
+
+The discipline distinguishes two structurally-different concerns:
+
+```text
+LOAD-BEARING ARTIFACTS (§10.5):
+  Ever-present constraints. Audited at every decision — but
+  only INCLUDED as criteria if they discriminate for the
+  decision at hand.
+
+CRITERIA FOR THIS DECISION (§9.1):
+  Dimensions chosen because they matter for THIS decision's
+  grading. Drawn from requirements + objectives + (relevant)
+  load-bearing items + decision-local concerns. NOT carried
+  forward by default.
+```
+
+A useful analogy: criteria for "how many bolts on a wheel" are not the same as criteria for "interior color offerings." Some criteria do transfer when they apply broadly (e.g., "must support the luxury-vehicle positioning") — but most criteria are decision-local and should not be padded into unrelated decisions. The criteria for each decision should be chosen based on what will help differentiate the available options relative to the requirements and objectives that the choice is attempting to fulfill.
+
 **Matrix readability.** The recommendation produced by an option-criterion evaluation should be **readable from the matrix on its own**. Cell scores should make the recommendation visible: the recommended candidate either strictly dominates (per §3.2 hybrid-dominance check) or its advantage is captured by the criteria the matrix records. If the recommendation does not follow visibly from the cell scores and the analyst is bridging the gap with prose synthesis, that gap is a signal — *not* that the recommendation is right despite the matrix, but that the matrix is missing or mis-defining a criterion.
 
 When the analyst sees this gap, the disciplined moves are, in order:
