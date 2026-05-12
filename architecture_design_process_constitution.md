@@ -453,6 +453,66 @@ This pattern is borrowed from QOC (Questions, Options, Criteria; MacLean et al.,
 
 The form is not mandatory for trivial decisions (one option, no real comparison), but is the recommended default whenever options are genuinely being compared.
 
+**Matrix readability.** The recommendation produced by an option-criterion evaluation should be **readable from the matrix on its own**. Cell scores should make the recommendation visible: the recommended candidate either strictly dominates (per §3.2 hybrid-dominance check) or its advantage is captured by the criteria the matrix records. If the recommendation does not follow visibly from the cell scores and the analyst is bridging the gap with prose synthesis, that gap is a signal — *not* that the recommendation is right despite the matrix, but that the matrix is missing or mis-defining a criterion.
+
+When the analyst sees this gap, the disciplined moves are, in order:
+
+```text
+1. Check whether an existing criterion is MIS-FRAMED rather
+   than missing. Many "missing criteria" are actually existing
+   criteria with imprecise definitions that conflate distinct
+   costs or capabilities. Reframing the criterion (e.g.,
+   splitting "coordination cost" into "wasted coordination"
+   vs. "necessary coordination") often resolves the apparent
+   gap without adding criteria.
+
+2. If a genuinely latent criterion exists — a dimension the
+   analyst was implicitly weighing but had not yet made
+   explicit — surface it as a new criterion. Define it
+   independently of the candidates; score every candidate
+   against it. The matrix is re-read with the new criterion in
+   place.
+
+3. If no honest reframe or new criterion resolves the gap,
+   invoke §3.2 tie-breaking questions explicitly. Surface the
+   trade-off to the owner rather than burying it in prose. A
+   matrix that does not produce a visible recommendation, and
+   for which no legitimate criterion revision resolves the
+   case, is exactly the case §3.2 tie-breaking is designed
+   for.
+```
+
+**Guarding against criterion-gaming.** The latitude to revise criteria mid-evaluation invites a failure mode: *manufacturing* a criterion whose definition exists only to promote a predetermined recommendation. This must be guarded against, because a "rule of revision" without discipline collapses the matrix's purpose entirely.
+
+The distinction is between **surfacing latent criteria that were not fully recognized before** (legitimate) and **creating criteria such that a specific option is promoted** (illegitimate). Three heuristics for distinguishing the two when revising criteria during evaluation:
+
+```text
+1. Pre-commitment test. Write the criterion's definition and
+   the scoring rubric BEFORE re-scoring any candidate. If the
+   definition is hard to express without naming the favored
+   option ("the property X has and Y doesn't"), the criterion
+   is probably gamed.
+
+2. Hypothetical-alternative test. Imagine a candidate not yet
+   on the table. Would it score consistently against the new
+   criterion using the same definition? If the criterion has
+   clear non-trivial scoring outcomes for unseen candidates,
+   it is probably genuine. If it only resolves the case for
+   the favored candidate, it is probably gamed.
+
+3. Reframe-vs-add preference. Before adding a new criterion,
+   check whether an existing one is mis-framed. Reframing
+   exposes hidden distinctions in dimensions already
+   identified; adding introduces new dimensions. Reframing is
+   the cleaner first move when the apparent gap traces to
+   imprecise definition. Adding is justified when a genuinely
+   distinct dimension is involved.
+```
+
+A revision that meets these tests — a criterion definable without naming the favored candidate, applying with clear scoring to alternatives the analyst had not considered, and either reframing an existing criterion honestly or introducing a genuinely new dimension — is legitimate. A revision that fails them is gaming and should be rejected.
+
+The discipline ensures that the matrix remains a *test* of whether a recommendation is well-founded, not a *theater* in which any recommendation can be justified by clever criterion framing.
+
 ### 9.2 Weighted Evaluation via Swing-Weight Matrix (optional refinement)
 
 When the option-criterion evaluation in §9.1 involves criteria of genuinely different importance, and the positive/negative/neutral shorthand is insufficient to distinguish strong from weak signals, the project may use **weighted evaluation**. INCOSE practice for this is the **swing-weight matrix** ([Parnell & Trainor 2009, INCOSE International Symposium](https://www.incose.org/resource/2-3-1-using-the-swing-weight-matrix-to-weight-multiple-objectives/)).
