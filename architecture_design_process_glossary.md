@@ -673,6 +673,9 @@ The bounded context delivered to a **delegate** (§27A) when a contract is assig
 ```text
 - The contract itself (the §21 fields).
 - The current version of the constitution and glossary.
+- The project's load-bearing artifacts index (constitution
+  §10.5). These artifacts must remain ever-present during the
+  delegate's iteration.
 - The parent's artifacts that the contract references, plus those
   the delegate must read to understand the contract's context
   (transitively reachable via reference roles per §1A).

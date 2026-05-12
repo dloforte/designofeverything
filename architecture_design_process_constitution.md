@@ -666,6 +666,40 @@ Specific implementation choices may still appear directly in lower-level contrac
 
 This principle is closely related to *Last responsible moment* (§10A.10): higher-level contracts are necessarily more abstract; concrete implementation choices belong at the lowest level where the choice is binding, and references in higher-level contracts should reflect that.
 
+**Reference stability extends to concept stability.** The principle stated above applies not only to *references* (citing decisions rather than naming choices) but to the *vocabulary and concepts* used in upper-layer artifacts. An upper-layer contract, decision, or change request must not name specific backend constructs, data-store-specific syntax, or implementation-level terms in prose — these belong at the implementation layer. Upper-layer artifacts use the abstraction's vocabulary; backend-specific terms appear only in the artifacts whose scope is the backend itself.
+
+```text
+Two failure modes the discipline guards against:
+
+1. REFERENCE drift — upper-layer contract names "Datomic" or
+   "PostgreSQL" directly rather than citing the data-model
+   decision. If the data-model choice is later revised, every
+   such reference must be hunted down.
+
+2. CONCEPT drift — upper-layer contract describes behavior using
+   backend-specific vocabulary (specific attribute namespaces,
+   transaction primitives, query languages, etc.). Even with
+   correct references, the surrounding prose embeds
+   implementation choices that should be at the implementation
+   layer.
+
+The discipline mitigates both: cite decisions for references;
+use abstraction-level vocabulary in concepts; let implementation
+specifics live in the layer whose scope is the implementation.
+```
+
+When a decision spans layers — for example, a higher-level
+delegate decision whose recommendation is informed by a
+backend's specific characteristics — record the recommendation
+at the abstraction level (the pattern, expressed in domain
+terms), and present the backend-specific mapping as a separate,
+explicitly-labeled section. If the underlying decision (e.g.,
+the data-model backend) is later revised, the abstraction-level
+recommendation typically still holds; the mapping changes.
+
+This discipline is operationalized via the **load-bearing
+artifacts** mechanism (§10.5).
+
 ### 10.2 The Contract Is the Parent's Specification of the Delegate's Scope
 
 The contract is fully the **parent's** specification of the delegate's scope. The delegate **cannot** modify the contract; only the parent can. The contract defines the boundary within which the delegate has freedom and outside which they have none.
@@ -775,6 +809,51 @@ For **non-trivial derivations** — where alternatives exist for what the requir
 
 The rule: requirements are not exempt from §8.1's justification-quality discipline. Requirements *are* the artifacts §8.1 is designed to ensure are well-grounded. Adding a requirement without justification is the same error as adding any other design choice without justification.
 
+### 10.5 Load-Bearing Artifacts Remain Ever-Present
+
+Some artifacts in a project have **cross-cutting, structural impact** — every contract, decision, and iteration of the design loop must honor them. Cross-cutting requirements, foundational decisions, meta-disciplines surfaced by process observations, and load-bearing constitution sections all fit this description. Without explicit recurring visibility, these artifacts are easily drifted from: the project commits to a discipline, then quietly violates it iterations later when the discipline has faded from active consideration.
+
+The process recognizes a class of **load-bearing artifacts** that:
+
+```text
+- Have cross-cutting, structural impact (every contract / many
+  decisions are constrained by them).
+
+- Are easy to drift from in practice (drift produces
+  cumulative violations, not single-point errors).
+
+- Benefit from explicit recurring visibility during every
+  iteration rather than relying on memory.
+```
+
+The project maintains a curated **load-bearing artifacts index** (typically a single file in the project's working area; for projects implementing this process via the tool the canonical location is `tool/load_bearing.md` or equivalent). The index lists each load-bearing artifact with:
+
+```text
+- Reference — the canonical artifact (REQ-NNNN, DEC-NNNN,
+  §X.Y of constitution / glossary, PO-NN).
+- Statement — one-sentence summary.
+- Why load-bearing — the cross-cutting impact warranting
+  recurring visibility.
+- Audit guidance — what to check at each iteration / decision /
+  contract draft. The audit guidance is what makes the entry
+  actionable.
+```
+
+**Visibility obligations**. The load-bearing artifacts index is:
+
+- Included in every delegate's handoff package per §10A.3.
+- Consulted at every fulfillment check (§3.2) before a new
+  decision is opened.
+- Consulted at every contract draft / refinement before
+  approval is sought.
+- Consulted at every change-request evaluation per §13.
+
+**Adding / removing load-bearing status**. Adding an artifact to the load-bearing index is itself a Decision per §9 — load-bearing status is a governance choice. Removal likewise. The list grows as the project discovers which commitments warrant recurring visibility; it does not start exhaustive.
+
+**Relationship to the cross-cutting-requirements concept (§7, PO-12)**. Cross-cutting requirements apply to many sub-contracts. Load-bearing artifacts are similar but broader: they include cross-cutting requirements, but also load-bearing decisions, meta-disciplines, and constitution / glossary sections. The load-bearing index is the operational mechanism for keeping all such artifacts ever-present.
+
+**Anti-failure-mode**. PO-16 surfaced the failure mode this section addresses: the project committed to backend-abstraction discipline (REQ-0270 + §10.1) early, then quietly violated it in three subsequent decisions because the discipline had faded from active consideration. The load-bearing artifacts mechanism is the project's structural response — recurring visibility prevents the drift.
+
 ## 10A. Decomposition and Delegation Workflow
 
 The contract concept of §10 enables this process's *primary mode* of operation: **decomposing a scope into bounded sub-scopes, drafting a contract for each, and delegating the work — to separate workers (human or AI), in parallel where possible — under contracts that prevent design drift**. This section specifies the workflow connecting §10 (contracts as boundary objects) to §11 (the architecture tree as structure).
@@ -850,6 +929,10 @@ When a contract is assigned and approved, the delegate receives a **handoff pack
 ```text
 - The contract itself (full §10 / glossary §21 fields).
 - The current version of the constitution and glossary.
+- The project's load-bearing artifacts index (§10.5). These
+  artifacts must remain ever-present during the delegate's
+  iteration; the handoff package surfaces them explicitly so
+  they are not relied on by memory.
 - The parent's artifacts that the contract references, plus those
   the delegate must read to understand the contract's context
   (transitively reachable via reference roles per glossary §1A
