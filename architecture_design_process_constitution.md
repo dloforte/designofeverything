@@ -453,6 +453,37 @@ This pattern is borrowed from QOC (Questions, Options, Criteria; MacLean et al.,
 
 The form is not mandatory for trivial decisions (one option, no real comparison), but is the recommended default whenever options are genuinely being compared.
 
+### 9.2 Weighted Evaluation via Swing-Weight Matrix (optional refinement)
+
+When the option-criterion evaluation in §9.1 involves criteria of genuinely different importance, and the positive/negative/neutral shorthand is insufficient to distinguish strong from weak signals, the project may use **weighted evaluation**. INCOSE practice for this is the **swing-weight matrix** ([Parnell & Trainor 2009, INCOSE International Symposium](https://www.incose.org/resource/2-3-1-using-the-swing-weight-matrix-to-weight-multiple-objectives/)).
+
+The swing-weight matrix assigns weights to criteria along **two axes**:
+
+```text
+- Importance — whether the criterion measures a *defining*,
+               *critical*, or *enabling* function. Defining
+               criteria distinguish the option set from
+               non-options; critical criteria are essential to
+               acceptable performance; enabling criteria support
+               but do not define.
+
+- Variation  — the gap between the current capability of the
+               worst-acceptable option and the best-available
+               option on this criterion. Wider variation gets
+               more weight, because the criterion discriminates
+               more among the options being compared.
+```
+
+The highest-importance × highest-variation criterion is the **anchor**: it receives an un-normalized weight of 100 (placed in the upper-left corner of the swing-weight matrix). Other criteria are placed in the matrix and assigned weights relative to the anchor. The weights are then normalized so they sum to 1 (or 100%).
+
+Once weights are assigned, each option's score on each criterion (converted from +/−/~ to a numeric scale — e.g., +1 / −1 / 0, or a finer 5- or 7-point scale) is multiplied by the criterion's weight. The sum is the option's overall score. The option with the highest score is the matrix-recommended choice.
+
+When swing-weight evaluation is used, both the swing-weight matrix (showing how weights were assigned) and the resulting scored matrix (showing each option's overall score) should be recorded in the decision (§9). The verbal-style §9.1 matrix may still be recorded alongside as a readability aid.
+
+**When to use swing-weight rather than plain §9.1**: when the choice is contested, when the criteria genuinely vary in importance, or when the decision must be defended to external reviewers (regulatory, customer, audit). The plain §9.1 matrix is sufficient for most ordinary decisions; swing-weight is the formal escalation when the case requires it.
+
+Insight from INCOSE practice: weights depend on **both importance and variation**. A criterion that all options score the same on does not discriminate even if it is very important; a criterion with wide variation discriminates strongly even if its absolute importance is modest. The swing-weight technique forces this duality to be considered explicitly rather than implicitly conflating the two.
+
 ## 10. Architecture Contracts
 
 Architecture is governed through contracts.
@@ -532,11 +563,104 @@ The contract does **not** specify the delegate's *internal* structure — implem
 
 A contract may be deliberately abstract in places when the parent has not yet determined the specifics. The *Provided Interface* and *Required Interface* fields of the contract template, in particular, are often left abstract or constraint-level at decomposition time — the parent specifies what the interface must accomplish ("must support persisting artifacts under transactional ACID guarantees per REQ-XXXX") without committing to specific signatures.
 
+**Two distinct cases of unspecified contract sections.** Not every unspecified section follows the same trajectory:
+
+```text
+- "Eventually concrete here" sections. The section's specifics
+  are consumed by a sibling contract, an external party, or a
+  cross-cutting concern. The specifics MUST eventually become
+  concrete at this contract's level (initially abstract; refined
+  as the delegate's design surfaces them; the parent updates the
+  contract via change governance per §10A.11). Typical examples:
+  *Provided Interface* (what siblings call), *Required Interface*
+  (what this contract calls on shared modules).
+
+- "May remain light or empty at this level" sections. The
+  section's specifics are entirely internal to the sub-tree below
+  this contract. No sibling, no external party, no cross-cutting
+  concern needs them at this level. They are resolved entirely in
+  the delegate's own sub-contracts. Typical examples: internal
+  data structures, internal interfaces between this contract's
+  sub-contracts, implementation strategies.
+```
+
+When drafting or refining a contract, the parent asks for each potentially-unspecified section:
+
+```text
+1. Does any sibling contract or external consumer need this
+   specified at this level to coordinate with the delegate's
+   work?
+2. Does the project as a whole (cross-cutting concerns, audit,
+   integration requirements) need this specified at this level?
+
+If YES to either:
+   The section is "eventually concrete here." Mark abstract
+   initially; refine as the delegate's design surfaces specifics.
+
+If NO to both:
+   The section "may remain light at this level." The specifics
+   live entirely in the delegate's sub-contracts and need not
+   surface at this contract's level. The section may stay light,
+   empty, or carry a brief note saying so.
+```
+
+The default for higher-level contracts is to **leave sections light unless a concrete reason requires specifying them**. This is *last responsible moment* (§10A.10) applied at the section level.
+
 When the delegate's work surfaces a need for greater specificity in the contract — for example, the delegate has designed concrete interface signatures and the dependents need to know them, or the delegate has discovered a requirement the contract did not anticipate — the delegate raises a **change request** to the parent (per §13 and §10A.11). The change request typically *proposes* the specifics. The parent reviews the proposal and decides; if the parent accepts, the parent **updates the contract** to reflect the new specifics. The change is recorded as a Decision per §9 and the contract's version increments.
 
 The asymmetry — *parent updates contract; delegate proposes via change request* — is a fundamental rule of this process. The delegate's design output is real engineering work, but it does not become *part of the contract* until the parent has accepted and recorded the update. This preserves the contract's role as the boundary of authority: the parent owns the contract; the delegate works within it.
 
 In the typical lifecycle, contract specificity *increases over time*: the contract starts abstract; the delegate's work surfaces specifics; the parent refines the contract via change requests; eventually the contract is concrete enough for implementation against. By the implementation-done milestone (§10A.5), the contract reflects the actual interfaces the delegate has built, having been refined through this loop.
+
+### 10.3 Contract Content Traces to Requirements
+
+Every item recorded in a contract — anything in *Owns*, *Inputs*, *Outputs*, *Constraints*, *Provided Interface*, *Required Interface*, or any other field that asserts what the delegate is responsible for or governed by — must trace to one or more **requirements** (or to a decision that itself traces to requirements). The contract is a vehicle for *allocating requirements to a scope*, not for inventing responsibilities.
+
+If a contract author finds an item they want to record but cannot trace to a requirement, the response is **not** to add the item on the contract's authority. The response is one of:
+
+```text
+1. Stop and consider whether the item indicates a need for a
+   derived requirement the project has not yet recognized.
+
+2. If yes, either:
+   (a) Pause contract drafting to go through the requirement-
+       addition process (§10.4); when the new requirement is
+       accepted, add the contract item with explicit trace to it.
+
+   (b) Mark the item in the contract with a "pending decision"
+       annotation referencing what the open requirement question
+       is, and proceed with the rest of the contract drafting.
+       Pending items must be resolved before the contract reaches
+       the approved lifecycle state. When the resolution comes,
+       the pending annotation is replaced with either a trace to
+       the new requirement (if accepted), or the item is removed
+       from the contract (if the consideration concluded against
+       adding a requirement).
+
+3. If consideration concludes immediately that no requirement is
+   justified, the item is simply not added.
+```
+
+Option (b) is the typical workflow for contract authors who want to keep momentum: pending decisions surface as a tracked to-do list, and the contract is finalized when they are resolved. The constitution does not require contract authors to halt mid-draft for every item that surfaces a requirement question.
+
+This rule preserves the constitution's foundational principle: **requirements drive design**. Contract content that does not trace to requirements is design authority that has bypassed the requirements gate.
+
+### 10.4 Adding Derived Requirements Is Itself a Decision
+
+When the design process surfaces a need that justifies a new derived requirement — whether through a delegate's change request, a contract author's discovery, a decision's downstream consequence, a research finding, or a clarification from the owner — **adding the requirement is itself a decision** recorded per §9.
+
+The decision evaluates:
+- Whether a new requirement is justified, or whether the need is already covered by an existing requirement (interpreted appropriately).
+- The proposed statement of the requirement.
+- The parent requirement(s) from which it derives.
+- Alternatives considered (if any) for how the requirement could have been stated, narrowed, or broadened.
+- The justification per §8.1 (no typicality-only; logical fit to project objectives).
+
+For **trivial derivations** — where the derived requirement is obviously implied by the parent and no alternatives plausibly exist (e.g., REQ-0010 "the tool shall represent a requirements tree" derived from REQ-0000 "provide a software tool that supports a requirements-constrained design process") — the decision may be abbreviated. The requirement's `Origin` field records the parent and a brief justification; no separate decision artifact is needed.
+
+For **non-trivial derivations** — where alternatives exist for what the requirement should be, where the requirement constrains design in non-obvious ways, or where the requirement is contested — a full §9 decision record is created, with §9.1 option-criterion evaluation if alternatives were genuinely considered. The requirement's `Origin` field references the decision.
+
+The rule: requirements are not exempt from §8.1's justification-quality discipline. Requirements *are* the artifacts §8.1 is designed to ensure are well-grounded. Adding a requirement without justification is the same error as adding any other design choice without justification.
 
 ## 10A. Decomposition and Delegation Workflow
 
@@ -913,9 +1037,45 @@ Between these events, the delegate proceeds without reporting. Continuous status
 
 When a delegate produces **artifacts that may be reusable across the project** — modules, decisions, contracts, catalog entries, role vocabulary additions — these become available to the project's search and discovery layer (per the project's REQ-0330-style discoverability requirements). Other delegates can find and consider them for reuse rather than re-deriving the same work. The reporting cadence here is automatic — the act of recording the artifact in the project tooling makes it discoverable; the delegate does not need to *announce* it explicitly.
 
+### 10A.13 Decomposition Is Bounded by Fitness for Implementation
+
+A risk in any decomposition-as-primary process: each level may defer to a lower level, and the lower level to a still-lower level, producing an unbounded recursion in which no level ever reaches implementation. *Last responsible moment* (§10A.10) and *contracts evolve* (§10A.11) both encourage deferring — without counter-pressure, deferring forever is a real failure mode.
+
+The constitution prevents this through several reinforcing mechanisms:
+
+**1. The mode-selection question gates every decomposition.** §10A.1 says decomposer mode is selected when sub-areas admit *independent development*. The converse is the bound: when the current scope is small enough and well-understood enough that a single worker (human or AI) can implement it directly, **implementer mode is the right choice, not decomposer mode**. The mode-selection question at every iteration is itself a check against unnecessary decomposition.
+
+**2. The fitness-for-implementation check.** Before electing decomposer mode at any iteration, the parent asks:
+
+```text
+Could this scope be implemented now by a single worker if we
+just assigned it directly?
+```
+
+If yes, decomposer mode is over-engineering. Implementer mode is the right choice. Decomposing for the sake of decomposing produces accidental complexity and delays implementation. When in doubt, prefer implementer mode.
+
+**3. Implementation-done milestone forces actual artifact production.** §10A.5 requires that implementation-done produce verified implementation (per the IATD set in glossary §2 and the project's REQ-0160-style verification recording). A contract that never reaches implementation-done has not satisfied its parent's requirements. This applies at every level, including leaves. Decomposing without producing implementation at the leaves is a failure to fulfill requirements, not a successful decomposition.
+
+**4. The driving question keeps asking.** §3.2's driving question — *Are all requirements fulfilled?* — keeps repeating each iteration. A project that decomposes without progressing toward fulfillment never gets a YES from the driving question. The driving question is the recurring alarm that the strategy is wrong if no progress is being made.
+
+**5. Periodic architecture-tree review.** The project owner periodically reviews the architecture tree for depth and progress. Contracts that have been in `in-design` for an extended period without progressing to `implementing` (per the project's REQ-0290-style lifecycle) are candidates for review: is the contract's scope unnecessarily large? Is the delegate stuck on a sub-decision that should be elevated? Is decomposition into smaller and smaller sub-scopes happening without corresponding implementation?
+
+**The forcing function in summary.** Decomposition is a *means*; *fulfillment of requirements* is the *end*. The end is enforced by implementation-done at the leaves, by the driving question's repeated check, and by the parent's responsibility to verify progress. Decomposition that does not lead toward implementation is decomposition that is failing its purpose.
+
+**Practical guidance.** When in doubt about whether to decompose further, prefer implementer mode. Decomposition produces sub-contracts that must be authored, approved, delegated, designed, implemented, and verified — substantial overhead. Implementer mode produces implementation directly. The cost of unnecessary decomposition is real and visible (delayed implementation, more artifacts to maintain, more coordination); the cost of "I'll just build it" at a slightly-large scope is usually less than the cost of unnecessary decomposition.
+
+Related industry practice: this principle parallels several established techniques — YAGNI ("you aren't gonna need it") from XP/Agile, the "walking skeleton" pattern that forces end-to-end implementation early, and INCOSE's design-review gates (SDR, PDR, CDR) that require demonstrated implementation progress at each phase. See RI-0050 for the broader systems-engineering context.
+
 ## 11. Architecture Tree
 
 The **architecture tree** decomposes the system into contracts, components, modules, subsystems, and submodules. It is the structural artifact produced by repeated application of the decomposition workflow (§10A) at successive levels of detail.
+
+The architecture tree is **one** of several tree-shaped or graph-shaped structures in a project — not the only one. The project also has:
+
+- The **requirements tree** (§3) — root-level requirements at the top, derived requirements branching downward via derivation links.
+- The **artifact-derivation graph** — the broader set of references and dependencies among artifacts (decisions reference requirements; contracts reference decisions and requirements; sub-contracts reference parent contracts; catalog entries are referenced by decisions; etc.). Strictly a directed acyclic graph (DAG) because shared modules (§10A.9) and cross-cutting requirements create multiple incoming references.
+
+When this constitution uses the phrase *the tree* without qualifier, the **architecture tree** is meant. Other structures are named explicitly (*requirements tree*, *artifact graph*, etc.).
 
 ### 11.1 Structure
 
@@ -968,6 +1128,45 @@ The approval path for changes follows ownership of the affected contract:
 The architecture tree does not pre-exist the project; it is produced *by* the project's iterations of the §3.2 loop in decomposer mode. Each pass of decomposition adds nodes (sub-contracts) and edges (parent-child references, depends-on references for shared modules). The tree at any point reflects the project's current understanding of how the system is being structured. Like any design artifact, the tree is subject to revision — sub-contracts may be merged, split, replaced, or relocated as understanding evolves, all under change governance (§13 and glossary §30A).
 
 A key implication: the tree is *queryable* — designers can ask "what is the current architecture tree?" and "what would the tree look like as of baseline X?" (per glossary §30B). The tool implementing this constitution must support these queries (per the project's REQ-0060 traceability and REQ-0220 search).
+
+### 11.5 Functional vs. Physical Aspects of the Architecture Tree
+
+Following INCOSE systems-engineering practice ([Functional Analysis and Allocation](https://acqnotes.com/acqnote/careerfields/functional-analysis-and-allocation); INCOSE Systems Engineering Handbook v5.0), the architecture tree expresses both **functional** and **physical** aspects of the design:
+
+```text
+- Functional architecture  — what the system does. Functions,
+                             roles, responsibilities, capabilities,
+                             and the requirements allocated to
+                             each. The "what" view.
+
+- Physical architecture    — how the system is realized.
+                             Components, modules, products,
+                             services, and the interfaces between
+                             them. The "how" view.
+```
+
+The two views are **not separate trees**; they are different aspects of *the same architecture tree*. A given contract may emphasize functional content (especially at higher levels) or physical content (especially at lower levels). The distinction is a useful lens for reading and designing contracts.
+
+**Where functional and physical sit in a contract.** A contract whose objective is *"provide storage and persistence"* is primarily functional — it describes the role this scope plays in the larger system. A contract whose objective is *"implement the Datomic schema and on-disk layout"* is primarily physical — it commits to specific implementations. The transition from functional to physical happens through decomposition: each sub-contract is typically more physical than its parent.
+
+**The decomposition gradient.** Per §10A.10 (last responsible moment) and §10.2 (contract is the parent's specification), higher-level contracts stay functional — they describe role and constraint without committing to specific implementations. The physical specifics emerge at lower levels, as delegate design work surfaces them and the contract is refined via change governance (§10A.11).
+
+```text
+Project-root contract:    Highly functional. What the system
+                          does at the top level.
+
+Intermediate contracts:   Mixed. Functional role with some
+                          structural commitments (e.g., "Storage
+                          and Repository").
+
+Leaf contracts:           Highly physical. Specific implementation:
+                          which technology, which file layout,
+                          which method signatures.
+```
+
+**Allocation discipline.** Per INCOSE practice, every requirement of the higher-level scope must be allocated to one or more lower-level functions, and each function must trace to one or more requirements. This is what §10A.2 step 4's *"no overlap, no gap"* rule (clarified by PO-12 to allow cross-cutting requirements applying to multiple sub-contracts) enforces in our process.
+
+**When to make the functional/physical distinction explicit in a contract.** Most contracts do not need a *Functional aspect* / *Physical aspect* header; the distinction is implicit in the contract's level in the tree. For projects with strong systems-engineering practice (regulated industries, complex hardware-software systems), the contracts may explicitly label which fields are functional and which are physical. For software-tool projects, the implicit distinction is usually sufficient.
 
 ## 12. Traceability Graph
 

@@ -67,6 +67,93 @@ Each requirement may have one or more verification methods assigned. A requireme
 
 Verification methods are typically assigned at the **design-done** milestone of the contract that owns the requirement (per constitution §10A.5), and verification is performed at the **implementation-done** milestone.
 
+### 2.1 Quality criteria for requirement statements (SMART)
+
+A requirement statement is well-formed when it is **SMART** ([INCOSE Guide to Writing Requirements v4](https://www.incose.org/docs/default-source/working-groups/requirements-wg/guidetowritingrequirements/incose_rwg_gtwr_v4_summary_sheet.pdf)):
+
+```text
+- Specific     — clearly states the function or need, with
+                 unambiguous wording.
+
+- Measurable   — includes quantifiable metrics or verifiable
+                 acceptance criteria. Replace vague terms such as
+                 "fast", "user-friendly", or "reliable" with
+                 specific criteria (e.g., "response within 3
+                 seconds under standard load"). Numbers carry
+                 explicit units.
+
+- Achievable   — realistic within the project's technical, budget,
+                 and schedule constraints.
+
+- Relevant     — directly tied to a stakeholder need or to a
+                 parent requirement.
+
+- Time-bound   — defines the timeframe or conditions under which
+                 the requirement applies.
+```
+
+The INCOSE Guide expands SMART into 42 specific rules; SMART is the high-level mnemonic. Projects with regulatory or compliance constraints should adopt the full INCOSE 42-rule guide.
+
+**SMART is graduated by the requirement's level of abstraction.** The same abstraction gradient that governs contracts (§10.2, §10A.10) and architecture (§11.5) applies to requirements:
+
+```text
+- Higher-level (root and near-root) requirements may legitimately
+  be less SMART. They should be Specific enough to be unambiguous
+  about intent and Relevant to the project's purpose, but full
+  Measurable / Time-bound criteria may not yet apply at this
+  level. Example: REQ-0000 ("Provide a software tool that supports
+  a requirements-constrained design process") is intentionally
+  abstract; quantifiable measurability emerges in its derived
+  requirements.
+
+- Mid-level derived requirements gain SMART characteristics
+  through derivation, especially Measurable and Time-bound
+  criteria.
+
+- Leaf-level requirements — those that directly drive
+  implementation — should be fully SMART, or carry an explicit
+  recorded rationale for why a particular SMART aspect cannot be
+  applied.
+```
+
+**Refinement and propagation.** When a higher-level requirement is later refined (typically becoming more SMART), the change is governed by §13 and classified under §30A. Per §10A.11 *contracts evolve* and the same principle applied to requirements: **all requirements derived from a refined parent must be re-evaluated against the refined parent**. Some derived requirements may need to be updated; some may now contradict the refined parent and require their own revision. Tracking the propagation of refinements is part of the change-governance discipline.
+
+When a requirement cannot be made fully SMART even at the leaf level (e.g., a research objective whose endpoint is genuinely uncertain), this should be recorded explicitly in the requirement's *Rationale* rather than silently producing a non-SMART requirement.
+
+### 2.2 INCOSE-recommended requirement attributes
+
+Beyond the fields listed above (identifier, origin, owner, status, version, scope, rationale, links, verification methods), INCOSE practice ([INCOSE Systems Engineering Handbook v5.0](https://www.incose.org/products-publications/se-handbook); [Managing Requirements for Design pamphlet](https://www.incose.org/docs/default-source/TWG-Documents/003-requirements-management-and-se-pamphlet.pdf?sfvrsn=24c882c6_2)) recommends additional attributes that projects should adopt when their complexity or compliance environment warrants:
+
+```text
+- Priority      — relative importance among the project's
+                  requirement set (e.g., must-have / should-have /
+                  could-have / won't-have; or high / medium / low).
+                  INCOSE marks this as part of its minimum
+                  attribute set.
+
+- Criticality   — the consequence if the requirement is not
+  (Essentiality)  satisfied. Distinct from priority — a requirement
+                  may be high-criticality but low-priority for the
+                  current phase. INCOSE marks this as minimum-set.
+
+- Stability     — how likely the requirement is to change. Stable
+  (Volatility)    requirements can be implemented earlier; volatile
+                  requirements may warrant deferred implementation
+                  or extra flexibility margin.
+
+- Applicability — the conditions, environments, lifecycle phases,
+                  or system modes under which the requirement
+                  applies. Essential for projects with multiple
+                  operational modes or lifecycle phases.
+
+- Source        — the specific external authority, stakeholder,
+                  regulation, or standard the requirement traces to
+                  (more specific than Origin, which only says
+                  "external authority" or "derived from X").
+```
+
+These attributes are not mandatory for every project. Adopt those that the project's complexity, compliance environment, or stakeholder structure warrants. For small single-owner projects, the basic fields may suffice; for larger projects, the INCOSE-recommended attributes become valuable.
+
 ## 3. Requirement Classification
 
 Requirement types are not always mutually exclusive. A requirement may have multiple characteristics, such as being root-level, derived, allocated, performance-related, interface-related, constraint-related, or risk-related at the same time.
@@ -108,6 +195,24 @@ A **root-level requirement** is a requirement that does not depend on any other 
 A root-level requirement may come directly from the project owner, customer, mission statement, business objective, law, regulation, or other external source of authority.
 
 Root-level requirements may be discovered after the project begins. Root-level does not mean earliest-known. It means not derived from another requirement inside the current requirement structure.
+
+## 5A. Stakeholder Requirements vs. System Requirements
+
+INCOSE systems-engineering practice ([SEBoK — System Requirements Definition](https://sebokwiki.org/wiki/System_Requirements_Definition)) distinguishes two perspectives on requirements at the top of the requirements tree:
+
+- **Stakeholder requirements** — what stakeholders want or need from the system, expressed in *their own terms* (often non-technical, non-measurable, sometimes contradictory between stakeholders). The *voice of the customer* view.
+- **System requirements** — what the system shall do, expressed in *technical, measurable, SMART terms* (per §2.1). The systems-engineering view.
+
+The transformation from stakeholder requirements to system requirements is a structured step in INCOSE workflow. A single stakeholder need may produce multiple system requirements; close stakeholder coordination is required to keep the transformation faithful.
+
+In this process, the distinction maps onto root-level vs. derived requirements but is not identical:
+
+- A **root-level requirement** (§5) is recorded in the language closest to the external authority's intent — which may be stakeholder-language for a non-technical owner, or system-language if the owner is technical. The requirement is *root* because of its authority origin (external), not because of its language.
+- A **derived requirement** (§7) is produced through the design process, typically refining or transforming a root-level requirement into more technical terms.
+
+For projects with **multiple stakeholders, non-technical owners, or regulated industries**, the explicit stakeholder/system distinction is valuable: elicit stakeholder requirements first, then derive system requirements through analysis with traceability preserved. The transformation step is part of the §3.1 *Starting a Project* workflow.
+
+For projects with a **single technical owner**, the distinction may remain implicit — root-level requirements are usually expressed in near-system-requirement form already, and a separate stakeholder-requirement layer is overhead without benefit.
 
 ## 6. Top-Level Requirement
 
