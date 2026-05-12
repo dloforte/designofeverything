@@ -513,6 +513,59 @@ A revision that meets these tests — a criterion definable without naming the f
 
 The discipline ensures that the matrix remains a *test* of whether a recommendation is well-founded, not a *theater* in which any recommendation can be justified by clever criterion framing.
 
+**Escalation to §9.2 when criteria differ in importance.** The reframe-vs-add discipline above covers one class of matrix-recommendation gap: the matrix is wrong because of criterion *definitions*. There is a second class: the matrix is wrong because of criterion *weights*. These have distinct responses.
+
+```text
+DIAGNOSTIC: when the §9.1 matrix's visible cell-count diverges
+from the analyst's argued recommendation, ask:
+
+  Is the divergence because the matrix is missing or mis-
+  defining a criterion? (Definition problem.)
+
+  OR is it because the matrix's +/~/− cell scoring treats all
+  criteria as equally important, when in fact one or more
+  criteria carry qualitatively more weight than others?
+  (Weight problem.)
+```
+
+The two classes have distinct responses:
+
+```text
+DEFINITION PROBLEM → reframe or add per the discipline above.
+
+WEIGHT PROBLEM → escalate to §9.2 swing-weight matrix.
+                 Apply importance × variation weighting; let
+                 the weighted scores produce the
+                 recommendation. Do NOT bridge the gap with
+                 prose synthesis.
+```
+
+The case for §9.2 escalation is recognizable: several criteria align in one direction (the cell-count winner), but those criteria are bounded *cost* dimensions (small absolute variation; enabling rather than critical importance), while a single criterion in the other direction is a *capability* dimension (wide variation; critical importance). The cell-count is misleading because it weights all criteria equally; the swing-weight matrix correctly reflects that not all criteria carry equal load.
+
+A useful litmus: if removing the apparently-decisive criteria from the matrix would NOT change the recommendation, those criteria are likely enabling-with-narrow-variation and a swing-weight pass will down-weight them appropriately. If the recommendation depends on the apparently-decisive criteria, they're likely critical-with-wide-variation and the matrix is reading correctly.
+
+**Four-way disposition of matrix-recommendation gaps**:
+
+```text
+1. Reframe an existing criterion (PO-14)
+   — when an existing criterion conflates distinct dimensions or
+   is imprecisely defined.
+
+2. Add a new criterion with anti-gaming guardrails (PO-14)
+   — when a genuinely latent dimension is missing.
+
+3. Escalate to §9.2 swing-weight matrix
+   — when criteria differ materially in importance and +/~/−
+   cell scoring is insufficient.
+
+4. Invoke §3.2 tie-breaking questions
+   — when criteria are correctly framed and weighted, and
+   candidates genuinely split on which they favor. The
+   trade-off is surfaced to the owner as an explicit question.
+```
+
+These four responses are not interchangeable. Each addresses a different failure mode of the §9.1 matrix. Choosing the wrong response — for example, escalating to §9.2 when the actual problem is a missing criterion — buries the issue rather than resolving it.
+
 ### 9.2 Weighted Evaluation via Swing-Weight Matrix (optional refinement)
 
 When the option-criterion evaluation in §9.1 involves criteria of genuinely different importance, and the positive/negative/neutral shorthand is insufficient to distinguish strong from weak signals, the project may use **weighted evaluation**. INCOSE practice for this is the **swing-weight matrix** ([Parnell & Trainor 2009, INCOSE International Symposium](https://www.incose.org/resource/2-3-1-using-the-swing-weight-matrix-to-weight-multiple-objectives/)).
