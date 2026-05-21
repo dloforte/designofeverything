@@ -1301,6 +1301,76 @@ If yes, decomposer mode is over-engineering. Implementer mode is the right choic
 
 **5. Periodic architecture-tree review.** The project owner periodically reviews the architecture tree for depth and progress. Contracts that have been in `in-design` for an extended period without progressing to `implementing` (per the project's REQ-0290-style lifecycle) are candidates for review: is the contract's scope unnecessarily large? Is the delegate stuck on a sub-decision that should be elevated? Is decomposition into smaller and smaller sub-scopes happening without corresponding implementation?
 
+**6. The decompose-vs-leaf rubric (DC1–DC7).** When the mode-selection question (mechanism 1) and the fitness-for-implementation check (mechanism 2) leave the analyst uncertain whether to decompose or stay leaf, a structured rubric supports the decision. The rubric is a §9.1 option-criterion evaluation with criteria pre-committed per PO-17.
+
+The rubric has seven criteria with default weights:
+
+```text
+DC1  Cohesion + scope breadth                          weight 18
+     Can the contract's role be expressed in one
+     coherent sentence? Wider scope or heterogeneous
+     responsibilities → favor decompose.
+
+DC2  Sub-area independence                             weight 16
+     Could sub-areas be designed and implemented by
+     separate workers without continuous cross-
+     coordination? Independent → favor decompose.
+
+DC3  Heterogeneous change profile                      weight 12
+     Do different parts of the contract's scope evolve
+     at materially different rates? Heterogeneous →
+     favor decompose.
+
+DC4  Contract clarity at sub-boundaries                weight 14
+     If sub-decomposed, would each sub-contract have a
+     crisp interface (clean inputs, outputs, role)?
+     Yes → favor decompose.
+
+DC5  Verification heterogeneity                        weight 10
+     Do sub-areas have materially different verification
+     approaches (per glossary §2 IATD)? Heterogeneous
+     → favor decompose.
+
+DC6  Boundary value (replaceability + reuse)           weight 12
+     Would a sub-boundary enable reuse across the
+     project (per §10A.9) or facilitate replaceability
+     (per §3.2 insulation-by-abstraction)? Yes → favor
+     decompose.
+
+DC7  Single-implementer tractability                   weight 18
+     §10A.13.2's fitness-for-implementation check
+     expressed as a positive criterion. Can a single
+     implementer handle the scope directly within
+     reasonable cognitive load? Yes → favor leaf.
+```
+
+**Scoring.** Each criterion's contribution is `+` (favors decompose), `−` (favors leaf), or `~` (neutral; does not discriminate). The contribution magnitude is the criterion's weight; the sign is the direction. Sum to get the weighted total.
+
+**Thresholds.**
+
+```text
+≥ +20  → DECOMPOSE.    The scope has structural support
+                       for sub-contracts.
+
+≤ −20  → LEAF.         The scope is correctly a single
+                       implementer's work.
+
+−20 < total < +20      → JUDGMENT CALL. No structural
+                       recommendation; invoke §3.2
+                       tie-breaking questions to the
+                       owner, or escalate to §9.2
+                       swing-weight evaluation per
+                       PO-15.
+```
+
+**Per-contract criterion augmentations.** The DC1–DC7 set is the default. Each contract being audited may have decision-local concerns that materially discriminate beyond DC1–DC7. The recommended pattern is to add 1–3 *augmented criteria* (label them DC-FN-a, DC-FN-b, etc., where FN identifies the contract being audited) capturing concerns specific to that contract. Augmented criteria supplement DC1–DC7 within the same matrix; their weights are pre-committed per PO-17; honest augmentations meet PO-14's anti-gaming heuristics (pre-commitment test; hypothetical-alternative test; reframe-vs-add preference).
+
+**Relationship to per-iteration discipline (PO-19).** DC1–DC7 is the *tool* that operationalizes PO-19's mode-selection-explicit-at-every-iteration discipline. At each iteration, the delegate runs the rubric (or affirms a prior application still holds); the rubric's output is the recorded rationale for the mode-selection answer. "Leaf-mode by inheritance from the parent's decomposition" is **not** sufficient rationale per PO-19; the rubric (or an equivalent recorded analysis) is the proper artifact.
+
+**Rubric stability.** The DC1–DC7 set is recommended as the default but is not constitutionally frozen. A project may add criteria (with anti-gaming guardrails per PO-14), revise weights based on experience, or replace the rubric entirely if it develops a better tool. Changes are §13 governed; the rubric's content is part of the constitution and its evolution follows the constitution's revision discipline.
+
+**Provenance.** The rubric was developed during the project that first exercised this constitution (the *designofeverything* tool project) through retroactive audits of seven top-level sub-contracts (DEC-0410..DEC-0470). It was subsequently exercised in two F-level sub-decompositions (F3 via DEC-0480; F6 via DEC-0500) where the +66 and +98 weighted scores respectively produced unambiguous DECOMPOSE recommendations, and in the four retroactive LEAF affirmations (−58 to −100) where the negative scores produced unambiguous LEAF affirmations. The threshold of ±20 was calibrated against these exercises.
+
 **The forcing function in summary.** Decomposition is a *means*; *fulfillment of requirements* is the *end*. The end is enforced by implementation-done at the leaves, by the driving question's repeated check, and by the parent's responsibility to verify progress. Decomposition that does not lead toward implementation is decomposition that is failing its purpose.
 
 **Practical guidance.** When in doubt about whether to decompose further, prefer implementer mode. Decomposition produces sub-contracts that must be authored, approved, delegated, designed, implemented, and verified — substantial overhead. Implementer mode produces implementation directly. The cost of unnecessary decomposition is real and visible (delayed implementation, more artifacts to maintain, more coordination); the cost of "I'll just build it" at a slightly-large scope is usually less than the cost of unnecessary decomposition.
