@@ -331,6 +331,10 @@ Project-specific considerations — *how* a particular catalog option fits the c
 
 When adding or updating a catalog entry, capture only the information needed for the current decision. Comprehensive coverage is not required; entries grow incrementally as additional projects encounter additional aspects. What is added should remain generic to the option, not specific to the current project's use of it.
 
+**Catalog entry kinds.** The catalog admits two structurally-distinct kinds of entry: **mechanism entries (CAT-NNNN)** — options for satisfying capabilities or requirements per the scope above (mechanisms, technologies, patterns, architectural options); and **development-approach entries (APP-NNNN)** — options for governing the design-to-implementation transition (development approaches per §10A.14). Both kinds follow the same entry schema (status, owner, last-updated, description, strengths, weaknesses, tradeoffs, commonness/maturity, discriminating questions, sources). The distinction is the *selection context*: mechanisms are selected by capability-decomposition decisions (§4, §10); approaches are selected by approach-selection decisions at design-done milestones (§10A.14).
+
+A project may extend the catalog with additional entry kinds; the entry-kind set is itself a project catalog-scope choice. Adding a new entry kind is a §13-governed decision per §9. The two kinds above are the constitution's defaults.
+
 ### 5.3 Catalog Bootstrapping
 
 A project's first DECIDE encounter with the catalog will frequently find no relevant entries — particularly early in the project's life or when the catalog is shared across only a small set of projects. In that case, the project **bootstraps** the catalog as part of opening the decision: candidate mechanisms are recorded as new catalog entries with the information available, then evaluated as part of the decision. The bootstrapped entries remain in the catalog after the decision is made, available for reuse by future iterations of this project or by other projects.
@@ -435,6 +439,8 @@ A decision record should include:
 ```
 
 Decision records should not be overwritten. When a decision changes, the previous decision is preserved and marked as superseded. The new decision records why the prior reasoning no longer governs.
+
+**Superseded / Superseding semantics (broadened per DEC-0620).** The *Superseded decisions* and *Superseding decisions* fields cover any governance artifact whose authoritative claim is being reversed or replaced — not only DECs. Examples include handback artifacts (HB-NNNN) reversed by a subsequent audit DEC; fulfillment-check claims (FC-NNNN) reversed by re-evaluation; or contract versions (CON-NNNN vN.M) superseded by class-1 replacement per §30A. The field names are preserved for backward-compatibility with the existing artifact corpus; the semantics extend to "Superseded artifacts" / "Superseding artifacts" in current reading. When listing a superseded artifact, include the supersession relationship's rationale.
 
 ### 9.1 Option-Criterion Evaluation
 
@@ -641,6 +647,137 @@ When swing-weight evaluation is used, both the swing-weight matrix (showing how 
 **When to use swing-weight rather than plain §9.1**: when the choice is contested, when the criteria genuinely vary in importance, or when the decision must be defended to external reviewers (regulatory, customer, audit). The plain §9.1 matrix is sufficient for most ordinary decisions; swing-weight is the formal escalation when the case requires it.
 
 Insight from INCOSE practice: weights depend on **both importance and variation**. A criterion that all options score the same on does not discriminate even if it is very important; a criterion with wide variation discriminates strongly even if its absolute importance is modest. The swing-weight technique forces this duality to be considered explicitly rather than implicitly conflating the two.
+
+### 9.3 Phase 1 Completeness Check
+
+Before a decision artifact's Phase 1 (proposal) is offered for parent acceptance, the artifact's author **shall** perform an explicit completeness check. The check is gating: the parent **shall not** accept Phase 1 unless the check has been performed **and** every field passes.
+
+The check verifies, for each field, **both**:
+
+```text
+(a) PRESENCE — the field exists in the artifact OR is
+    explicitly marked N/A with a one-sentence rationale
+    explaining why the field is not applicable to this
+    decision.
+
+(b) SUBSTANCE — when present, the field carries
+    substantive content: content that adds information
+    beyond the field label, that contributes to the
+    parent's or future reader's understanding of the
+    decision, and that traces to authoritative artifacts
+    per §8.1.
+
+    The following do NOT constitute substantive content
+    and shall cause the check to FAIL:
+      - placeholder text ("TBD", "to be determined",
+        "[fill in]")
+      - tautologies that restate the field's label
+        without adding information ("the decision is to
+        make the decision")
+      - vague non-traceable assertions ("seems
+        reasonable", "industry standard", "best
+        practice") without trace to authoritative
+        artifacts per §8.1
+      - duplicate cross-references that point to
+        another section without adding context ("see
+        above" without specifying what)
+      - rubber-stamped sign-offs that merely assert
+        compliance without demonstrating it
+
+A field that fails (b) is treated identically to a
+missing field: the decision artifact shall be revised
+before Phase 1 acceptance can be attempted.
+```
+
+The §9 template fields covered are: Decision ID; Title; Status; Version; Owner; Date; Related requirements; Related capabilities (if applicable); Related assumptions; Options considered; Selection criteria; Decision; Reasoning; Tradeoffs; Rejected alternatives; Affected contracts; Risks; Review triggers; Superseded decisions; Superseding decisions.
+
+**Additional checks:**
+
+```text
+1. If the decision involves choosing among multiple
+   options against multiple criteria, the §9.1
+   option-criterion evaluation shall be constructed:
+   - Criteria selected first per PO-17 (criteria for
+     THIS decision, not carried forward by default).
+   - Weights pre-committed before scoring options.
+   - Cells scored (+/~/− or extended convention).
+   - Recommendation visible from cell scores per
+     matrix-readability discipline.
+   - Anti-gaming guardrails per PO-14 applied to any
+     criterion-revision performed mid-evaluation.
+   - For decisions where criteria differ materially
+     in importance, the §9.2 swing-weight matrix may
+     be invoked per PO-15.
+
+2. For trivial decisions (single option, no real
+   comparison), the §9.1 matrix is not mandatory;
+   §8.1 justification quality discipline shall be
+   applied instead — the recommendation must trace
+   to logical fit to authoritative artifacts, not
+   typicality.
+
+3. The completeness check itself shall be recorded
+   in the decision artifact (typically as a
+   "Completeness check" section), enumerating each
+   §9 template field and its verdict (PRESENT-AND-
+   SUBSTANTIVE / N/A-WITH-RATIONALE / FAIL-MUST-
+   REVISE).
+```
+
+The completeness check is the responsibility of the decision artifact's author. The parent owner **shall not** accept Phase 1 unless the check has been performed **and** every field has verdict PRESENT-AND-SUBSTANTIVE or N/A-WITH-RATIONALE. Any FAIL-MUST-REVISE verdict requires the artifact to be revised; the check is re-performed on the revision; Phase 1 acceptance can be attempted only after every field passes.
+
+This rule applies to all decision artifacts (DEC-NNNN) regardless of scope, decomposition level, or constitutional level (including constitutional refinements such as this §9.3 itself, which was recorded in DEC-0610 with a self-applied completeness check demonstrating the discipline).
+
+**Sub-rules added by DEC-0620 (2026-05-21):**
+
+*N/A-WITH-RATIONALE requires explicit rationale.* When a §9 template field is marked N/A, the rationale shall explicitly state why the field is not applicable to this decision — even if the rationale is *"we considered each dimension below and could not identify an applicable aspect."* Silent absence of a field (no entry, no N/A marker, no rationale) constitutes FAIL-MUST-REVISE per §9.3(a). Empty fields signal either that the author did not consider the dimension (the failure §9.3 was built to catch) or considered it without recording the reasoning (leaving future readers unable to verify). Both fail.
+
+*Substantive vs ergonomic options.* When the *Options considered* field contains more than one entry, the author shall mark each option as either **substantive** — independently meeting the decision's objectives differently; requires §9.1 matrix construction or §8.1 justification — or **ergonomic** — variations in how a substantive choice is realized (e.g., placement choices for a constitutional addition; bundling choices for related refinements; presentation choices). Ergonomic alternatives do not require matrix scoring; they are recorded with rationale only. A decision with one substantive choice plus several ergonomic alternatives may invoke the §9.1 trivial-decision exception for the substantive choice while still enumerating the ergonomic alternatives.
+
+*Deferred decisions as N/A-WITH-RATIONALE.* When a decision is deferred per §10A.10 (last responsible moment), the *Decision* field is recorded as N/A-WITH-RATIONALE with the rationale stating the trigger conditions under which the decision will be resolved. The Decision field is not FAIL-MUST-REVISE in this case — the deferral itself is the recorded answer, and the trigger conditions are the substance.
+
+*Blanket-template recording.* The completeness check is by default recorded **per-DEC** (a Completeness check section within each decision artifact). A blanket-template approach (recording the check for multiple DECs via a single appendix declaration) is permitted **only when explicit justification for the blanket approach is provided** in lieu of per-DEC sections — e.g., the project is in active development and per-DEC boilerplate would not earn its keep relative to the appendix's coverage. Without such justification, per-DEC recording is required.
+
+### 9.3.1 Deferred-Decision Recording
+
+Decisions deferred per §10A.10 *last responsible moment* are recorded as a normal DEC artifact with the *Decision* field marked N/A-WITH-RATIONALE per §9.3 above. The rationale states the trigger conditions for resolution. The deferred DEC remains open in the project's tracking; when the trigger conditions are met, the deferred DEC is revised (the *Decision* field becomes PRESENT-AND-SUBSTANTIVE; version increments per §30A class-2). Examples in the designofeverything project: DEC-0070 (artifact identifier encoding) and DEC-0160 (shared cross-cutting store backend).
+
+### 9.3.2 Change-Acceptance Compact Template
+
+A **change-acceptance DEC** is a DEC that accepts a previously-proposed change request (CHG) and transitions a source DEC from Phase 1 to Phase 2 (or applies a class-2 revision to an existing contract per §10A.11). Change-acceptance DECs follow a compact template that inherits §9 template fields from the source DEC being accepted.
+
+The compact template requires the following fields to be present in the change-acceptance DEC itself:
+
+```text
+- Decision ID
+- Title (typically "Acceptance of CHG-NNNN" or similar)
+- Status
+- Version
+- Owner
+- Date
+- Decision (states the acceptance + the resulting artifact version)
+- Reasoning (states why the change is accepted)
+- References (cites the source DEC + CHG)
+```
+
+The following fields **may** be marked N/A-WITH-RATIONALE with the form *"Inherits from DEC-NNNN [the source DEC]"*:
+
+```text
+- Related requirements
+- Related capabilities
+- Related assumptions
+- Options considered
+- Selection criteria
+- Tradeoffs
+- Rejected alternatives
+- Affected contracts (if the acceptance doesn't add new affected artifacts)
+- Risks (if the acceptance doesn't surface new risks)
+- Review triggers (if inherited from source)
+- Superseded decisions
+- Superseding decisions
+```
+
+Inheritance applies only when the field's substance is materially unchanged from the source DEC. If the change-acceptance surfaces new affected artifacts, new risks, or new review triggers, those fields must be PRESENT-AND-SUBSTANTIVE rather than inherited.
 
 ## 10. Architecture Contracts
 
@@ -1376,6 +1513,16 @@ DC7  Single-implementer tractability                   weight 18
 **Practical guidance.** When in doubt about whether to decompose further, prefer implementer mode. Decomposition produces sub-contracts that must be authored, approved, delegated, designed, implemented, and verified — substantial overhead. Implementer mode produces implementation directly. The cost of unnecessary decomposition is real and visible (delayed implementation, more artifacts to maintain, more coordination); the cost of "I'll just build it" at a slightly-large scope is usually less than the cost of unnecessary decomposition.
 
 Related industry practice: this principle parallels several established techniques — YAGNI ("you aren't gonna need it") from XP/Agile, the "walking skeleton" pattern that forces end-to-end implementation early, and INCOSE's design-review gates (SDR, PDR, CDR) that require demonstrated implementation progress at each phase. See RI-0050 for the broader systems-engineering context.
+
+### 10A.14 Approach Selection at Design-Done
+
+At every design-done milestone (§10A.5), the parent records an **approach-selection decision**: which named development approach governs the transition from design-done to implementation-done for this contract's scope. The choice is recorded as a §9.1 option-criterion evaluation against the project's adopted approach-selection criteria framework (see §5 catalog for available approach options — APP-NNNN namespace; the project-specific criteria framework is itself a project artifact).
+
+Weights are pre-committed per PO-17 before scoring; anti-gaming guardrails per PO-14 apply. The selected approach is part of the design-done handback package per §10A.5. The parent's acceptance of the handback binds the delegate to the selected approach during implementation. Changing the approach mid-implementation is itself a §13 change requiring rationale.
+
+Approach selection is a **per-contract decision**. Different leaves of the architecture tree may warrant different approaches based on per-criterion scoring. The same parent may select different approaches for sibling contracts.
+
+The constitution does not bind to a specific criteria framework. A project may adopt the DV1–DV12 framework recorded in the designofeverything project's catalog (per RI-0170 and applied in DEC-0570), or refine its own. The framework adopted is itself a recorded decision per §9.
 
 ## 11. Architecture Tree
 
