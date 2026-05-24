@@ -1516,13 +1516,56 @@ Related industry practice: this principle parallels several established techniqu
 
 ### 10A.14 Approach Selection at Design-Done
 
-At every design-done milestone (§10A.5), the parent records an **approach-selection decision**: which named development approach governs the transition from design-done to implementation-done for this contract's scope. The choice is recorded as a §9.1 option-criterion evaluation against the project's adopted approach-selection criteria framework (see §5 catalog for available approach options — APP-NNNN namespace; the project-specific criteria framework is itself a project artifact).
+At every design-done milestone (§10A.5), the parent records an **approach-selection decision** governing the transition from design-done to implementation-done for the contract's scope. The decision is recorded as a §9.1 option-criterion evaluation against the project's adopted approach-selection criteria framework (see §5 catalog for available approach options — APP-NNNN namespace; the project-specific criteria framework is itself a project artifact).
 
 Weights are pre-committed per PO-17 before scoring; anti-gaming guardrails per PO-14 apply. The selected approach is part of the design-done handback package per §10A.5. The parent's acceptance of the handback binds the delegate to the selected approach during implementation. Changing the approach mid-implementation is itself a §13 change requiring rationale.
 
-Approach selection is a **per-contract decision**. Different leaves of the architecture tree may warrant different approaches based on per-criterion scoring. The same parent may select different approaches for sibling contracts.
+**Approach selection is recorded at two scope levels** (per DEC-0640 v0.2, 2026-05-24):
+
+```text
+1. PROJECT-WIDE approach-selection DEC. At the
+   project's first design-done milestone (typically
+   the project root), the parent records a project-
+   wide approach-selection DEC scoring the framework
+   (DV1–DV12 or equivalent) against the project's
+   overall characterization. This DEC is the project's
+   binding default; sibling contracts inherit unless
+   explicitly refined per (2).
+
+2. PER-CONTRACT audit verdict at each subsequent
+   design-done. At every subsequent design-done
+   milestone, the parent performs a per-contract
+   audit verdict that EITHER:
+
+   (a) Confirms the project-wide approach applies
+       to this contract — recorded as a brief cite
+       of the project-wide DEC + verdict (a few
+       sentences within the handback package; §9.3
+       verdict vocabulary applies). The verdict
+       demonstrates that the framework was actually
+       run against this contract's specifics, not
+       merely asserted. This avoids opening a per-
+       contract DEC when the project-wide default
+       holds substantively.
+
+   (b) Refines or replaces the project-wide approach
+       for this contract — recorded as a full per-
+       contract approach-selection DEC with §9.1
+       matrix per the framework. The refinement
+       may select a different APP-NNNN, hybridize
+       components from multiple, or otherwise
+       deviate from the project-wide.
+```
+
+The audit verdict at (2) is **mandatory** — silent inheritance from the project-wide DEC into a per-contract design-done is the failure mode this rule prevents, analogous to PO-19's *leaf-mode-by-inheritance* prohibition for mode-selection (§10A.13.6). A handback package without the verdict fails the design-done acceptance check.
+
+Verdict vocabulary follows §9.3: the verdict is either PRESENT-AND-SUBSTANTIVE (the framework was run against this contract's specifics and the project-wide choice applies, with cell-scoring evidence sufficient to demonstrate this), N/A-WITH-RATIONALE (only when a per-contract refinement DEC is opened per (b), at which point the project-wide-inherits verdict is superseded by the per-contract DEC), or FAIL-MUST-REVISE (the verdict's substance is insufficient — the framework was not actually run; the verdict is rubber-stamped).
 
 The constitution does not bind to a specific criteria framework. A project may adopt the DV1–DV12 framework recorded in the designofeverything project's catalog (per RI-0170 and applied in DEC-0570), or refine its own. The framework adopted is itself a recorded decision per §9.
+
+**Relationship to §10A.13.6 (mode-selection rubric).** §10A.14 v0.2's two-level structure (project-wide + per-contract verdict) is the constitutional analogue of §10A.13.6 + PO-19's mode-selection-at-every-iteration discipline. Both make a governance choice explicit at every milestone via a structured framework, with inheritance recorded rather than silently assumed. Together, mode-selection (§10A.13.6) and approach-selection (§10A.14) form the parent's two governance choices at each design milestone.
+
+**§10A.14 version history.** v0.1 (2026-05-21 per DEC-0590): per-contract DEC required at every design-done. v0.2 (2026-05-24 per DEC-0640): two-level structure — project-wide default + per-contract audit verdict — per DEC-0640 O4 hybrid recommendation. The v0.1 framing produced administrative cost the §10A.10 LRM principle warned against; the v0.2 framing preserves rigor (no silent inheritance) while avoiding busy-work DECs for the uniform-default case.
 
 ## 11. Architecture Tree
 
