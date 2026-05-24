@@ -8,6 +8,8 @@ The purpose of the process is to reduce reliance on intuition alone by making ar
 
 The process does not assume that requirements uniquely determine a single correct architecture. Instead, it treats architecture as a requirements-constrained decision process in which valid candidate architectures are generated, compared, selected, recorded, and governed.
 
+**Operational note (added 2026-05-24 per DEC-0690 / PO-31).** This document is authoritative *reference*; the disciplines encoded herein are made actively-checked at agent draft-time via an operational *cadence specifier* maintained per project (canonical name: `tool/AGENT_PRIMING.md`). Agent sessions working with this constitution shall load the project's priming document at session start, before any artifact-touching work. The priming document specifies *when* each constitutional discipline is to be actively checked during artifact generation; this document specifies *what* the disciplines are and *why* they apply. If the priming document and this document disagree on substance, this document is authoritative and the priming document is updated to reconcile. The priming document is a cadence specifier, not a re-statement; it must not duplicate the substance of this document — it points into it. Projects adopting this constitution maintain their own per-project priming document; the canonical example in the *designofeverything* project is `tool/AGENT_PRIMING.md`.
+
 ### 1.1 Motivation
 
 The process exists to address three concerns that recur in real projects:
@@ -616,6 +618,39 @@ A useful litmus: if removing the apparently-decisive criteria from the matrix wo
 ```
 
 These four responses are not interchangeable. Each addresses a different failure mode of the §9.1 matrix. Choosing the wrong response — for example, escalating to §9.2 when the actual problem is a missing criterion — buries the issue rather than resolving it.
+
+**Criterion-grounding sub-rule (added 2026-05-24 per DEC-0690 / PO-30).** Each criterion in a §9.1 option-criterion matrix shall trace to an authoritative artifact. PO-17's *decision-local concerns* admission, taken alone, is insufficient — it admits the failure mode in which analyst judgment is dressed as a criterion. Acceptable grounding forms for any criterion are:
+
+```text
+(a) Direct trace to a REQ or DEC that motivates this
+    criterion.
+
+(b) Trace to a project-context fact that itself traces to
+    a REQ or DEC (e.g., a DV5 "implementer experience"
+    criterion traces to the project's recorded implementer
+    identity + an approach-selection DEC such as the
+    designofeverything project's DEC-0570).
+
+(c) An explicit decision-local concern with project-
+    context justification per §8.1 — NOT analyst judgment
+    alone; the justification must demonstrate the concern
+    is real for THIS project (not generic-best-practice).
+    Per PO-14 anti-gaming, the (c) justification must pass
+    the pre-commitment + hypothetical-alternative tests:
+    a "decision-local concern" that exists only to move
+    the matrix toward a predetermined option is gaming,
+    regardless of grounding line.
+
+(d) When (a)-(c) are not possible AND the analyst believes
+    the criterion is substantive, a new REQ is opened per
+    §10.4 BEFORE the criterion is used in the matrix.
+    §10.4's trivial-vs-non-trivial-derivation rule governs
+    whether a full DEC is needed for the new REQ.
+```
+
+The §9.3 completeness check shall verify each criterion in any §9.1 matrix has one of (a)-(d) recorded. A criterion with no grounding line is FAIL-MUST-REVISE.
+
+The sub-rule does NOT mean "every criterion needs a new REQ written before it can be used." (a)-(c) typically cover all legitimate criteria; (d) is the exception. The point is to make the grounding EXPLICIT and AUDITABLE, closing the PO-17 loophole through which ungrounded analyst-bias has historically reached §9.1 matrices (see PO-30 for the empirical evidence that motivated this sub-rule).
 
 ### 9.2 Weighted Evaluation via Swing-Weight Matrix (optional refinement)
 
