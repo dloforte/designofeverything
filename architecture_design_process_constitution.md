@@ -44,6 +44,49 @@ Requirement → Capability → Candidate Mechanisms → Tradeoffs → Decision �
 
 The selected architecture does not need to be the only architecture that could work. It must be a justified architecture under the stated requirements, assumptions, constraints, and priorities.
 
+## 2A. The Generate-Compare-Act Pattern
+
+Many process steps in this constitution share a common three-stage structure:
+
+```text
+1. Generate — enumerate candidate options, approaches, or
+              possibilities for the matter at hand.
+
+2. Compare  — evaluate the candidates against the dimensions
+              that matter for the current context.
+
+3. Act      — select / decide / commit / record, based on the
+              comparison + recorded rationale.
+```
+
+The pattern applies to decisions, investigations, contract drafting, change request evaluation, and other process steps where candidates need to be honestly surveyed before one is acted upon. Sections that apply the pattern do so in their own specific forms; this section names the unified discipline + the risks each stage addresses.
+
+**Stage 1 (Generate)** addresses the **coverage risk**: options missed; only the obvious or familiar candidates considered. Mitigations established elsewhere in this constitution: §3.2 *category-first generation*; §5 catalog consultation + §5.3 bootstrapping; §15B Research Investigations (Survey kind) for unfamiliar option spaces.
+
+**Stage 2 (Compare)** addresses the **bias risk**: implementation-bias in scoring (a poor-implementation pick unfairly representing an option); analyst-bias in criterion framing (criteria invented to favor a predetermined option); criterion-source bias (ungrounded analyst judgment treated as decision criterion). Mitigations: PO-14 anti-gaming; PO-17 per-decision criterion-relevance; PO-30 criterion-grounding (constitution §9.1 sub-rule per DEC-0690); PO-32 matrix-row abstraction homogeneity + RI-informed scoring; §9.2 swing-weight when criteria differ materially in importance.
+
+**Stage 3 (Act)** addresses the **completeness risk**: silent assumption that the comparison's recommendation is trustworthy; matrix-recommendation gap not surfaced; rationale not recorded for future revisitation; review triggers not stated. Mitigations: §9.3 completeness check; LB · §9.3 verdict vocabulary; §3.2 tie-breaking questions when the matrix doesn't discriminate; §3.2 insulation by abstraction when the act's commitment may need to be revisited.
+
+Application specifics live in the sections that apply the pattern (§3.2's three exits SPLIT/DECIDE/ACT; §5's catalog; §9 decision records; §10A.2 decomposition workflow; §10A.14 approach selection; §15B research investigations). When opening a new process step that involves selecting among candidates, the designer should:
+
+```text
+(a) Recognize whether the three-stage pattern applies (trivial-
+    derivation per §10.4 collapses to obvious-Stage-3 with Stage 1
+    + Stage 2 implicit when alternatives are obvious or non-
+    existent); and
+
+(b) Apply the relevant stage-specific mitigations from this
+    section's references.
+```
+
+**Nested recursion**: when Stage 2 scoring for some candidate option depends on un-investigated implementation details, open a brainstorming RI (Stage 1 of a nested three-stage cycle) followed by a comparative RI (Stage 2 of the nested cycle); both feed back into the parent step's Stage 2. The pattern is recursive — nested three-stage cycles handle finer-grained sub-investigations that the parent stage cannot honestly resolve without them. Per PO-32 + PO-33.
+
+**Anti-gaming**: this pattern is NOT a license to add process ceremony to every micro-choice. For trivial-derivation cases per §10.4 (no plausible alternatives; choice obvious), the pattern collapses to "obvious Stage 3" with Stages 1 + 2 implicit. The pattern applies when there are genuinely multiple options + the choice has non-trivial consequences.
+
+**Scope**: open-ended. The pattern is not pre-limited to decision-making processes. It applies to any process where multiple candidates need to be generated + compared + acted upon. Sections beyond those listed above may also apply it; future POs may identify additional applications.
+
+*Added 2026-05-26 per DEC-0740 + PO-33; specific applications throughout this constitution cross-reference this section.*
+
 ## 3. Requirements Tree
 
 The process begins with a requirements tree.
@@ -138,9 +181,11 @@ ACT     — the requirement is actionable directly: select an
 
 **Rejection-driven refinement.** When the right exit is unclear, a useful heuristic is to propose any plausible solution that could fulfill the requirement (treat as ACT even when underspecified). The owner or relevant authority will usually reject the proposal because something specific is missing — and the rejection itself surfaces the missing constraint or specificity, which drives the next SPLIT or DECIDE. The heuristic uses rejection as a generator of design information rather than a setback.
 
-**Category-first generation.** When the candidate space is large or unfamiliar, generate candidates at the *category* or *class* level first (file-tree approaches, graph databases, relational with polymorphic associations, RDF triplestores, etc.) rather than jumping to specific products or implementations. Evaluate categories against the most-constraining requirements; only after a category is selected, drill down to specific products or implementations within it. This is complementary to rejection-driven refinement: where rejection-driven refinement uses a rejected proposal to surface missing constraints, category-first generation reduces evaluation cost by eliminating whole classes of options before investing in product-specific detail.
+**DECIDE applies the Generate-Compare-Act pattern (§2A).** Category-first generation + hybrid synthesis (below) + tie-breaking questions (below) are Stage 1 + Stage 1.5 + Stage 2.5 variants; the §9.1 option-criterion matrix is Stage 2; §9.3 completeness check + parent acceptance is Stage 3. See §2A for the unified discipline + per-stage risk mitigations.
 
-**Research investigation handoff.** Research investigations (glossary §15B) may be opened from any point in the design — DECIDE evaluation when the catalog lacks needed information, an open question that requires research to resolve, an assumption that needs validation, a contract definition that needs further information, or as a standalone task. Research investigations are *not* exclusive to DECIDE; they are a general mechanism for gathering information whenever the design needs it. The artifact that triggered the investigation waits on the findings, or proceeds under a recorded assumption (glossary §15) if waiting would block productive work. Findings typically update or create catalog entries (constitution §5.2) and feed back into the triggering artifact. Investigations are themselves of two kinds (glossary §15B.1): *survey investigations* search what already exists, while *constructive investigations* develop something new.
+**Category-first generation.** When the candidate space is large or unfamiliar, generate candidates at the *category* or *class* level first (file-tree approaches, graph databases, relational with polymorphic associations, RDF triplestores, etc.) rather than jumping to specific products or implementations. Evaluate categories against the most-constraining requirements; only after a category is selected, drill down to specific products or implementations within it. This is complementary to rejection-driven refinement: where rejection-driven refinement uses a rejected proposal to surface missing constraints, category-first generation reduces evaluation cost by eliminating whole classes of options before investing in product-specific detail. Per §2A, this is a Stage 1 (Generate) coverage-risk mitigation.
+
+**Research investigation handoff.** Research investigations (glossary §15B) may be opened from any point in the design — DECIDE evaluation when the catalog lacks needed information, an open question that requires research to resolve, an assumption that needs validation, a contract definition that needs further information, or as a standalone task. Research investigations are *not* exclusive to DECIDE; they are a general mechanism for gathering information whenever the design needs it. The artifact that triggered the investigation waits on the findings, or proceeds under a recorded assumption (glossary §15) if waiting would block productive work. Findings typically update or create catalog entries (constitution §5.2) and feed back into the triggering artifact. Investigations are themselves of two kinds (glossary §15B.1): *survey investigations* search what already exists, while *constructive investigations* develop something new. Per §2A: RIs are the constitutional vehicle for deeper Stage 1 (brainstorming RIs surveying candidates) + Stage 2 (comparative RIs investigating candidate properties); findings feed back into the triggering step's stages.
 
 **Requirement reconsideration.** At any point in the loop, the project may discover that holding a requirement as currently stated makes the design infeasible, sub-optimal, or excessively expensive given what has been learned. The response in such cases is not always "fulfill the requirement at any cost" — it may be to **revise the requirement**. Revision is itself a decision with tradeoffs: *what is given up by holding the requirement as it stands* versus *what is gained by relaxing, redefining, narrowing, or otherwise altering it*. The structured option-criterion evaluation (§9.1) is the right vehicle for the tradeoff analysis. The change itself is governed by §13 (change classification per §30A — a revision if the essence of the requirement is preserved with adjusted bounds, a replacement if the new requirement is materially different). The requirement's owner approves the change.
 
@@ -412,6 +457,8 @@ Typicality, convention, common practice, and "what is usually done" are **not** 
 The standard is not that every decision be inevitable. The standard is that every decision be justifiable in terms the project has explicitly accepted as authoritative.
 
 ## 9. Decision Records
+
+Decision records capture the Stage 3 (Act) output of the Generate-Compare-Act pattern (§2A). The §9.1 option-criterion matrix is the primary Stage 2 mechanism; §9.2 swing-weight refines it when criteria differ materially in importance; §9.3 completeness check is Stage 3 verification.
 
 Every major architectural decision should be recorded in a versioned decision record.
 
@@ -1089,6 +1136,8 @@ This document treats decomposer mode as the default for any scope large enough t
 
 ### 10A.2 The decomposition workflow
 
+Decomposition follows the Generate-Compare-Act pattern (§2A): Step 1 (identify candidate decompositions) is Stage 1; Step 2 (evaluate against §7 criteria via §9.1 matrix) is Stage 2; Steps 3-5 (select + draft + approve) are Stage 3.
+
 When decomposer mode is selected, the designer produces sub-contracts as follows:
 
 ```text
@@ -1550,6 +1599,8 @@ DC7  Single-implementer tractability                   weight 18
 Related industry practice: this principle parallels several established techniques — YAGNI ("you aren't gonna need it") from XP/Agile, the "walking skeleton" pattern that forces end-to-end implementation early, and INCOSE's design-review gates (SDR, PDR, CDR) that require demonstrated implementation progress at each phase. See RI-0050 for the broader systems-engineering context.
 
 ### 10A.14 Approach Selection at Design-Done
+
+Approach selection applies the Generate-Compare-Act pattern (§2A) at two levels: the project-wide approach-selection DEC executes the pattern once (catalog APP-NNNN entries are Stage 1; the framework matrix is Stage 2; the DEC is Stage 3); the per-contract audit verdict at each design-done re-runs the pattern at contract scope.
 
 At every design-done milestone (§10A.5), the parent records an **approach-selection decision** governing the transition from design-done to implementation-done for the contract's scope. The decision is recorded as a §9.1 option-criterion evaluation against the project's adopted approach-selection criteria framework (see §5 catalog for available approach options — APP-NNNN namespace; the project-specific criteria framework is itself a project artifact).
 
