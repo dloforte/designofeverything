@@ -699,6 +699,19 @@ The §9.3 completeness check shall verify each criterion in any §9.1 matrix has
 
 The sub-rule does NOT mean "every criterion needs a new REQ written before it can be used." (a)-(c) typically cover all legitimate criteria; (d) is the exception. The point is to make the grounding EXPLICIT and AUDITABLE, closing the PO-17 loophole through which ungrounded analyst-bias has historically reached §9.1 matrices (see PO-30 for the empirical evidence that motivated this sub-rule).
 
+**Top-priority-ranking sub-rule (added 2026-05-28 per DEC-0750 / PO-36).** At every §9.1 matrix construction, before scoring:
+
+```text
+1. Rank the project's top priorities for this decision BEFORE
+   scoring, independent of whether they discriminate among the
+   options under evaluation.
+
+2. Flag the case where the recommendation rests entirely on
+   secondary (non-top-priority) discriminating criteria.
+```
+
+Consequence: if the flag fires, the decision is lower-stakes than its prominence suggests — defer it per §10A.10 or choose the most-reversible option, rather than treating the secondary discriminating axis as decisive. The diagnosis (criterion-relevance vs criterion-discrimination; the constant-top-priority sub-case; the relationship to §9.2 swing-weight; the DEC-0010 evidence) is recorded in PO-36, not here — this clause is the procedure, not the teaching.
+
 ### 9.2 Weighted Evaluation via Swing-Weight Matrix (optional refinement)
 
 When the option-criterion evaluation in §9.1 involves criteria of genuinely different importance, and the positive/negative/neutral shorthand is insufficient to distinguish strong from weak signals, the project may use **weighted evaluation**. INCOSE practice for this is the **swing-weight matrix** ([Parnell & Trainor 2009, INCOSE International Symposium](https://www.incose.org/resource/2-3-1-using-the-swing-weight-matrix-to-weight-multiple-objectives/)).
@@ -1793,7 +1806,43 @@ The level of review is determined by the owner of the affected contract, subject
 
 ### 13.1 Change Classification
 
-Every change to an artifact is classified as a **revision** (preserves identity, version increments, references continue) or a **replacement** (creates a new artifact with a new identifier, original is marked superseded, references are individually evaluated). See glossary §30A for the definitions and §30A.1 for a known open concern: the artifact's owner currently classifies the change, but referencing artifacts may legitimately disagree about whether a particular change is a revision or a replacement. This is recorded as a future-work concern rather than resolved at this stage.
+Every change to an artifact is classified as a **revision** (preserves identity, version increments, references continue) or a **replacement** (creates a new artifact with a new identifier, original is marked superseded, references are individually evaluated). See glossary §30A for the definitions and §30A.1 for the open concern this once recorded: the artifact's owner classifies the change, but referencing artifacts may legitimately disagree about whether a particular change is a revision or a replacement. That concern is addressed by **§13.2** (change propagation and per-referrer review), which separates the source's classification authority from each referrer's independent disposition.
+
+### 13.2 Change Propagation and Per-Referrer Review
+
+*(added 2026-05-28 per DEC-0800; resolves the §30A.1 open concern noted in §13.1.)*
+
+Change significance is **relative to the consumer**, not intrinsic to the change. A modification the changed artifact's owner experiences as minor may break a referrer whose derivation depended on exactly what changed; the source owner cannot know what each referrer relied upon. The process therefore holds three principles governing how a change propagates to the artifacts that reference it:
+
+```text
+1. Source change is non-blocking. The owner of the changed
+   artifact classifies the change (§13.1), consults affected
+   referrers, and retains final authority; the change completes on
+   that authority. No referrer holds a veto over the source, and no
+   disagreement blocks the source's change. (This deliberately does
+   not introduce the appeals/veto mechanism that mature change-
+   governance practice avoids because it causes deadlock.)
+
+2. Each referrer holds independent disposition authority over its
+   own derivations. The source owner's classification is a proposal
+   to each referrer, not a determination binding on them. Whether a
+   change leaves a referrer's derivation intact, requires the
+   referrer to adapt, or breaks it, is the referrer's own judgment
+   about its own artifact.
+
+3. No actor performs new authoritative work on a dependency it has
+   not reviewed since that dependency changed. This governs
+   consumption, not source behavior: a referrer that has not yet
+   dispositioned how a changed dependency affects its derivation
+   must do so before deriving new authoritative work through that
+   dependency. Information that merely provides context — not
+   authoritative derivation — is exempt; there is no derivation to
+   invalidate.
+```
+
+These principles are deliberately abstract and tool-independent. A project with no tool may honor them through review discipline; a tool implementing this constitution may enforce principle 3 *structurally*, at the point where a dependency is consumed for authoritative derivation, in the same way it enforces scope boundaries (the *what* is the process commitment; the *how* is a project/tool concern). The disposition vocabulary, and the relationship to shared-module validation rights (§10A.9, which is this pattern specialized to modules with multiple consumers), are project artifacts.
+
+Principle 1 preserves the source-side classification authority of §13.1; principles 2 and 3 add the orthogonal referrer-side axis that §13.1's classification rule alone did not address. The combination serves the *bounded scope of change* motivation (§1.1): a delegate working within a contract must not have its derivations silently invalidated by an external change it never registered.
 
 ## 14. Automation Objective
 

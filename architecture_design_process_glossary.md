@@ -755,7 +755,9 @@ The terms **revision** and **replacement** are preferred in everyday use; the pa
 
 The classification of a change (revision vs. replacement) is currently the responsibility of the artifact's owner. This is the simplest rule but has a known weakness: a small textual edit that the owner of artifact A views as a *revision* may, when read by the owner of an artifact B that references A, change enough of the meaning to be a *replacement* from B's perspective. A and B may legitimately disagree on the class of the same change.
 
-This concern is recorded as a known limitation. A more conservative mechanism — for example, requiring every artifact that references A to evaluate any revision of A and either accept the unchanged reference or raise a concern to A's owner — would be safer but more costly. The process does not yet require this; it is captured here so that the issue is not silently absorbed and can be revisited as the process gains experience.
+This concern was recorded as a known limitation. A more conservative mechanism — for example, requiring every artifact that references A to evaluate any revision of A and either accept the unchanged reference or raise a concern to A's owner — would be safer but more costly.
+
+**Resolved 2026-05-28 (per DEC-0800; constitution §13.2).** The conservative mechanism is now adopted, in a refined non-blocking form that avoids the upstream-veto/deadlock failure mode: the source owner retains classification authority and the change is non-blocking (§13.1 unchanged); each referrer holds *independent disposition authority* over its own derivations (the source's classification is a proposal, not binding on referrers); and no actor performs new authoritative work through a changed dependency it has not reviewed since the change. See constitution **§13.2** for the three governing principles; the per-referrer disposition machinery generalizes the shared-module validation rights of §10A.9.
 
 ## 30B. Baseline
 
