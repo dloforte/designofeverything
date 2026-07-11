@@ -305,8 +305,13 @@ Every interpretation or adjudication that leans on an Aim **cites the AIM- id** 
 - every open question is resolved (glossary §15A);
 - every load-bearing decision is recorded (§9);
 - every requirement has a defined verification method or a
-  recorded waiver (glossary §2).
+  recorded waiver (glossary §2);
+- every Aim (glossary §12) is enacted by at least one requirement,
+  or has been explicitly retired or deferred with recorded
+  rationale.
 ```
+
+The last criterion is the **dual of the driving question** (added per DEC-1420): the driving question checks bottom-up whether every requirement is fulfilled; this criterion checks top-down whether every Aim is *enacted* — whether at least one requirement pursues each stated intent. An Aim with no enacting requirement signals that the design may not yet match the project's real intent (a coverage gap), or that the Aim is stale. Such an Aim is **dispositioned like an assumption** (§15.1) — **enacted** (a requirement is written or identified that enacts it), **retired** (§30A / glossary §29 — the intent no longer holds), or **deferred** with recorded rationale (intended but not yet pursued) — never silently left orphaned. The structural check (does at least one *enacts* edge point to the Aim?) is auditable by the tool; whether the enacting requirements *faithfully* realize the Aim's intent remains a judgment at the design-done review (an Aim carries no pass/fail verification — glossary §12).
 
 ### 3.3 Hard Requirements
 
@@ -1913,6 +1918,7 @@ Automation may assist with:
 - Drafting decision records
 - Drafting contracts
 - Detecting uncovered requirements
+- Detecting un-enacted aims (no requirement enacts a stated Aim)
 - Detecting unjustified components
 - Detecting conflicting contracts
 - Identifying affected artifacts after a change
