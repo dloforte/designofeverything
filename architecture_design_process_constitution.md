@@ -1086,6 +1086,41 @@ For **non-trivial derivations** — where alternatives exist for what the requir
 
 The rule: requirements are not exempt from §8.1's justification-quality discipline. Requirements *are* the artifacts §8.1 is designed to ensure are well-grounded. Adding a requirement without justification is the same error as adding any other design choice without justification.
 
+**Requirement-consistency sub-rule (added 2026-07-11 per DEC-1410 / PO-44).** Adding a requirement obligates an explicit **contradiction pass** of the new requirement against the existing requirement set. This pass fires on **every** requirement-add — a §10.4 derived requirement (trivial derivation included) or a §3.1 root requirement — **always**; it is not left to the add-decision's discretion. The pass shall:
+
+```text
+(a) Compare the new requirement against the existing
+    requirement set for contradiction — NOT only the
+    requirements it references or that reference it. Two
+    independently-authored requirements can conflict
+    semantically ("all data stays on-device" vs "sync
+    across devices") with no derivation or reference edge
+    between them; that no-edge case is exactly what this
+    pass exists to surface.
+
+(b) Produce a RECORDED verdict. A "no contradiction"
+    result is written down, not assumed — so that its
+    absence is itself a governance-visible omission.
+
+(c) Cite the candidate requirement ids the new requirement
+    was checked against. The recorded verdict names the
+    requirements compared, so a "no contradiction" result
+    is auditable and justified per §8.1 — not merely
+    asserted. A verdict that records a conclusion without
+    naming what was checked is insufficient.
+
+(d) Route any detected contradiction to resolution: the
+    §9.1 option-criterion tradeoff and §13 change
+    governance decide whether to revise the new
+    requirement, revise or reject the existing one, or hold
+    both with rationale (§3.2 requirement reconsideration).
+    The owner of the affected requirement(s) rules.
+```
+
+**Honest boundary — this is a mitigation, not a proof.** A recorded "no contradiction" verdict is a *checked-and-recall-limited* assessment, not a guarantee that no contradiction exists. The pass compares the new requirement against a *recalled* candidate set; low-lexical-overlap semantic contradictions, n-way or composite contradictions, and numeric/metric conflicts may escape it. The recorded verdict certifies that the pass was performed and against which candidates — not that the requirement set is proven consistent. The discipline reduces the rate of silently-admitted contradictions; it does not eliminate the possibility. A "no contradiction" verdict shall not be read as more than that (§3.2, §8.1).
+
+**Structural enforcement.** So that the pass is a *cadence* rather than trusted diligence (the PO-31 pattern — a discipline that fades from active consideration is quietly violated), the process makes it non-optional by a **structural gate at the requirement-write point**: a requirement-add that carries no recorded contradiction verdict is not admitted. The gate enforces that a verdict is *present* on every add; the verdict's *correctness* remains bounded as above (the presence-not-truth limit). How a project realizes the gate is a project/tool concern — the *what* (a recorded verdict is obligatory on every requirement-add) is the process commitment; the *how* is not specified here.
+
 ### 10.5 Load-Bearing Artifacts Remain Ever-Present
 
 Some artifacts in a project have **cross-cutting, structural impact** — every contract, decision, and iteration of the design loop must honor them. Cross-cutting requirements, foundational decisions, meta-disciplines surfaced by process observations, and load-bearing constitution sections all fit this description. Without explicit recurring visibility, these artifacts are easily drifted from: the project commits to a discipline, then quietly violates it iterations later when the discipline has faded from active consideration.
