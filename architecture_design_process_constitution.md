@@ -286,6 +286,13 @@ What is forbidden is *silent assumption* — proceeding as if a decision had bee
 
 This rule applies equally to humans, but is stated explicitly here because the inference-from-priors failure mode is more available to AI agents.
 
+**Interpretive authority and the Aim layer (added per DEC-1420).** The load-bearing sentence above — *"Only requirements and the artifacts that derive from them have authority to drive the design"* — governs **generative and gating** authority: to *drive the design* is to generate a requirement or to gate a candidate, and that authority belongs to requirements alone. An **Aim** (glossary §12) carries a different and strictly weaker authority — **interpretive**: how an ambiguous requirement is *read*, and how a conflict among otherwise-valid candidates is *adjudicated*. Interpreting a requirement is not driving the design, so admitting the Aim layer does **not** loosen the sentence above — an Aim never generates a requirement (glossary §4's two authority origins are unchanged; the requirement→Aim edge is *enacts*, an interpretive parent, never a derivation) and never gates a candidate. Because an interpretive layer is also the natural channel through which inference-from-priors could be laundered back in, two guardrails bind it here — the intent-layer specialization of this section's inference-from-priors prohibition:
+
+- **Alongside, never instead (T1).** An Aim is cited *alongside* the requirement it interprets, never *instead* of one. An Aim alone never carries a decision and never fills a missing requirement: where no requirement governs, the agent still raises a question or records an assumption per the rule above — "this aligns with our Aim of X" is not a substitute for a requirement that is absent.
+- **A genuine clash routes to reconsideration (T3).** When an Aim and a requirement genuinely clash, the response is **Requirement reconsideration** (above) — a governed §13 change that the affected requirement's owner rules — never a silent reinterpretation of the requirement past its plain meaning.
+
+Every interpretation or adjudication that leans on an Aim **cites the AIM- id** explicitly (LB · REQ-0110). Consistent with this, the SPLIT exit's *"scope or intent ambiguity"* triage (above) may consult the requirement's governing Aim(s) to interpret the intended reading before splitting or raising an open question, citing the AIM- id it leaned on.
+
 **Recursion at delegated scopes.** When DECIDE (or decomposer mode) produces a contract (§10), the contract's **delegate** (glossary §27A) treats their assigned shell as a fresh root and runs this loop inside it — including the choice between implementer and decomposer modes for their own scope. The contract owner retains authority over the shell; the delegate has freedom inside the shell but cannot alter it. The full handoff and handback workflow connecting parent to delegate iterations is **§10A *Decomposition and Delegation Workflow***.
 
 **Choosing which requirement to address next.** Among unfulfilled requirements, prefer the one whose **design space** (glossary §11A) is smallest — the most-constrained requirement, with the fewest viable solutions. Committing to a wide-design-space requirement before a constrained one risks eliminating the overlap with the constrained requirement's viable solutions. This is a feasibility-risk heuristic; it parallels the minimum-remaining-values strategy used in constraint-satisfaction problem solvers. When design spaces are comparable, break ties by (in order): what unblocks the most other work, what reduces the most project uncertainty, owner priority.
@@ -303,7 +310,7 @@ This rule applies equally to humans, but is stated explicitly here because the i
 
 ### 3.3 Hard Requirements
 
-Hard requirements are pass/fail constraints. A candidate architecture that violates a hard requirement is invalid unless the requirement is changed by its owner.
+Hard requirements are pass/fail constraints. A candidate architecture that violates a hard requirement is invalid unless the requirement is changed by its owner. This validity test is **Aim-blind** (§8): an **Aim** (glossary §12) never softens, waives, or overrides a hard requirement — a hard requirement changes only when its owner changes it (§13).
 
 ### 3.4 Optimization Objectives
 
@@ -319,6 +326,8 @@ Capability is a reasoning concept rather than a separate authoritative artifact 
 - Requirements drive design. Anything that drives design must be a requirement.
 - Anything that does not drive design is context, not authority.
 ```
+
+**A third, non-driving authority class (added per DEC-1420 — the Aim intent layer).** The two lines above partition artifacts by their power to *drive* the design, where to drive is to **generate** a requirement or to **gate** a candidate — powers that belong to requirements alone. "Context, not authority" denies a non-driving artifact any *generative or gating* authority; it does not deny that a non-driving artifact may carry a different, strictly weaker kind of authority. An **Aim** (glossary §12) is exactly such an artifact: it carries **interpretive, adjudicative, and parental** authority — it shapes *how* an ambiguous requirement is read and *how* a conflict among otherwise-valid candidates is adjudicated — yet it is itself **still barred from driving the design**. An Aim never generates a requirement (glossary §4's two authority origins, root and derived, are unchanged; the requirement→Aim edge is *enacts* — an interpretive parent, never a third generative origin) and never gates a candidate (a candidate or requirement is only better- or worse-**aligned** with an Aim, never "satisfies"/"violates" it). Only requirements generate and gate; an Aim only interprets and adjudicates, always cited alongside the requirement it interprets (§3.2, §8.1).
 
 When useful, requirements may be translated into capability statements as a way of describing what the system must be able to do before deciding how that ability should be implemented or allocated. This is helpful in distinguishing *what the system must accomplish* from *how responsibility should be divided* — and in resisting premature architectural decomposition.
 
@@ -448,6 +457,8 @@ The selected candidate is the architecture that best satisfies the stated decisi
 
 If multiple candidates are meaningfully equivalent, an arbitrary decision may be made, but the basis for treating them as equivalent should be recorded.
 
+**The Aim layer is blind to Stage 1 (added per DEC-1420).** The first stage — rejecting candidates that violate hard requirements (above; §3.3) — is **Aim-blind**. Alignment with an **Aim** (glossary §12) plays no part in whether a candidate is valid: a candidate that violates a hard requirement is rejected regardless of how well it aligns with any Aim. Aim-alignment enters **only at the second stage**, ranking among candidates that already pass *every* hard requirement (§8.1, §9.1). An Aim can therefore **tilt a tradeoff among valid candidates; it can never rescue an invalid one.**
+
 ### 8.1 Justification Quality
 
 Every selection — of an architecture, a mechanism, a contract assignment — must be justified by reference to authoritative artifacts (requirements, constraints, tradeoffs, recorded assumptions).
@@ -455,6 +466,8 @@ Every selection — of an architecture, a mechanism, a contract assignment — m
 Typicality, convention, common practice, and "what is usually done" are **not** by themselves sufficient justifications. A typical option may be selected, but only when its selection is justified by fit to the project's stated objectives. Commonness or maturity may appear as one input to a tradeoff analysis, but commonness alone never carries the decision.
 
 The standard is not that every decision be inevitable. The standard is that every decision be justifiable in terms the project has explicitly accepted as authoritative.
+
+**An Aim is a citable interpretive input, but never carries a decision alone (added per DEC-1420).** An **Aim** (glossary §12) is an authoritative artifact and so may be *cited* in a justification — to explain *how* a requirement was interpreted, or *which* among already-valid candidates was preferred as better-**aligned** with the intent. But exactly parallel to the commonness rule above, **an Aim alone never carries the decision**: Aim-alignment may sharpen or tilt a justification already grounded in a requirement, constraint, or tradeoff — it never stands in for one. A selection whose sole justification is "this better serves our Aim of X" fails this rule just as a typicality-only justification does. When an Aim is leaned on, its AIM- id is cited (LB · REQ-0110).
 
 ## 9. Decision Records
 
@@ -698,6 +711,8 @@ These four responses are not interchangeable. Each addresses a different failure
 The §9.3 completeness check shall verify each criterion in any §9.1 matrix has one of (a)-(d) recorded. A criterion with no grounding line is FAIL-MUST-REVISE.
 
 The sub-rule does NOT mean "every criterion needs a new REQ written before it can be used." (a)-(c) typically cover all legitimate criteria; (d) is the exception. The point is to make the grounding EXPLICIT and AUDITABLE, closing the PO-17 loophole through which ungrounded analyst-bias has historically reached §9.1 matrices (see PO-30 for the empirical evidence that motivated this sub-rule).
+
+**Aim-alignment as a criterion (added per DEC-1420).** Alignment with an **Aim** (glossary §12) may appear as a §9.1 criterion, but it scores candidates as better- or worse-**aligned** — never pass/fail. An Aim never gates: hard-requirement rejection is §8's Stage 1, which is Aim-blind (§3.3, §8). An Aim is **not** itself a standalone grounding line under this sub-rule; an Aim-alignment criterion is grounded through one of (a)-(d) above — typically (a), tracing to the requirement(s) that *enact* the Aim or to the Aim's governing REQ/DEC — exactly as any other criterion is grounded. The Aim's AIM- id is cited on the criterion (LB · REQ-0110).
 
 **Top-priority-ranking sub-rule (added 2026-05-28 per DEC-0750 / PO-36).** At every §9.1 matrix construction, before scoring:
 
@@ -1080,6 +1095,8 @@ The decision evaluates:
 - Alternatives considered (if any) for how the requirement could have been stated, narrowed, or broadened.
 - The justification per §8.1 (no typicality-only; logical fit to project objectives).
 
+**Interpreting "already covered" against the governing Aim (added per DEC-1420).** Judging whether a need is *already covered by an existing requirement (interpreted appropriately)* — the first bullet above — may consult that requirement's governing **Aim(s)** (glossary §12): reading the existing requirement against the Aim it *enacts* is often what settles whether the new need is already within its intended reach or genuinely uncovered. The Aim informs the *interpretation*; it never itself supplies the coverage — a need with no governing requirement is uncovered no matter how well it aligns with an Aim (§3.2, T1). Cite the AIM- id relied on (LB · REQ-0110).
+
 For **trivial derivations** — where the derived requirement is obviously implied by the parent and no alternatives plausibly exist (e.g., REQ-0010 "the tool shall represent a requirements tree" derived from REQ-0000 "provide a software tool that supports a requirements-constrained design process") — the decision may be abbreviated. The requirement's `Origin` field records the parent and a brief justification; no separate decision artifact is needed.
 
 For **non-trivial derivations** — where alternatives exist for what the requirement should be, where the requirement constrains design in non-obvious ways, or where the requirement is contested — a full §9 decision record is created, with §9.1 option-criterion evaluation if alternatives were genuinely considered. The requirement's `Origin` field references the decision.
@@ -1116,6 +1133,8 @@ The rule: requirements are not exempt from §8.1's justification-quality discipl
     both with rationale (§3.2 requirement reconsideration).
     The owner of the affected requirement(s) rules.
 ```
+
+**The governing Aim as interpretive substrate for the contradiction judgment (added per DEC-1420).** When the contradiction pass weighs whether an apparent conflict between two requirements is genuine, it may read each requirement against the **Aim(s)** (glossary §12) it *enacts*: two requirements that enact the **same** Aim are more likely in *apparent* conflict that reading both against the shared intent can reconcile, whereas requirements enacting **opposed** Aims are more likely in *genuine* tension that routes to resolution per (d) above. This is an interpretive aid to the existing judgment — **not** a change to the pass, its recall-limited scope, or its recorded-verdict discipline — and it never gates. Cite the AIM- id(s) read (LB · REQ-0110).
 
 **Honest boundary — this is a mitigation, not a proof.** A recorded "no contradiction" verdict is a *checked-and-recall-limited* assessment, not a guarantee that no contradiction exists. The pass compares the new requirement against a *recalled* candidate set; low-lexical-overlap semantic contradictions, n-way or composite contradictions, and numeric/metric conflicts may escape it. The recorded verdict certifies that the pass was performed and against which candidates — not that the requirement set is proven consistent. The discipline reduces the rate of silently-admitted contradictions; it does not eliminate the possibility. A "no contradiction" verdict shall not be read as more than that (§3.2, §8.1).
 
