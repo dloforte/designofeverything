@@ -8,13 +8,13 @@ Within this process, these terms should be used consistently so that requirement
 
 ## 1A. Artifact
 
-An **artifact** is any governed item recorded under this process — a requirement, decision, contract, catalog option, capability statement, assumption, clarification, open question, traceability link, change request, fulfillment check, invalidation history entry, or any other type the process recognizes. Every artifact is uniquely addressable, owned, versioned, and traceable.
+An **artifact** is any governed item recorded under this process — a requirement, aim, decision, contract, catalog option, capability statement, assumption, clarification, open question, traceability link, change request, fulfillment check, invalidation history entry, or any other type the process recognizes. Every artifact is uniquely addressable, owned, versioned, and traceable.
 
 The term *artifact* is the umbrella under which the process's specific types live. An artifact's type is one of its properties, not its immutable identity: over time, an artifact may shift type if its primary purpose evolves (a convention promoted to a requirement, for example). The artifact's unique global identifier remains constant across such shifts.
 
 A reference from one artifact to another is an **artifact reference**. An artifact reference points at its target by the target's eternal global identifier; any human-readable type decoration accompanying the reference (e.g., the `REQ-` in `REQ-90`) is a display convention and not the basis of resolution. References therefore continue to resolve correctly even when the target's type decoration changes.
 
-An artifact reference may optionally carry a **semantic role** drawn from a project-extensible vocabulary — for example: *supports*, *refutes*, *supersedes*, *satisfies*, *derives-from*, *depends-on*, *addresses*, *justifies*, *invalidates*. The role indicates the nature of the relationship between the referencing and referenced artifacts. Roles are optional; the reference's polymorphism is preserved when no role is set. When roles are present, queries and reasoning may rely on them to make traceability questions precise (e.g., *"which requirements does this contract satisfy?"*). The role vocabulary is itself a project artifact (see §17 for analogous catalog handling).
+An artifact reference may optionally carry a **semantic role** drawn from a project-extensible vocabulary — for example: *supports*, *refutes*, *supersedes*, *satisfies*, *derives-from*, *depends-on*, *addresses*, *justifies*, *invalidates*, *enacts*, *serves*, *hinders*. The role indicates the nature of the relationship between the referencing and referenced artifacts. Several of these roles carry reserved meanings within this process: *enacts* records a requirement's **interpretive parent** — the Aim (§12) it puts into practice, the "why" — deliberately distinct from *derives-from*, which records authority origin (§4); *serves* and *hinders* record a coarse directional signal, namely a requirement or decision that advances (*serves*), or that works against without violating (*hinders*), an Aim it does not itself enact; and *satisfies* / *violates* remain reserved for the **requirement↔candidate** relationship (a candidate satisfies or violates a requirement) and are never applied to an Aim, which a candidate or requirement can only be better or worse **aligned** with (§12). Roles are optional; the reference's polymorphism is preserved when no role is set. When roles are present, queries and reasoning may rely on them to make traceability questions precise (e.g., *"which requirements does this contract satisfy?"*). The role vocabulary is itself a project artifact (see §17 for analogous catalog handling).
 
 An artifact reference is distinct from a **traceability link** (§28), which is a labeled, typed edge derived from artifact references for the purpose of querying the design.
 
@@ -35,6 +35,7 @@ Every requirement should have:
 - A scope
 - A rationale or justification
 - Links to related requirements, decisions, contracts, assumptions, and verification methods
+- Optionally, the Aim(s) it enacts (§12) — an upward "why" reference, distinct from the requirement's origin and its derivation links
 - One or more verification methods (or a recorded justification if intentionally unverified)
 ```
 
@@ -97,6 +98,15 @@ The INCOSE Guide expands SMART into 42 specific rules; SMART is the high-level m
 **SMART is graduated by the requirement's level of abstraction.** The same abstraction gradient that governs contracts (§10.2, §10A.10) and architecture (§11.5) applies to requirements:
 
 ```text
+- Aims (§12) — the intent layer above the root requirement — sit
+  at a deliberately NON-SMART rung. An Aim is Specific enough to be
+  unambiguous about intent and Relevant to the project's purpose,
+  but is intentionally not Measurable or Time-bound. Non-SMART is
+  the Aim's DEFINING property, not an exception to be waived: an
+  Aim expresses direction, and the Measurable / Time-bound criteria
+  are supplied by the requirements that enact it, not by the Aim
+  itself.
+
 - Higher-level (root and near-root) requirements may legitimately
   be less SMART. They should be Specific enough to be unambiguous
   about intent and Relevant to the project's purpose, but full
@@ -116,7 +126,7 @@ The INCOSE Guide expands SMART into 42 specific rules; SMART is the high-level m
   applied.
 ```
 
-**Refinement and propagation.** When a higher-level requirement is later refined (typically becoming more SMART), the change is governed by §13 and classified under §30A. Per §10A.11 *contracts evolve* and the same principle applied to requirements: **all requirements derived from a refined parent must be re-evaluated against the refined parent**. Some derived requirements may need to be updated; some may now contradict the refined parent and require their own revision. Tracking the propagation of refinements is part of the change-governance discipline.
+**Refinement and propagation.** When a higher-level requirement is later refined (typically becoming more SMART), the change is governed by §13 and classified under §30A. Per §10A.11 *contracts evolve* and the same principle applied to requirements: **all requirements derived from a refined parent must be re-evaluated against the refined parent**. Some derived requirements may need to be updated; some may now contradict the refined parent and require their own revision. Tracking the propagation of refinements is part of the change-governance discipline. The same propagation rule extends upward to the intent layer: when an **Aim (§12)** is revised (§30A), every requirement that *enacts* it must be re-evaluated against the revised Aim, exactly as derived requirements are re-evaluated against a refined parent — some may need updating, and some may now sit in tension with the revised intent and route to §3.2 requirement reconsideration.
 
 When a requirement cannot be made fully SMART even at the leaf level (e.g., a research objective whose endpoint is genuinely uncertain), this should be recorded explicitly in the requirement's *Rationale* rather than silently producing a non-SMART requirement.
 
@@ -186,6 +196,8 @@ External authorities may include a project owner, customer, law, regulation, con
 
 Internal context artifacts such as decisions, clarifications, assumptions, catalog options, tradeoff analyses, and risk analyses may explain why a requirement was created, changed, derived, or revised. However, they do not replace requirement authority. They provide reasoning context for how existing requirements led to new or revised requirements.
 
+An **Aim (§12)** is a further interpretive parent that, like those context artifacts, does **not** confer authority. A requirement may record the Aim(s) it *enacts* (§1A): the Aim is the requirement's *interpretive* parent — the "why" it exists — and this is explicitly **not** a third authority origin. The two authority origins above (Root, Derived) are unchanged. An Aim never originates or confers requirement authority, never generates a requirement, and never gates a candidate. The *enacts* reference and the authority-origin reference are two separate edges on the requirement — a **two-parent firewall** that keeps intent interpretive and keeps requirements the sole authoritative drivers of the design.
+
 A requirement without an origin and authority is not sufficiently justified within this process.
 
 ## 5. Root-Level Requirement
@@ -204,6 +216,8 @@ INCOSE systems-engineering practice ([SEBoK — System Requirements Definition](
 - **System requirements** — what the system shall do, expressed in *technical, measurable, SMART terms* (per §2.1). The systems-engineering view.
 
 The transformation from stakeholder requirements to system requirements is a structured step in INCOSE workflow. A single stakeholder need may produce multiple system requirements; close stakeholder coordination is required to keep the transformation faithful.
+
+The transformation does not fully **consume** the stakeholder intent. The standing "why" behind a stakeholder need — the direction it expresses — may be retained as an **Aim (§12)**: a persistent interpretive substrate that the resulting system requirements *enact*. Where the transformation into system requirements captures *what the system shall do*, the retained Aim keeps *why* available for later interpretation and adjudication, rather than leaving it implicit once the requirements are written.
 
 In this process, the distinction maps onto root-level vs. derived requirements but is not identical:
 
@@ -240,6 +254,8 @@ A derived requirement exists because it is necessary or useful to satisfy, prese
 A derived requirement may be explained by context artifacts such as decisions, assumptions, clarifications, catalog options, tradeoff analyses, physical facts, technology choices, decomposition logic, or risk analysis. These artifacts help explain the reasoning, but the authority of the derived requirement still flows from requirements.
 
 A derived requirement must reference the requirement or requirements from which it is derived.
+
+Separately from its derivation, a requirement may also record the Aim(s) it *enacts* (§12, §1A) — an upward reference to the intent it puts into practice. This *enacts* edge is distinct from derivation: derivation records where the requirement's **authority** comes from (§4), whereas the *enacts* edge records the requirement's **interpretive parent** — the Aim whose intent the requirement realizes. The two are recorded as separate references — the §4 two-parent firewall.
 
 ## 8. Parent and Child Requirements
 
@@ -332,32 +348,40 @@ The size and shape of the design space affect design ordering. When multiple req
 
 Design spaces are not always known precisely. Consulting the catalog (§17) and exploring outside it gives the designer evidence about how large or small a particular design space is.
 
-## 12. Objective
+## 12. Aim
 
-An **objective** is a statement of intent, purpose, or desired direction.
+An **aim** is a first-class artifact recording an authoritative statement of intent, purpose, or desired direction — the "why" standing above a region of the requirements tree. Its display identifier is `AIM-NNNN`.
 
-Within this process, an objective is not necessarily a separate artifact type. If an objective drives the design authoritatively, it should be represented as a requirement. If it merely explains intent, it may appear as context, clarification, rationale, or a contract objective field.
+An Aim carries **interpretive, adjudicative, and parental authority**: it governs how an ambiguous requirement is read, it informs how otherwise-valid candidates are compared, and it is the interpretive parent of the requirements that enact it (§4, §1A). This authority is deliberately **non-generative and non-gating**.
 
-Examples:
+An Aim is **never pass/fail**. Unlike a requirement, an Aim is not something a candidate can *satisfy* or *violate*; a candidate or a requirement is only better or worse **aligned** with an Aim (a satisficing relationship). The verbs *satisfies* and *violates* stay reserved for the requirement↔candidate relationship (§13, §1A). An Aim therefore never gates a candidate and never brings a requirement into being — it informs interpretation and adjudication only.
 
-```text
-Root-level objective requirement:
-REQ-000: Provide a tool that allows users to interact with maps for common map-related tasks.
+An Aim is the **interpretive parent, never the authority parent.** A requirement records the Aim(s) it *enacts* (§1A) as an upward "why" reference — distinct from, and additional to, its §4 authority origin (root or derived) and its §7 derivation parent. Because an Aim is admitted only as an interpretive parent and never as a third authority origin, it can never confer authority on a requirement or generate one. §4's two authority origins are unchanged (see §4 for the two-parent firewall).
 
-Optimization objective requirement:
-REQ-090: Minimize map interaction latency while satisfying all mandatory requirements.
+**Type-level no-verification.** An Aim is not independently verified pass/fail. As a requirement may record a verification waiver (§2), the Aim type carries a type-level waiver: an Aim is verified *indirectly*, through the requirements that enact it. Its correctness lives in whether those requirements, taken together, faithfully put its intent into practice.
 
-Contract objective field:
-The renderer's objective is to produce visual map output from map scene state.
-```
+**Lifecycle.** An Aim is owned near the root of the requirements structure (§5, §26), close to the external authority's intent. It sits at a deliberately non-SMART top rung of the abstraction gradient (§2.1) — Specific enough to be unambiguous about intent and Relevant to the project's purpose, but intentionally not Measurable or Time-bound. When an Aim is revised (§30A), the requirements that enact it must be re-evaluated against the revision (§2.1).
 
-The term objective should therefore be interpreted by where it appears:
+**Coarse alignment signals.** Beyond the Aims a requirement enacts, a requirement or decision may record a coarse directional signal toward any Aim it touches: it *serves* an Aim it advances, or *hinders* an Aim it works against without violating (§1A). These signals are non-gating — they surface where intent-level tradeoffs lie (for §9.1 comparison and for the requirement-consistency adjudication of §10.4), never a pass/fail verdict.
+
+**Disambiguation — the word "objective".** The Aim type does not absorb every use of the word *objective*, which retains its distinct existing meanings:
 
 ```text
-- In the requirements tree: an authoritative requirement.
-- In a contract: the purpose of that contract boundary.
-- In a decision record or clarification: explanatory context or intent.
+- Optimization requirement (§14): an authoritative requirement
+  defining a direction to maximize or minimize among
+  otherwise-valid candidates (e.g., REQ-090 "minimize latency").
+  This is a requirement that drives selection directly — not an Aim.
+
+- Contract objective field (§21): the stated purpose of a contract
+  boundary. This is a field on a contract artifact — not an Aim.
+
+- Explanatory intent in a decision record or clarification:
+  reasoning context — not an authoritative artifact of any kind.
 ```
+
+The dividing line is rigor and role. An objective that drives the design **authoritatively and rigorously** should be represented as a requirement (§2). An objective that expresses **authoritative-but-non-rigorous intent** — direction that guides interpretation and adjudication without gating — is an Aim.
+
+A concrete intended-usage narrative (a Scenario / use-case) is a planned sibling type in this same non-gating intent layer; it is not defined here.
 
 ## 13. Mandatory Requirement
 
@@ -372,6 +396,8 @@ The term **mandatory requirement** is useful when it is necessary to distinguish
 An **optimization requirement** is an authoritative requirement that defines a direction to maximize, minimize, improve, reduce, or optimize rather than a simple pass/fail condition.
 
 Optimization requirements are used to compare otherwise-valid candidates.
+
+An optimization requirement is an **authoritative requirement** that drives candidate selection directly; it is **not** an Aim (§12). The two were once both loosely called "objectives"; the term *Aim* now names the non-gating intent type, leaving "optimization requirement" unambiguous.
 
 Examples:
 
@@ -598,7 +624,7 @@ A contract proscribes the *shell* of a design space — the boundaries within wh
 
 The skyscraper analogy is useful: the designer of a single floor is given the floor's outer dimensions, structural supports, and connection points for electrical, mechanical, and plumbing systems. Within those, the floor designer chooses freely. The boundaries themselves belong to a higher-level designer.
 
-A contract defines objective, inputs, outputs, ownership, exclusions, constraints, authority, and change rules.
+A contract defines objective, inputs, outputs, ownership, exclusions, constraints, authority, and change rules. The contract **objective** field names the purpose of that contract boundary; it is a field on a contract artifact and is **not** an Aim (§12) — the shared word *objective* is incidental.
 
 The core contract principle is:
 
