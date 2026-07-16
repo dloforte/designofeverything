@@ -1,5 +1,9 @@
 # Requirements-Constrained Architecture Design Process
 
+Copyright © 2026 Dan Lo Forte. All rights reserved.
+Revision: 0.1
+Date: 2026-07-15
+
 ## 1. Purpose
 
 This document defines a formal process for deriving, evaluating, justifying, and governing software architecture from requirements.

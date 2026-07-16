@@ -1,5 +1,9 @@
 # Architecture Design Process Glossary
 
+Copyright © 2026 Dan Lo Forte. All rights reserved.
+Revision: 0.1
+Date: 2026-07-15
+
 ## 1. Purpose
 
 This glossary defines key terminology for the requirements-constrained architecture design process.
