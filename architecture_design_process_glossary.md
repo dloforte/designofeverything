@@ -241,7 +241,7 @@ In this process, the distinction maps onto root-level vs. derived requirements b
 - A **root-level requirement** (§5) is recorded in the language closest to the external authority's intent — which may be stakeholder-language for a non-technical owner, or system-language if the owner is technical. The requirement is *root* because of its authority origin (external), not because of its language.
 - A **derived requirement** (§7) is produced through the design process, typically refining or transforming a root-level requirement into more technical terms.
 
-For projects with **multiple stakeholders, non-technical owners, or regulated industries**, the explicit stakeholder/system distinction is valuable: elicit stakeholder requirements first, then derive system requirements through analysis with traceability preserved. The transformation step is part of the §3.1 *Starting a Project* workflow.
+For projects with **multiple stakeholders, non-technical owners, or regulated industries**, the explicit stakeholder/system distinction is valuable: elicit stakeholder requirements first, then derive system requirements through analysis with traceability preserved. The transformation step is part of the §3.1 *Starting a Project* workflow. §3.1 records this as the recommended-default aims-first opening move: articulate the Aim(s), then author root-level requirements that enact them.
 
 For projects with a **single technical owner**, the distinction may remain implicit — root-level requirements are usually expressed in near-system-requirement form already, and a separate stakeholder-requirement layer is overhead without benefit.
 

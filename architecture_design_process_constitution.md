@@ -12,7 +12,7 @@ The purpose of the process is to reduce reliance on intuition alone by making ar
 
 The process does not assume that requirements uniquely determine a single correct architecture. Instead, it treats architecture as a requirements-constrained decision process in which valid candidate architectures are generated, compared, selected, recorded, and governed.
 
-**Operational note (added 2026-05-24 per DEC-0690 / PO-31).** This document is authoritative *reference*; the disciplines encoded herein are made actively-checked at agent draft-time via an operational *cadence specifier* maintained per project (canonical name: `tool/AGENT_PRIMING.md`). Agent sessions working with this constitution shall load the project's priming document at session start, before any artifact-touching work. The priming document specifies *when* each constitutional discipline is to be actively checked during artifact generation; this document specifies *what* the disciplines are and *why* they apply. If the priming document and this document disagree on substance, this document is authoritative and the priming document is updated to reconcile. The priming document is a cadence specifier, not a re-statement; it must not duplicate the substance of this document — it points into it. Projects adopting this constitution maintain their own per-project priming document; the canonical example in the *designofeverything* project is `tool/AGENT_PRIMING.md`.
+**Operational note (added 2026-05-24 per DEC-0690 / PO-31).** This document is authoritative *reference*; the disciplines encoded herein are made actively-checked at agent draft-time via an operational *cadence specifier* maintained per project (canonical name: `tool/AGENT_PRIMING.md`). Agent sessions working with this constitution shall check for the project's priming document at session start, before any artifact-touching work, and load it if present. The priming document specifies *when* each constitutional discipline is to be actively checked during artifact generation; this document specifies *what* the disciplines are and *why* they apply. If the priming document and this document disagree on substance, this document is authoritative and the priming document is updated to reconcile. The priming document is a cadence specifier, not a re-statement; it must not duplicate the substance of this document — it points into it. Projects adopting this constitution may maintain their own per-project priming document (recommended); the canonical example in the *designofeverything* project is `tool/AGENT_PRIMING.md`.
 
 ### 1.1 Motivation
 
@@ -103,18 +103,39 @@ Requirements may include both hard constraints and optimization objectives.
 
 ### 3.1 Starting a Project
 
-A new project is started by identifying the external authority and recording the root-level requirement(s) authored by that authority.
+A new project is started by identifying the external authority and recording the root-level requirement(s) authored by that authority. Root-level requirements are the sole authoritative drivers of the design (§3.2, §4); their authority origin is always **root** — the external authority — and the recommended opening move below does not change that.
 
-The first action in the process is therefore:
+**Recommended default — the aims-first opening move.** The recommended (not mandatory) way to open a project is for the external authority — typically the user, often with AI assistance — first to articulate the project's **Aims** (glossary §12: an authoritative statement of intent, purpose, or desired direction — the "why"), and then to author root-level requirements that **enact** those Aims, making the intent concrete.
+
+- For a **greenfield** project, the external authority defines the Aims directly.
+- For an **existing** project, the Aims may be user-defined from project knowledge, or **extracted** from the existing project by analysis. The extraction path is governed by the brownfield *analyze → recommend → confirm* flow, which is a separate decision and is not defined here; this section only records that an existing project's Aims may be so obtained.
+
+Authoring the root-level requirements that enact the Aims is what makes the intent concrete: **the same external authority** hardens its stated intent into root-level requirements. This is emphatically **not** a derivation of requirements *from* Aims. An Aim never originates or authorizes a requirement (§4; glossary §4, §12). The requirement records the Aim(s) it enacts with the **`enacts`** role (glossary §1A, §12) — the Aim is the requirement's *interpretive* parent (the "why"), recorded on a **separate edge** from the requirement's authority origin. The requirement's authority origin remains **root** (§4). Aims are **not** a third authority origin; they remain non-generative, non-gating, and optional interpretive intent (§3.2, §4, §8) — they inform how a requirement is read and how otherwise-valid candidates are compared; they never drive the design.
+
+The first actions in the process are therefore:
 
 ```text
+0. (Recommended default) Articulate the project's Aim(s) — the
+   intent / "why" / direction (glossary §12). Greenfield: the
+   external authority defines them directly. Existing project:
+   user-defined from project knowledge, or extracted via the
+   brownfield analyze -> recommend -> confirm flow (a separate
+   decision, not defined here).
 1. Identify the external authority for this project
    (project owner, customer, mission statement, regulation, etc.).
-2. Elicit the root-level requirement(s) from that authority.
-3. Record each root-level requirement with its origin and owner.
+2. Author the root-level requirement(s) from that authority.
+   Where Aim(s) were articulated in step 0, author root-level
+   requirements that ENACT those Aims (glossary §1A `enacts`),
+   making the intent concrete. The requirements' authority
+   origin is ROOT (§4) — the external authority — not the Aims.
+3. Record each root-level requirement with its origin and owner,
+   and the Aim(s) it enacts (a separate `enacts` edge — the
+   two-parent firewall, §4).
 ```
 
-Subsequent requirements are derived from root-level requirements as the project proceeds. Root-level requirements may also be added later if new external authority is discovered; root-level does not mean earliest-known. (See glossary §5.)
+A project **may still open directly with a root-level requirement**, without first articulating an Aim: the aims-first move is a recommended default, not a gate. When Aims are articulated, each is subject to the enactment-coverage discipline at design-done (§3.2 *Termination*) — every Aim must be enacted by at least one requirement, or explicitly retired or deferred with recorded rationale.
+
+Subsequent requirements are derived from root-level requirements as the project proceeds. Root-level requirements — and Aims — may also be added later if new external authority or intent is discovered; root-level does not mean earliest-known. (See glossary §5; the stakeholder-requirement / retained-Aim basis of this opening move is glossary §5A.)
 
 ### 3.2 Driving the Design Forward
 
