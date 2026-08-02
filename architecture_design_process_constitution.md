@@ -14,6 +14,8 @@ The process does not assume that requirements uniquely determine a single correc
 
 **Operational note (added 2026-05-24 per DEC-0690 / PO-31).** This document is authoritative *reference*; the disciplines encoded herein are made actively-checked at agent draft-time via an operational *cadence specifier* maintained per project (canonical name: `tool/AGENT_PRIMING.md`). Agent sessions working with this constitution shall check for the project's priming document at session start, before any artifact-touching work, and load it if present. The priming document specifies *when* each constitutional discipline is to be actively checked during artifact generation; this document specifies *what* the disciplines are and *why* they apply. If the priming document and this document disagree on substance, this document is authoritative and the priming document is updated to reconcile. The priming document is a cadence specifier, not a re-statement; it must not duplicate the substance of this document — it points into it. Projects adopting this constitution may maintain their own per-project priming document (recommended); the canonical example in the *designofeverything* project is `tool/AGENT_PRIMING.md`.
 
+**Operational note — the Interpretation Guide (added 2026-08-02 per DEC-1610).** This constitution and its glossary are the authoritative reference, and are kept deliberately concise. A third, portable document — the **Interpretation Guide** (`architecture_design_process_interpretation_guide.md`), an L1 companion shipped alongside the constitution and glossary — accompanies them as an *interpretive, non-authoritative* layer: it records the *intent* behind terse rules, *resolved ambiguities*, and *worked examples*, keyed by section. It is consulted **on-demand, when a reader perceives ambiguity in a section** (not read every session), and it **introduces no new rule** — if the Guide and this constitution or the glossary ever disagree on substance, the authoritative document wins and the Guide is corrected (the same precedence the priming document lives under). A section with a known interpretive seam may carry a terse `(see Interpretation Guide §X.Y)` pointer, added only where warranted so the authoritative documents stay concise. New Guide entries are added, §13-governed, as ambiguities are surfaced and resolved — the glossary §15A resolved-question lifecycle applied to constitutional interpretation. The Guide is distinct from the decision log: decisions (§9) are the chronological amendments; the Guide is the curated, current annotation of the two authoritative documents.
+
 ### 1.1 Motivation
 
 The process exists to address three concerns that recur in real projects:
@@ -1667,24 +1669,27 @@ DC7  Single-implementer tractability                   weight 18
      reasonable cognitive load? Yes → favor leaf.
 ```
 
-**Scoring.** Each criterion's contribution is `+` (favors decompose), `−` (favors leaf), or `~` (neutral; does not discriminate). The contribution magnitude is the criterion's weight; the sign is the direction. Sum to get the weighted total.
-
-**Thresholds.**
+**Reading the rubric (revised per DEC-1610).** Mark each criterion's lean — `+` (favors decompose), `−` (favors leaf), or `~` (neutral; does not discriminate). The weights are a **coarse importance ordering** — which criteria count more for this decision — **not** an arithmetic to a fixed cutoff. Read the verdict from the pattern, per the **§9.1 matrix-readability discipline** that governs every other matrix in this process:
 
 ```text
-≥ +20  → DECOMPOSE.    The scope has structural support
-                       for sub-contracts.
+CLEAR WINNER → DECOMPOSE or LEAF. One direction plainly
+               predominates — the higher-importance criteria
+               favor it and no important criterion strongly
+               opposes. The call is readable from the cells.
 
-≤ −20  → LEAF.         The scope is correctly a single
-                       implementer's work.
-
-−20 < total < +20      → JUDGMENT CALL. No structural
-                       recommendation; invoke §3.2
-                       tie-breaking questions to the
-                       owner, or escalate to §9.2
-                       swing-weight evaluation per
-                       PO-15.
+NEAR-TIE     → JUDGMENT CALL. The important criteria are
+               genuinely split, or only low-importance
+               criteria discriminate. A genuine near-tie is
+               low-stakes (§9.1 top-priority sub-rule /
+               DEC-0750), so DEFAULT to the more reversible
+               option — IMPLEMENTER mode (decompose later if
+               the scope proves too big; un-decomposing is
+               costly — §10A.10). Raise a §3.2 tie-breaking
+               question to the owner only for a
+               high-consequence scope.
 ```
+
+There is deliberately **no fixed numeric threshold**. An absolute cutoff is not invariant to the criteria set — §10A.13.6 itself invites *augmented criteria* (below), which change the weight sum and would silently re-scale any fixed number — so "clear winner vs near-tie" is *read*, not computed. The threshold's only purpose was to separate a decisive signal from a near-tie; the §9.1 readability judgment does that directly, and the near-tie's default (implementer, the more reversible option) resolves what an earlier draft left split between "route to the owner" and "prefer implementer when in doubt." (See the **Interpretation Guide, §10A.13.6**, for the worked reading, the scale-invariance reasoning, and why a qualitative read is preferred over any percentage.)
 
 **Per-contract criterion augmentations.** The DC1–DC7 set is the default. Each contract being audited may have decision-local concerns that materially discriminate beyond DC1–DC7. The recommended pattern is to add 1–3 *augmented criteria* (label them DC-FN-a, DC-FN-b, etc., where FN identifies the contract being audited) capturing concerns specific to that contract. Augmented criteria supplement DC1–DC7 within the same matrix; their weights are pre-committed per PO-17; honest augmentations meet PO-14's anti-gaming heuristics (pre-commitment test; hypothetical-alternative test; reframe-vs-add preference).
 
@@ -1692,7 +1697,7 @@ DC7  Single-implementer tractability                   weight 18
 
 **Rubric stability.** The DC1–DC7 set is recommended as the default but is not constitutionally frozen. A project may add criteria (with anti-gaming guardrails per PO-14), revise weights based on experience, or replace the rubric entirely if it develops a better tool. Changes are §13 governed; the rubric's content is part of the constitution and its evolution follows the constitution's revision discipline.
 
-**Provenance.** The rubric was developed during the project that first exercised this constitution (the *designofeverything* tool project) through retroactive audits of seven top-level sub-contracts (DEC-0410..DEC-0470). It was subsequently exercised in two F-level sub-decompositions (F3 via DEC-0480; F6 via DEC-0500) where the +66 and +98 weighted scores respectively produced unambiguous DECOMPOSE recommendations, and in the four retroactive LEAF affirmations (−58 to −100) where the negative scores produced unambiguous LEAF affirmations. The threshold of ±20 was calibrated against these exercises.
+**Provenance.** The rubric was developed during the project that first exercised this constitution (the *designofeverything* tool project) through retroactive audits of seven top-level sub-contracts (DEC-0410..DEC-0470). It was subsequently exercised in two F-level sub-decompositions (F3 via DEC-0480; F6 via DEC-0500) where the +66 and +98 weighted scores respectively produced unambiguous DECOMPOSE recommendations, and in the four retroactive LEAF affirmations (−58 to −100) where the negative scores produced unambiguous LEAF affirmations. Those were all **clear winners** — the wide margins (+66/+98; −58 to −100) made visible exactly what the clear-winner reading above now names directly; the fixed ±20 threshold they originally calibrated is **retired per DEC-1610** in favour of that reading.
 
 **The forcing function in summary.** Decomposition is a *means*; *fulfillment of requirements* is the *end*. The end is enforced by implementation-done at the leaves, by the driving question's repeated check, and by the parent's responsibility to verify progress. Decomposition that does not lead toward implementation is decomposition that is failing its purpose.
 
