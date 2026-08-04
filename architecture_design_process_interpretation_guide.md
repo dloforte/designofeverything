@@ -190,6 +190,20 @@ add/replace criteria (with PO-14 anti-gaming guardrails) — when either holds:
 Absent a trigger, the default ordering stands. Recalibration is a §13 change
 recorded as a decision (§9).
 
+### §13.3 — the pending window: why pull-not-push, and forced-ruling-not-auto-accept
+
+**Governing decision:** DEC-1620 (grounded in RI-0360; PO-46 is the surfaced gap). **See also:** §13.2 (the landed window), §10A.6 (sequencing), §8 / §8.1 (Stage-1 blind; never carries a decision alone), §15.1 (provisional adoption), §26 (owner authority).
+
+**The seam.** §13.2 surfaces a *landed* change's referrers and gates new work through an un-reviewed changed dependency. But a change request spends time **pending** — issued, not yet ruled — and during it a worker several hops downstream can keep building against requirements a known change will soon revise or remove, because §13.2's cascade only reaches them once the change *lands*. §13.3 adds the pending-window provisions; two of its choices are easy to misread.
+
+**Why the forward mark is PULL, not push.** The mark is a *state on the affected artifacts*, met when a dependent reads the artifact or picks up its work — not a notification pushed to a channel. For a context-limited AI-agent delegate this is the reliable form: an agent does not durably watch an inbox, and broadcast notice degrades to noise at scale (notification fatigue). It is the **same graph traversal** as §13.2's referrer-surfacing, fired on the *proposed* rather than the *applied* state — reuse, not a parallel mechanism. The one thing it must do that the landed gate never does is **retract**: a landed change never un-lands, but a pending change can be rejected or modified, so its mark is cleared when the affected set changes.
+
+**Why the impact estimate is a suggestion, never a gate.** It is the change-governance sibling of the commonness rule (§8.1) and the Aim (§3.2 / §8): a citable, fallible input that tilts *scheduling* (how affected work proceeds; how the change is prioritized) but never a candidate's *validity*. "A guess beats no guess" — a fallible estimate lets downstream work avoid wasted effort — but a "low impact" guess is recorded, not asserted, and never proves the absence of impact (the DEC-1410 presence-not-truth parallel). Where the tool can compute the true downstream fan-out from the traceability graph, that count is a sanity-check on the guess, not a replacement for it.
+
+**Why the aging terminal FORCES A RULING, not an auto-accept.** The owner-ruled reading (DEC-1620, OQ-1620-c): a submitted change request was submitted for a reason, so it must be **addressed** — but "addressed" means the affected owner **rules** it (accept / reject / modify), not that silence becomes consent. Apache-style *lazy consensus* (silence → auto-accept) was **rejected**: it resolves by the very *neglect* the backstop exists to prevent, and it erodes the owner's veto-by-inaction. The owner keeps full reject authority (§13, §26); the aging backstop removes only the option of *never deciding*. This preserves "the owner rules the change" as **rules, not rules-by-neglect**.
+
+**Worked example.** A change request at a high level will, on resolution, remove a requirement a subsystem three hops down depends on. Landed-window only: the subsystem keeps building until the change lands and the cascade reaches it — wasted work. Under §13.3: at CR-issue the subsystem's governing requirement is marked pending (forward notice); the issuer's "high impact" estimate + the graph fan-out tell the subsystem to pause or proceed only under a §15.1 provisional assumption; §10A.6 has the common parent sequence the change ahead of the subsystem work; and if the owner sits on the change, its age escalates until the owner is *forced to rule* it — never until it auto-accepts.
+
 ---
 
 ## Adding to this Guide

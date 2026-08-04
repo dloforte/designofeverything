@@ -1395,6 +1395,8 @@ Multiple delegates working on sibling contracts under a common parent will somet
 
 The principle: **coordination flows through the common parent, not laterally between delegates**. This preserves the contract concept's integrity. Each delegate is bound to their contract; only the parent has authority to alter it.
 
+**Sequencing a known-impact pending change (added per DEC-1620).** When a *pending* change request's downstream impact is known and high (§13.3), sequencing matters: resolving it before investing further in the work it governs is preferred — *last responsible moment* (§10A.10) and §15.1 (provisional adoption exists only to avoid blocking *productive* work) both favour not building on a requirement a known change will soon revise or remove. The common parent sequences the affected sibling scopes; this is the same common-parent-coordinates principle, applied in time rather than across scope.
+
 ### 10A.7 Integration and re-evaluation at the parent
 
 When the parent accepts a delegate's handback, the parent integrates the result into their own scope. The parent's next iteration of the §3.2 loop re-asks the driving question with the delegate's contribution included. As more sibling contracts complete and are accepted, the parent's unfulfilled-requirements count decreases. When the parent's scope's driving question answers YES — all requirements fulfilled, all sub-contracts in the fulfilled state, all assumptions accepted, all open questions resolved, all decisions recorded, all verification methods defined — the parent's contract itself is fulfilled. The parent then hands back to *their* parent, and so on, until the recursion bottoms out at the project root.
@@ -1889,6 +1891,7 @@ A change request should identify:
 - What is proposed to change
 - Why the change is needed
 - Which requirements, decisions, contracts, and assumptions are affected
+- The issuer's coarse downstream-impact estimate, recorded at creation (§13.3)
 - Who owns the affected artifacts
 - What review level is required
 - Whether the change is approved, rejected, deferred, or superseded
@@ -1938,6 +1941,52 @@ These principles are deliberately abstract and tool-independent. A project with 
 
 Principle 1 preserves the source-side classification authority of §13.1; principles 2 and 3 add the orthogonal referrer-side axis that §13.1's classification rule alone did not address. The combination serves the *bounded scope of change* motivation (§1.1): a delegate working within a contract must not have its derivations silently invalidated by an external change it never registered.
 
+§13.2 governs the **landed** window — a change already classified and applied. Its **pending-window** complement — forward notice to a pending change's downstream dependents, the issuer's impact estimate, and the aging backstop against starvation — is **§13.3** (added per DEC-1620).
+
+### 13.3 Pending Change Requests — forward notice, issuer impact estimate, and the aging backstop
+
+*(added per DEC-1620; the **pending-window** complement to §13.2's **landed-window** per-referrer review. Intent + worked reading: see Interpretation Guide §13.3.)*
+
+§13.2 governs a change once it has **landed** — classified and applied. A change request also has a **pending window**: issued but not yet ruled on, during which its eventual effect on downstream work is *foreseeable but not yet real*. Three provisions govern that window (each a tool-independent *what*; a tool may realize it structurally — the *how* is a project concern, as in §13.2):
+
+```text
+1. Forward notice. When a change request is opened, the artifacts
+   its resolution would affect — the governing artifact and its
+   TRANSITIVE downstream dependents, found by the same traversal
+   §13.2 uses to surface a landed change's referrers, but fired on
+   the PROPOSED state — are marked as having a pending change against
+   them. The mark is PULL-surfaced (a dependent meets it when it
+   reads the affected artifact or picks up its work), not a push, and
+   is RETRACTED if the request is rejected or modified so the affected
+   set changes. This is one graph traversal at two trigger points
+   (proposed vs applied); it does not alter §13.2's landed-window gate.
+
+2. Issuer impact estimate. The issuer records, at creation, a coarse
+   DOWNSTREAM-IMPACT estimate — a deliberately heuristic, fallible
+   guess at how much downstream work the change would disturb. It is a
+   SUGGESTION: it guides how possibly-affected work proceeds (continue,
+   proceed under a recorded provisional assumption per §15.1, or pause)
+   and seeds the change's application-priority (provision 3). It is
+   NEVER a gate — it neither validates nor invalidates a candidate
+   (Stage-1 rejection is §8, estimate-blind) and never carries a
+   decision alone (§8.1). A "low impact" estimate is a recorded, not
+   asserted, judgment (§8.1), and fallible: a guess reduces wasted
+   work, it does not prove the absence of impact.
+
+3. Aging backstop. A change request's application-priority rises
+   monotonically with its AGE (seeded by the provision-2 estimate,
+   rate-capped so a promoted low-impact change does not displace
+   genuinely higher-priority work). A submitted change request may
+   not sit UNADDRESSED indefinitely: at a maximum age it is escalated
+   to a forcing state that GUARANTEES the affected owner RULES it —
+   accept, reject, or modify. Silence is never consent: the terminal
+   forces a RULING, it does not auto-accept. The owner retains full
+   reject/veto authority (§13, §26); only leaving the request
+   UNRESOLVED forever is forbidden.
+```
+
+Provisions 2 and 3 govern **scheduling and attention**, never a candidate's **validity** — they are Aim- and Scenario-blind in the §8 sense, and, like a recorded assumption, an impact estimate is a mitigation, not a proof. The **sequencing** consequence for parallel delegates — resolve a known-high-impact pending change before building on the work it governs — is recorded at §10A.6.
+
 ## 14. Automation Objective
 
 The process is intended to support automated and AI-assisted architecture design.
@@ -1958,6 +2007,7 @@ Automation may assist with:
 - Detecting unjustified components
 - Detecting conflicting contracts
 - Identifying affected artifacts after a change
+- Surfacing the downstream dependents of a pending (proposed, not-yet-applied) change, and aging an unresolved change request toward a forced ruling (§13.3)
 ```
 
 The long-term objective is to make architectural design faster, more consistent, more reviewable, and potentially increasingly automatable.
