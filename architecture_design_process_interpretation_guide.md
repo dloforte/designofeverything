@@ -1,8 +1,8 @@
 # Architecture Design Process — Interpretation Guide
 
 Copyright © 2026 Dan Lo Forte. All rights reserved.
-Revision: 0.1
-Date: 2026-08-02
+Spec version: v1.0.0
+Last updated: 2026-08-04
 
 ## 1. Purpose and status
 
