@@ -1,8 +1,8 @@
 # Requirements-Constrained Architecture Design Process
 
 Copyright © 2026 Dan Lo Forte. All rights reserved.
-Spec version: v1.0.0
-Last updated: 2026-08-04
+Spec version: v1.1.0
+Last updated: 2026-08-06
 
 ## 1. Purpose
 
@@ -71,7 +71,7 @@ The pattern applies to decisions, investigations, contract drafting, change requ
 
 **Stage 2 (Compare)** addresses the **bias risk**: implementation-bias in scoring (a poor-implementation pick unfairly representing an option); analyst-bias in criterion framing (criteria invented to favor a predetermined option); criterion-source bias (ungrounded analyst judgment treated as decision criterion). Mitigations: PO-14 anti-gaming; PO-17 per-decision criterion-relevance; PO-30 criterion-grounding (constitution §9.1 sub-rule per DEC-0690); PO-32 matrix-row abstraction homogeneity + RI-informed scoring; §9.2 swing-weight when criteria differ materially in importance.
 
-**Stage 3 (Act)** addresses the **completeness risk**: silent assumption that the comparison's recommendation is trustworthy; matrix-recommendation gap not surfaced; rationale not recorded for future revisitation; review triggers not stated. Mitigations: §9.3 completeness check; LB · §9.3 verdict vocabulary; §3.2 tie-breaking questions when the matrix doesn't discriminate; §3.2 insulation by abstraction when the act's commitment may need to be revisited.
+**Stage 3 (Act)** addresses the **completeness risk**: silent assumption that the comparison's recommendation is trustworthy; matrix-recommendation gap not surfaced; rationale not recorded for future revisitation; review triggers not stated. Mitigations: §9.3 completeness check; LB · §9.3 verdict vocabulary; §3.2 tie-breaking questions when the matrix doesn't discriminate; §3.2 insulation by abstraction when the act's commitment may need to be revisited; and — against the *silent-assumption-of-trustworthiness* risk specifically, which the mitigations just listed address only by presence or structure — the §9.1 **cell-correspondence** sub-rule (added per DEC-1650 / PO-47), which asks of the comparison's entries whether each is checked or inferred, and obliges the recommendation's depended-on inferred entries to be verified or recorded as explicit exposures before the act.
 
 Application specifics live in the sections that apply the pattern (§3.2's three exits SPLIT/DECIDE/ACT; §5's catalog; §9 decision records; §10A.2 decomposition workflow; §10A.14 approach selection; §15B research investigations). When opening a new process step that involves selecting among candidates, the designer should:
 
@@ -663,6 +663,29 @@ A revision that meets these tests — a criterion definable without naming the f
 
 The discipline ensures that the matrix remains a *test* of whether a recommendation is well-founded, not a *theater* in which any recommendation can be justified by clever criterion framing.
 
+**Symmetric-correction sub-rule (added 2026-08-06 per DEC-1650 / PO-48).** The three heuristics above guard the **criterion** channel, and every one of them turns on *motive*. There is a second channel into the matrix, and it requires no motive at all: a correction that arrives **after** the options were scored. Corrections do arrive — an owner's objection at review, a comment from a parent evaluating a proposal, a fact discovered while drafting what the decision produced, a finding from any independent challenge, the analyst's own second look — and each arrives attached to whatever prompted it. What prompts scrutiny is, overwhelmingly, the **recommended** option, because that is the one anyone has a reason to examine closely. But a finding is a statement about the world, not about the option it was found on. Some findings are genuinely exclusive to one option; many concern a shared substrate, a common assumption, or a cost every option pays. Applying a non-exclusive finding **only where it was found** penalizes the examined option *for having been examined* — and the resulting change of recommendation looks exactly like the discipline working: the cells moved, and the recommendation followed the cells.
+
+```text
+Trigger:     a cell of a §9.1 matrix is corrected AFTER its
+             options were scored, from ANY source.
+
+Check:       the correction states WHICH OPTIONS IT TOUCHES —
+             the full list, not merely the option it was found
+             on — and is applied to every option on that list.
+             A correction claimed OPTION-EXCLUSIVE names the
+             property that makes it exclusive: what that option
+             has, or does, that the others do not.
+
+Consequence: a correction recorded without its touches-list is
+             FAIL-MUST-REVISE at §9.3. If the corrected matrix's
+             recommendation CHANGES, the change shall be readable
+             from the symmetrically-applied cells (matrix
+             readability, above) — never from an asymmetry in
+             what happened to be examined.
+```
+
+The "after scoring" boundary is one this section already draws: criteria first, weights pre-committed, and only then options scored. The rule cuts both ways. It does **not** hold that findings against the leading option are suspect — a genuinely option-exclusive finding is applied to exactly one option, and that is correct; the rule asks only that the exclusivity be *named*. Symmetrically, it is not a licence to dilute a real finding by declaring that it "applies to everything" without saying how each option scores under it: the touches-list is per-option and produces cells, not a hand-wave. Per the pre-commitment test above, the touches-list is stated **before** the corrected matrix is re-read, not fitted to the outcome. As with the cell-correspondence sub-rule below, the gate is on the touches-list being *present and per-option*, not on its being *right*: a finding can be mis-scoped in good faith, and a wrong touches-list produces a wrong matrix. The discipline makes the omission governance-visible; it does not certify the judgment. (Empirical record and the honest boundary: PO-48. Intent, worked example, and domain-general readings: see Interpretation Guide §9.1 — symmetric correction.)
+
 **Escalation to §9.2 when criteria differ in importance.** The reframe-vs-add discipline above covers one class of matrix-recommendation gap: the matrix is wrong because of criterion *definitions*. There is a second class: the matrix is wrong because of criterion *weights*. These have distinct responses.
 
 ```text
@@ -764,6 +787,48 @@ The sub-rule does NOT mean "every criterion needs a new REQ written before it ca
 
 Consequence: if the flag fires, the decision is lower-stakes than its prominence suggests — defer it per §10A.10 or choose the most-reversible option, rather than treating the secondary discriminating axis as decisive. The diagnosis (criterion-relevance vs criterion-discrimination; the constant-top-priority sub-case; the relationship to §9.2 swing-weight; the DEC-0010 evidence) is recorded in PO-36, not here — this clause is the procedure, not the teaching.
 
+**Cell-correspondence sub-rule (added 2026-08-06 per DEC-1650 / PO-47).** The sub-rules above govern the matrix's **columns** — where each criterion came from, and whether a top-priority axis is missing. None of them, and no other discipline in this section, asks the flat question about the matrix's **entries**: *is what this cell asserts true of the thing it describes?* A matrix whose criteria are grounded, whose rows are homogeneous, whose weights are pre-committed, whose fields are all substantive, and whose recommendation is visibly readable from the cells can still recommend a candidate that cannot be realized — because a cell that decides the matrix is simply false. This is **not** criterion-gaming: the anti-gaming heuristics above interrogate *motive*, and a sincerely-mistaken cell passes every one of them. Each cell of a §9.1 matrix therefore carries a mark, and the marking is unconditional — it is put to every cell rather than raised only when the analyst already suspects a gap.
+
+```text
+MARK each cell VERIFIED or INFERRED.
+
+  VERIFIED — the claim was checked against the thing it
+    describes, and the check is CITABLE: the document read,
+    the measurement taken, the artifact consulted, the person
+    asked, the trial performed — whatever counts as evidence
+    in this project's domain.
+
+  INFERRED — the claim rests on reasoning, analogy,
+    reputation, recollection, or a general expectation about
+    the kind of thing it describes.
+
+A cell asserting a property of a NAMED thing — a component, a
+supplier, a standard, a course, a document, a mechanism — is
+INFERRED until that thing has been examined. A matrix-level or
+entry-level attestation that "the facts were checked" does NOT
+mark a cell: the mark is per-cell and names its own evidence.
+
+DEPENDENCE TEST (mechanical; requires no judgment about a
+cell's importance): set each INFERRED cell to its WORST
+PLAUSIBLE value and re-read the matrix. If the recommendation
+changes, the recommendation DEPENDS on that cell.
+
+BEFORE the recommendation is offered for ratification, every
+DEPENDED-ON INFERRED cell is either
+  (a) VERIFIED — examined, re-marked, with the check cited; or
+  (b) recorded as an EXPLICIT EXPOSURE — a named residual on
+      the decision (its Risks field, or a §15.1 assumption
+      routed to the owner) stating WHAT was not checked and
+      WHAT turns on it.
+
+An INFERRED cell that is NOT depended on carries its mark and
+nothing more. That is what bounds the cost.
+```
+
+The §9.3 completeness check shall verify that every depended-on inferred cell was either verified with its check cited or recorded as an explicit exposure. A depended-on inferred cell that is neither is FAIL-MUST-REVISE.
+
+The sub-rule does NOT mean "every cell must be verified before the matrix can be read" — that would stall ordinary decisions. Most cells in most matrices are properly inferred and immaterial; the dependence test is what confines the verification cost to the cells the recommendation actually rests on, and the mark itself is the cheap part. Nor is a VERIFIED mark self-certifying: a mark recorded without a citable check **is treated as INFERRED for the purposes of the dependence test** — an inferred cell wearing a badge. And the exposure route (b) is not an escape hatch — an exposure is a *named residual routed to an owner* per §15.1, which is what lets a decision proceed under §10A.10 rather than stall. The **notation** is the project's to choose (an inline per-cell annotation, an evidence column, a per-matrix evidence list); the mark's *presence* is the rule, its form is not. Like §10.4's requirement-consistency pass, this sub-rule enforces that the question was **asked of every cell** and that the depended-on unverified ones were **surfaced** — it does not certify that a VERIFIED mark is correct. The empirical record, the presence-not-truth boundary, and the relationship to the criterion axis are recorded in PO-47, not here — this clause is the procedure, not the teaching. (Intent, worked example, and domain-general readings: see Interpretation Guide §9.1 — cell correspondence.)
+
 ### 9.2 Weighted Evaluation via Swing-Weight Matrix (optional refinement)
 
 When the option-criterion evaluation in §9.1 involves criteria of genuinely different importance, and the positive/negative/neutral shorthand is insufficient to distinguish strong from weak signals, the project may use **weighted evaluation**. INCOSE practice for this is the **swing-weight matrix** ([Parnell & Trainor 2009, INCOSE International Symposium](https://www.incose.org/resource/2-3-1-using-the-swing-weight-matrix-to-weight-multiple-objectives/)).
@@ -852,6 +917,22 @@ The §9 template fields covered are: Decision ID; Title; Status; Version; Owner;
      matrix-readability discipline.
    - Anti-gaming guardrails per PO-14 applied to any
      criterion-revision performed mid-evaluation.
+   - Per the §9.1 CELL-CORRESPONDENCE sub-rule: every
+     cell carries a VERIFIED / INFERRED mark, and every
+     DEPENDED-ON INFERRED cell (per that sub-rule's
+     dependence test) is either VERIFIED with its check
+     cited or recorded as an EXPLICIT EXPOSURE (a named
+     residual on the decision — its Risks field, or a
+     §15.1 assumption routed to the owner). A
+     depended-on inferred cell that is neither is
+     FAIL-MUST-REVISE.
+   - Per the §9.1 SYMMETRIC-CORRECTION sub-rule: every
+     correction applied to a cell AFTER the options were
+     scored carries its TOUCHES-LIST — the full list of
+     options the finding touches, applied to each, with
+     any claimed option-exclusivity naming the property
+     that makes it exclusive. A correction recorded
+     without its touches-list is FAIL-MUST-REVISE.
    - For decisions where criteria differ materially
      in importance, the §9.2 swing-weight matrix may
      be invoked per PO-15.
