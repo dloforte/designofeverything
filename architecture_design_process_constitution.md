@@ -1,8 +1,8 @@
 # Requirements-Constrained Architecture Design Process
 
 Copyright © 2026 Dan Lo Forte. All rights reserved.
-Spec version: v1.1.0
-Last updated: 2026-08-06
+Spec version: v1.2.0
+Last updated: 2026-08-07
 
 ## 1. Purpose
 
@@ -829,6 +829,80 @@ The §9.3 completeness check shall verify that every depended-on inferred cell w
 
 The sub-rule does NOT mean "every cell must be verified before the matrix can be read" — that would stall ordinary decisions. Most cells in most matrices are properly inferred and immaterial; the dependence test is what confines the verification cost to the cells the recommendation actually rests on, and the mark itself is the cheap part. Nor is a VERIFIED mark self-certifying: a mark recorded without a citable check **is treated as INFERRED for the purposes of the dependence test** — an inferred cell wearing a badge. And the exposure route (b) is not an escape hatch — an exposure is a *named residual routed to an owner* per §15.1, which is what lets a decision proceed under §10A.10 rather than stall. The **notation** is the project's to choose (an inline per-cell annotation, an evidence column, a per-matrix evidence list); the mark's *presence* is the rule, its form is not. Like §10.4's requirement-consistency pass, this sub-rule enforces that the question was **asked of every cell** and that the depended-on unverified ones were **surfaced** — it does not certify that a VERIFIED mark is correct. The empirical record, the presence-not-truth boundary, and the relationship to the criterion axis are recorded in PO-47, not here — this clause is the procedure, not the teaching. (Intent, worked example, and domain-general readings: see Interpretation Guide §9.1 — cell correspondence.)
 
+**Scenario-consultation sub-rule (added 2026-08-07 per DEC-1660 / PO-49).** The *Scenario-alignment as a criterion* paragraph above is **permissive** — Scenario-alignment *may* appear as a criterion — so it fires only where the analyst already thought to reach for it. A **Scenario** (glossary §12A) is the most concrete statement of intended acceptance the intent layer produces: a worked example of what using the result looks like, end to end. It can therefore be handed to a decision as an input to *criterion selection* and never used as *a condition the recommendation is read against*. Those are two different acts, and nothing above obliges the second. The other places the process puts a Scenario to work are each near this in a different way and none of them closes it: §3.2's interpretive authority reads a **requirement** against a Scenario, not a recommendation; §3.2 *Termination*'s enactment coverage checks the **requirement set**, at design-done, after the decisions are taken, and is satisfied by an *enacts* edge existing. A Scenario can be enacted by a requirement, that requirement can be met by the recommended option, and the narrative's decisive step can still be one the option does not carry — because the requirement is more abstract than the narrative. That abstraction gap is not a defect; it is what §12A means in calling the Scenario the Aim's *concrete* sibling. This sub-rule obliges the missing act, and obliges only it: a consultation recorded on the **decision record**, never a verdict on a candidate.
+
+```text
+TRIGGER: a §9.1 recommendation is about to be offered for
+  ratification, and the project holds one or more ACTIVE
+  Scenarios. This is the same moment at which the cell-
+  correspondence sub-rule's verify-or-expose obligation fires.
+  A project holding no Active Scenario fires the check as a
+  no-op — there is nothing to walk.
+
+THE SET: every ACTIVE Scenario in the project (glossary §12A;
+  status per glossary §29). The set is a flat enumeration,
+  resolved STRUCTURALLY — never by the author judging which
+  Scenarios are relevant, which would reintroduce the very
+  noticing this sub-rule exists to remove.
+
+WALK the set and record ONE reading per Scenario, citing its
+  SCN- id:
+
+  BETTER-ALIGNED — NAME the steps of the narrative the
+    recommended option carries and BY WHAT MECHANISM it
+    carries them; and NAME what the reading DEPENDS ON —
+    what, were it otherwise, would change the reading. A bare
+    affirmative is not a reading.
+
+  WORSE-ALIGNED — NAME the step: the sentence of the narrative
+    the option does not carry, and what the option does
+    instead.
+
+  NOT-ENGAGED-WITH-RATIONALE — the narrative does not touch
+    what this decision selects; say why. (The §9.3
+    N/A-WITH-RATIONALE shape — never a silent skip.)
+
+CONSEQUENCE: a recommendation offered for ratification with an
+  in-scope Scenario UNREAD is FAIL-MUST-REVISE at §9.3 — the
+  consequence the criterion-grounding sub-rule carries for an
+  ungrounded criterion, for the same reason. What is gated is
+  the OMISSION: never the judgment, and never the candidate.
+
+  A recorded WORSE-ALIGNED reading is NOT a rejection and never
+  invalidates a candidate. It ROUTES, through machinery that
+  already exists:
+    - the misalignment DISCRIMINATES among the options -> a
+      Scenario-alignment criterion per the paragraph above
+      (grounded via (a)-(d), the SCN- id cited, scored
+      ALIGNED, never pass/fail);
+    - the narrative and a governing requirement genuinely
+      clash -> §3.2 requirement reconsideration (T3), which
+      the requirement's owner rules;
+    - otherwise -> a residual recorded per §15.1 and routed to
+      the Scenario's owner (glossary §26), who may accept the
+      misalignment, revise or retire the Scenario (§30A), or
+      ask for a different option.
+  THE RECOMMENDATION MAY STAND carrying a recorded
+  misalignment.
+
+SIZE THRESHOLD: at 10 Active Scenarios the full walk is no
+  longer presumed affordable. Crossing 10 does NOT narrow the
+  walk and engages no prioritization of its own: it OBLIGES a
+  §9 decision scoping the consultation. That decision's
+  mandate is the TOTAL EFFORT this sub-rule imposes per
+  decision — the size of the set and the cost of each reading,
+  which it may act on together or singly. Until it is ruled,
+  the full walk stands.
+```
+
+The §9.3 completeness check shall verify that every in-scope Active Scenario carries a recorded reading, and that each better-aligned reading names the steps carried, the mechanism that carries them, and what the reading depends on. An in-scope Scenario left unread, and a better-aligned reading recorded as a bare affirmative, are both FAIL-MUST-REVISE.
+
+**Durability.** A reading is a judgment about a narrative that can itself change. When a Scenario is revised (§30A), the readings recorded against it are re-evaluated alongside the requirements that enact it, per glossary §12A *Lifecycle*: each recorded reading is re-affirmed, revised, or retired against the revision, and a reading whose recorded dependencies the revision disturbs is not carried forward silently.
+
+**Interaction with the symmetric-correction sub-rule.** A WORSE-ALIGNED reading that arrives *after* the options were scored **is** a late correction, so that sub-rule fires on it: its touches-list — which options fail to carry the narrative, not only the recommended one — is stated before the matrix is re-read.
+
+This sub-rule mints no authority, no artifact type, and no verdict vocabulary. The readings are §12A's own better- and worse-**aligned** terms together with §9.3's existing N/A-with-rationale shape; the verbs *satisfies* and *violates* stay reserved for the requirement↔candidate relationship and are not used of a Scenario. Nor does the sub-rule make a Scenario a gate at any stage: hard-requirement rejection is §8's Stage 1, which is Scenario-blind (§3.3, §8), and a **Demonstration** gates the **requirement**, the Scenario serving only as that Demonstration's narrative basis (glossary §12A, §2). Like §10.4's requirement-consistency pass and the cell-correspondence sub-rule above, this one enforces that the question was **asked of every in-scope Scenario** and that the answer was **recorded**; it does not certify that a reading is **correct**, and a usage nobody narrated surfaces nothing. The empirical record, the anti-gaming channels, and the honest boundaries are recorded in PO-49, not here — this clause is the procedure, not the teaching. (Intent, worked example, and domain-general readings: see Interpretation Guide §9.1 — Scenario consultation.)
+
 ### 9.2 Weighted Evaluation via Swing-Weight Matrix (optional refinement)
 
 When the option-criterion evaluation in §9.1 involves criteria of genuinely different importance, and the positive/negative/neutral shorthand is insufficient to distinguish strong from weak signals, the project may use **weighted evaluation**. INCOSE practice for this is the **swing-weight matrix** ([Parnell & Trainor 2009, INCOSE International Symposium](https://www.incose.org/resource/2-3-1-using-the-swing-weight-matrix-to-weight-multiple-objectives/)).
@@ -933,6 +1007,20 @@ The §9 template fields covered are: Decision ID; Title; Status; Version; Owner;
      any claimed option-exclusivity naming the property
      that makes it exclusive. A correction recorded
      without its touches-list is FAIL-MUST-REVISE.
+   - Per the §9.1 SCENARIO-CONSULTATION sub-rule: every
+     in-scope ACTIVE Scenario (glossary §12A) carries a
+     recorded reading — BETTER-ALIGNED, WORSE-ALIGNED, or
+     NOT-ENGAGED-WITH-RATIONALE — citing its SCN- id; and
+     each BETTER-ALIGNED reading NAMES the steps of the
+     narrative the recommended option carries, the
+     MECHANISM by which it carries them, and what the
+     reading DEPENDS ON. An in-scope Scenario left unread,
+     and a better-aligned reading recorded as a bare
+     affirmative, are each FAIL-MUST-REVISE. A recorded
+     WORSE-ALIGNED reading is NOT a failure of this check
+     and never invalidates a candidate: it is routed per
+     that sub-rule, and the recommendation may stand
+     carrying it.
    - For decisions where criteria differ materially
      in importance, the §9.2 swing-weight matrix may
      be invoked per PO-15.

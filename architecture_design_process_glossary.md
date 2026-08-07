@@ -1,8 +1,8 @@
 # Architecture Design Process Glossary
 
 Copyright © 2026 Dan Lo Forte. All rights reserved.
-Spec version: v1.1.0
-Last updated: 2026-08-06
+Spec version: v1.2.0
+Last updated: 2026-08-07
 
 ## 1. Purpose
 
@@ -417,6 +417,8 @@ A Scenario is the **interpretive parent, never the authority parent.** A require
 **Completeness — every Scenario is enacted.** A Scenario has teeth only through the requirements that enact it. At design-done, **every Scenario must be enacted by at least one requirement, or explicitly retired or deferred** with recorded rationale — the concrete dual of the Aim's enactment-coverage criterion (constitution §3.2 *Termination*). A Scenario may be temporarily un-enacted *while design is in progress* — that is ordinary work-in-progress — but an un-enacted Scenario at design-done signals either an intended usage the design does not yet pursue (a coverage gap) or a stale Scenario. Such a Scenario is **dispositioned like an assumption** (§15.1) — enacted (a requirement is written or identified that enacts it), retired (§30A / §29 — the intended usage no longer holds), or deferred with recorded rationale — never silently left orphaned.
 
 **Lifecycle.** A Scenario is owned by the owner of the region of the requirements it primarily concerns (§26) — for a concrete usage narrative this is typically near the requirements that enact it, rather than at the root where an Aim (its abstract sibling) sits. It sits **off the normative SMART gradient** (§2.1): it is concrete and specific, but it is *non-normative* — it narrates use and makes no "shall" statement, so the Measurable and Time-bound criteria that grade requirement statements do not apply to it. When a Scenario is revised (§30A), the requirements that enact it must be re-evaluated against the revision, exactly as when an Aim is revised (§2.1).
+
+**The propagation set is EXTENDED to recorded readings (added 2026-08-07 per DEC-1660).** This is an addition to the obligation in the paragraph above, not a restatement of it. As that obligation stood, its propagation set was the **requirements that enact** the Scenario and nothing else; a **reading recorded against a Scenario** — the per-Scenario BETTER-ALIGNED / WORSE-ALIGNED / NOT-ENGAGED-WITH-RATIONALE reading that the constitution's §9.1 *Scenario-consultation* sub-rule obliges of a recommendation offered for ratification — was **not** within it, and no reader should take the earlier obligation to have already covered one. It is now within it. On revision of a Scenario (§30A), each reading recorded against that Scenario is re-evaluated against the revision alongside the enacting requirements, and is re-affirmed, revised, or retired; a reading whose recorded dependencies the revision disturbs is not carried forward silently. This mints no new authority and no new artifact: a recorded reading is a **referrer** of the Scenario, so the record carrying the reading dispositions it exactly as any referrer dispositions a dependency whose target has changed (constitution §13.2).
 
 **Disambiguation — "use case".** A Scenario is this process's name for the concrete intended-usage narrative that other practices call a *use case*, a *user story*, or an *operational scenario*. The term *Scenario* keeps the concept domain-general — a scenario of using a curriculum, operating a device, or exercising a service — rather than tying it to any one discipline's template. A Scenario is not a requirement: it narrates intended use without imposing a normative obligation. A usage statement that authoritatively and rigorously drives the design should be represented as a requirement (§2); a concrete usage narrative that grounds and disambiguates requirements without gating is a Scenario.
 
