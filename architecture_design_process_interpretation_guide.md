@@ -1,8 +1,8 @@
 # Architecture Design Process — Interpretation Guide
 
 Copyright © 2026 Dan Lo Forte. All rights reserved.
-Spec version: v1.2.0
-Last updated: 2026-08-07
+Spec version: v1.2.1
+Last updated: 2026-08-11
 
 ## 1. Purpose and status
 
@@ -259,6 +259,8 @@ recorded as a decision (§9).
 **The seam.** Three things about this sub-rule read oddly at first. It obliges a walk of Scenarios the analyst may be certain are irrelevant. It demands as much writing for an affirmative reading as for a negative one. And it produces a verdict — WORSE-ALIGNED — that decides nothing: the recommendation may be ratified carrying it. Each of the three is deliberate, and the reasons are different.
 
 **The intent — the failure is mechanical, not attitudinal.** Before this sub-rule the process handed a decision its Scenarios for one job — grounding a criterion — and had no step that handed them over for the other: testing the recommendation. Nobody ignored them, disbelieved them, or ranked them low; they were routed to one use, and there being no route to the second, they went nowhere else. That is why a permissive paragraph (*"Scenario-alignment **may** appear as a criterion"*) cannot close it: a permissive rule fires only for the analyst who already reached for it, and the analyst who would reach for it is not the one the rule is for. So the walked set is a **flat enumeration resolved structurally** — every Active Scenario, handed over — rather than a relevance judgment. Letting the author decide which Scenarios matter would rebuild the noticing dependency the sub-rule exists to remove, and the record is unambiguous that the noticing does not happen.
+
+**Where this sits in the Generate-Compare-Act pattern (§2A) — and why §2A does not name it.** The sub-rule *fires* at Stage 3's moment, alongside the cell-correspondence sub-rule's verify-or-expose obligation, but the gap it closes belongs to **Stage 2**: a condition the project had already written down was never made a column, so the comparison was complete on its own terms and its terms were short. §2A's Stage-3 list therefore does not point here — it names the cell-correspondence sub-rule against the *silent-assumption-of-trustworthiness* risk that sub-rule matches exactly — and no Stage-2 pointer was added either, because Stage 2's risk is stated as *bias* and a dimension nobody selected engages no motive. §2A's per-stage mitigation lists are illustrative rather than exhaustive, so the absence is not a judgment about where this belongs. (DEC-1670.)
 
 **Why the affirmative reading is generative too.** The obvious economy is to let BETTER-ALIGNED be a bare tick and reserve the writing for misalignments. Active-design-review practice says that is precisely the verdict which fails: reviews are structured to avoid yes/no questions, because a reviewer will give a carelessly considered answer to one, and the published remedy is to replace the question with a **production** instruction — not *"are the exceptions defined?"* but *"write down the exceptions."* The affirmative is also the verdict a **self-reviewing author** — offering their own recommendation, with no second party present — reaches for most. So a better-aligned reading must name the steps carried, the mechanism that carries them, and what the reading depends on. The dependency clause is what makes the reading re-readable later: it is the sentence a revision of the Scenario can be checked against.
 

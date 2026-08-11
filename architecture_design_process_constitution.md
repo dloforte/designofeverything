@@ -1,8 +1,8 @@
 # Requirements-Constrained Architecture Design Process
 
 Copyright © 2026 Dan Lo Forte. All rights reserved.
-Spec version: v1.2.0
-Last updated: 2026-08-07
+Spec version: v1.2.1
+Last updated: 2026-08-11
 
 ## 1. Purpose
 
@@ -72,6 +72,8 @@ The pattern applies to decisions, investigations, contract drafting, change requ
 **Stage 2 (Compare)** addresses the **bias risk**: implementation-bias in scoring (a poor-implementation pick unfairly representing an option); analyst-bias in criterion framing (criteria invented to favor a predetermined option); criterion-source bias (ungrounded analyst judgment treated as decision criterion). Mitigations: PO-14 anti-gaming; PO-17 per-decision criterion-relevance; PO-30 criterion-grounding (constitution §9.1 sub-rule per DEC-0690); PO-32 matrix-row abstraction homogeneity + RI-informed scoring; §9.2 swing-weight when criteria differ materially in importance.
 
 **Stage 3 (Act)** addresses the **completeness risk**: silent assumption that the comparison's recommendation is trustworthy; matrix-recommendation gap not surfaced; rationale not recorded for future revisitation; review triggers not stated. Mitigations: §9.3 completeness check; LB · §9.3 verdict vocabulary; §3.2 tie-breaking questions when the matrix doesn't discriminate; §3.2 insulation by abstraction when the act's commitment may need to be revisited; and — against the *silent-assumption-of-trustworthiness* risk specifically, which the mitigations just listed address only by presence or structure — the §9.1 **cell-correspondence** sub-rule (added per DEC-1650 / PO-47), which asks of the comparison's entries whether each is checked or inferred, and obliges the recommendation's depended-on inferred entries to be verified or recorded as explicit exposures before the act.
+
+**The three mitigation lists above are illustrative, not exhaustive** (recorded 2026-08-11 per DEC-1670): the authoritative discipline for each stage lives in the sections cited, and a mitigation's absence from a list is not a judgment that it falls outside that stage.
 
 Application specifics live in the sections that apply the pattern (§3.2's three exits SPLIT/DECIDE/ACT; §5's catalog; §9 decision records; §10A.2 decomposition workflow; §10A.14 approach selection; §15B research investigations). When opening a new process step that involves selecting among candidates, the designer should:
 
