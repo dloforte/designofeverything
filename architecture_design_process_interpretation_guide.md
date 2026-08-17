@@ -1,8 +1,8 @@
 # Architecture Design Process — Interpretation Guide
 
 Copyright © 2026 Dan Lo Forte. All rights reserved.
-Spec version: v1.2.1
-Last updated: 2026-08-11
+Spec version: v1.2.2
+Last updated: 2026-08-17
 
 ## 1. Purpose and status
 
@@ -291,6 +291,37 @@ Later, SCN-0020 is revised so the hand-off becomes two steps. Because the readin
 - **An irreversibly foreclosed *deferred* usage falls outside an Active-only walk.** The walked set is **Active** Scenarios only, because walking the parked set manufactures misalignment readings — and routed residuals — for work nobody intends to do. The price is real: a decision that irreversibly forecloses a usage narrated by a **Deferred** Scenario is not surfaced by the walk, and §3.2 *Termination*'s re-disposition of that Scenario arrives after the foreclosing decision, by which point the only honest disposition left is to retire it. This is a named limit with a recorded review trigger, not an oversight.
 
 **The honest boundary — presence, not truth.** Like the requirement-consistency pass and the two cell-level sub-rules, this one enforces that the question was **asked of every in-scope Scenario** and that the answer was **recorded**. It does not certify that the reading is correct: an author can read a narrative against an option and conclude, in good faith and wrongly, that the option carries it. And a walk that fires reliably while never surfacing a misalignment that routes anywhere would be an instrument pointing nowhere — worth noticing if the record ever reads that way, rather than treating the discipline's own regularity as evidence that it works.
+
+### §30A — the unit of classification is the limb, not the artifact
+
+**Governing decision:** DEC-1710. **See also:** §30A (revision / replacement), §30A.1 (the classification-authority concern this compounds), §13.1 (who classifies), §13.2 (per-referrer disposition, which is what a classification proposes), §9 (superseded / superseding semantics).
+
+**The seam.** §30A states its test over a **whole artifact**: a *revision* "preserves the essence of the artifact," a *replacement* means "the result is, in essence, a different artifact." Read literally, that asks for **one verdict per change**. But an artifact is rarely a single proposition, and a change to it rarely touches every part. A ruling that settles three things at once can be **refined on two of them and reversed on the third by the same change** — and a reader obliged to produce one verdict will produce it by weighing, which means the reversed part is either outvoted by the refined parts or made to outvote them. Both outcomes lose information the record needed.
+
+**The intent — the test is sound; the unit it is applied to is what has to be chosen.** Nothing here weakens §30A. Its question — *is this still the same artifact?* — is exactly right. What DEC-1710 records is that the question must be asked of **each thing the artifact separately decided**, wherever those things can move independently of one another. Where an artifact decides one thing, the limb and the artifact coincide and nothing changes. Where it decides several, a whole-artifact verdict is an average, and an average of *refinement* and *reversal* is a number that describes neither.
+
+**How this reconciles two classifications that look opposed.** A corpus applying §30A will accumulate precedents that appear to conflict: one holding that reversing part of a decision is a **revision**, because it carries the decision further in its own adopted direction; another holding that reversing a decision's stated rule is **replacement** territory, because that sentence was the whole of what the decision decided. Read as rival tests they are irreconcilable, and a later classifier must distinguish one away. Read limb-wise they are **answers to different questions about different limbs**, and both survive: the first asks *does this carry the limb further in its own direction?*, the second asks *does this invert the limb's stated rule?* Applied to one change, both can fire — on different limbs — and both be right.
+
+**Worked example.** A recorded ruling settles where a tool finds a governing document. It has three limbs: **(1)** a known default path so a bare run works; **(2)** an environment-variable override; **(3)** *"error clearly if the files are absent — do not silently proceed."* A proposal replaces the lookup with a multi-tier resolver that searches several locations in a stated order.
+
+- On limbs (1) and (2) the resolver is a strict **superset**: the override becomes its highest tier, the default its lowest, and tiers are inserted between. That strictly widens the set of situations in which a bare run works, which carries the ruling further in its own adopted direction — **revision**.
+- On limb (3) the resolver's own behaviour is the **opposite** of the rule: it omits a document it cannot find rather than raising. That inverts the stated sentence — **replacement territory**.
+
+The whole-artifact readings both fail, and fail in instructive ways. *"It is a superset, therefore a revision"* is true of the limbs it weighs and **silent on the one it does not** — a superset relation is a claim about a set of behaviours, and it can only settle a question about essence if every limb is inside the set being extended. *"Reverse anything stated, therefore a replacement"* is the cautious-looking error: it forces a new identifier and a full referrer re-evaluation for a change that is, on two limbs of three, a refinement. **Over-classifying is not free** — it spends the referrer attention that §13.2's machinery exists to conserve.
+
+The useful output is neither verdict but the **pair**: the change may proceed as a revision **provided** the inverted limb is not carried with it. That is a sentence a whole-artifact verdict cannot express.
+
+**Domain-general readings.** The instrument is a question — *which of the things this artifact decided does this change touch, and in which direction?* — and it reads identically in any domain.
+
+- **Curriculum design.** An approved module specification fixes the assessment's **format**, its **weighting**, and a rule that *"no assessment may be re-sat more than once."* A proposal changes the format and, in passing, permits unlimited re-sits. Format is a revision; the re-sit rule is inverted, and the record should say so separately rather than approving "a change to the assessment."
+- **Hardware.** A released part drawing specifies a **material**, a **tolerance**, and a note that *"this surface shall not be painted."* A change to a compatible material with a tighter tolerance is a revision on both; a change permitting a coating inverts the note. One drawing, two classes.
+- **Software.** An interface decision fixes a transport, a retry policy, and a rule that a request is never silently dropped. Swapping the transport for a superset is a revision; making the failure path drop rather than surface is not.
+
+**What this does NOT license — the abuse to refuse.** Limb-wise classification is not permission to **subdivide an artifact until every part is small enough to look like a revision**. The limbs must be ones the artifact itself decided **separately** — recognizable in its own recorded text, not carved out of it after the fact to reach a preferred class. A limb invented at classification time to make a reversal look local is the §30A analogue of manufacturing a criterion to move a matrix, and it fails for the same reason. The test for a genuine limb is whether the artifact would still have decided it had the others gone the other way.
+
+**The relationship to §30A.1's recorded concern.** §30A.1 notes that an artifact's owner and its referrers may legitimately disagree about a change's class. Limb-wise classification **narrows** that disagreement without dissolving it: much apparent disagreement is a referrer weighting one limb that the owner weighted differently, and separating the limbs lets each side see which limb the other is answering about. It does not settle who is right — §13.2's per-referrer disposition still does that — but it changes the dispute from a clash of verdicts into a comparison of scopes, which is a smaller thing to resolve.
+
+**The honest boundary — presence, not truth.** Like the disciplines it sits beside, this reading enforces that the limbs were **enumerated** and each **classified**, not that the enumeration is complete or the classifications correct. An author can miss a limb, or split one that was really indivisible, in perfect good faith. What the reading buys is that a change carrying both a refinement and a reversal can no longer be recorded as though it carried only one — the omission becomes governance-visible. It does not certify the judgment.
 
 ---
 
