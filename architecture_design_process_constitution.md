@@ -1,8 +1,8 @@
 # Requirements-Constrained Architecture Design Process
 
 Copyright © 2026 Dan Lo Forte. All rights reserved.
-Spec version: v1.2.2
-Last updated: 2026-08-17
+Spec version: v1.2.3
+Last updated: 2026-08-25
 
 ## 1. Purpose
 
