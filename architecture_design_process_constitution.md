@@ -1,8 +1,8 @@
 # Requirements-Constrained Architecture Design Process
 
 Copyright © 2026 Dan Lo Forte. All rights reserved.
-Spec version: v1.2.3
-Last updated: 2026-08-25
+Spec version: v1.3.0
+Last updated: 2026-08-26
 
 ## 1. Purpose
 
@@ -1311,7 +1311,7 @@ For **non-trivial derivations** — where alternatives exist for what the requir
 
 The rule: requirements are not exempt from §8.1's justification-quality discipline. Requirements *are* the artifacts §8.1 is designed to ensure are well-grounded. Adding a requirement without justification is the same error as adding any other design choice without justification.
 
-**Requirement-consistency sub-rule (added 2026-07-11 per DEC-1410 / PO-44).** Adding a requirement obligates an explicit **contradiction pass** of the new requirement against the existing requirement set. This pass fires on **every** requirement-add — a §10.4 derived requirement (trivial derivation included) or a §3.1 root requirement — **always**; it is not left to the add-decision's discretion. The pass shall:
+**Requirement-consistency sub-rule (added 2026-07-11 per DEC-1410 / PO-44; trigger widened 2026-08-26 per DEC-1730).** Adding **or revising** a requirement obligates an explicit **contradiction pass** of the added or revised requirement against the existing requirement set. This pass fires on **every** requirement-add **and on every requirement revision** — a §10.4 derived requirement (trivial derivation included), a §3.1 root requirement, or a §30A class-2 revision of an existing requirement — **always**; it is not left to the discretion of the add-decision or of the revising owner. A revision changes what the requirement *says*, and therefore what it may contradict; a verdict recorded against the requirement's earlier text is a verdict about a different statement. **In (a)–(d) below, *the new requirement* reads as *the added or revised requirement*.** The pass shall:
 
 ```text
 (a) Compare the new requirement against the existing
@@ -1346,7 +1346,7 @@ The rule: requirements are not exempt from §8.1's justification-quality discipl
 
 **Honest boundary — this is a mitigation, not a proof.** A recorded "no contradiction" verdict is a *checked-and-recall-limited* assessment, not a guarantee that no contradiction exists. The pass compares the new requirement against a *recalled* candidate set; low-lexical-overlap semantic contradictions, n-way or composite contradictions, and numeric/metric conflicts may escape it. The recorded verdict certifies that the pass was performed and against which candidates — not that the requirement set is proven consistent. The discipline reduces the rate of silently-admitted contradictions; it does not eliminate the possibility. A "no contradiction" verdict shall not be read as more than that (§3.2, §8.1).
 
-**Structural enforcement.** So that the pass is a *cadence* rather than trusted diligence (the PO-31 pattern — a discipline that fades from active consideration is quietly violated), the process makes it non-optional by a **structural gate at the requirement-write point**: a requirement-add that carries no recorded contradiction verdict is not admitted. The gate enforces that a verdict is *present* on every add; the verdict's *correctness* remains bounded as above (the presence-not-truth limit). How a project realizes the gate is a project/tool concern — the *what* (a recorded verdict is obligatory on every requirement-add) is the process commitment; the *how* is not specified here.
+**Structural enforcement.** So that the pass is a *cadence* rather than trusted diligence (the PO-31 pattern — a discipline that fades from active consideration is quietly violated), the process makes it non-optional by a **structural gate at the requirement-write point**: a requirement **add or revision** that carries no recorded contradiction verdict **for that act** is not admitted. The gate enforces that a verdict is *present* on every add **and on every revision**; the verdict's *correctness* remains bounded as above (the presence-not-truth limit). The words *for that act* are load-bearing: a verdict inherited from the requirement's original add is not a verdict about the revised text, and a gate satisfied by an inherited verdict would make the pass optional again for every revision — which is the trusted diligence this paragraph exists to displace. How a project realizes the gate, and by what signal it distinguishes a verdict recorded for this act from one inherited, is a project/tool concern — the *what* (a recorded verdict is obligatory on every requirement add **or revision**) is the process commitment; the *how* is not specified here.
 
 ### 10.5 Load-Bearing Artifacts Remain Ever-Present
 

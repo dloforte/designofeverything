@@ -1,8 +1,8 @@
 # Architecture Design Process Glossary
 
 Copyright © 2026 Dan Lo Forte. All rights reserved.
-Spec version: v1.2.3
-Last updated: 2026-08-25
+Spec version: v1.3.0
+Last updated: 2026-08-26
 
 ## 1. Purpose
 
