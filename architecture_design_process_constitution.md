@@ -1,8 +1,8 @@
 # Requirements-Constrained Architecture Design Process
 
 Copyright © 2026 Dan Lo Forte. All rights reserved.
-Spec version: v1.3.0
-Last updated: 2026-08-26
+Spec version: v1.4.0
+Last updated: 2026-08-30
 
 ## 1. Purpose
 
@@ -333,7 +333,13 @@ Every interpretation or adjudication that leans on an Aim **cites the AIM- id** 
 ```text
 - every assumption has been accepted, rejected, or converted
   (glossary §15.1);
-- every open question is resolved (glossary §15A);
+- every open question is resolved (glossary §15A) — its
+  design-relevant substance reflected in a linked authoritative
+  artifact, and the open question linked to what absorbed it,
+  never left as an unincorporated side record;
+- every clarification's design substance has been incorporated
+  into the artifact it clarifies (glossary §9), with the
+  clarification linked to it;
 - every load-bearing decision is recorded (§9);
 - every requirement has a defined verification method or a
   recorded waiver (glossary §2);

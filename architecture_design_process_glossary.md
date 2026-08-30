@@ -1,8 +1,8 @@
 # Architecture Design Process Glossary
 
 Copyright © 2026 Dan Lo Forte. All rights reserved.
-Spec version: v1.3.0
-Last updated: 2026-08-26
+Spec version: v1.4.0
+Last updated: 2026-08-30
 
 ## 1. Purpose
 
@@ -306,7 +306,7 @@ Here, `REQ-000` is the parent requirement. `REQ-010`, `REQ-020`, and `REQ-030` a
 
 A **clarification** is an answer, interpretation, or explanation that resolves uncertainty in the meaning, scope, priority, or intent of a requirement.
 
-A clarification is usually a context or history artifact rather than an authoritative requirement by itself.
+A clarification is a **first-class governed artifact** (display id `CLR-NNNN`), homed in the corpus and carried in checkpoints like any other artifact, yet it remains a **non-authoritative** context/history artifact rather than an authoritative requirement by itself. A clarification **shall link to the artifact(s) it clarifies**. Its **design substance is folded into the clarified artifact** — the requirement (or decision) is revised to carry the added clarity (a §30A revision; the "requirements become more SMART over time" discipline of §2.1) — while the clarification records the **history**: that an ambiguity existed, the interpretation given, and the reasoning behind it. The clarification complements the revised core artifact; it is **never the sole home of design-relevant substance** (the anti-stranding rule — constitution §3.2 *Termination*).
 
 A clarification may result in:
 
@@ -501,7 +501,7 @@ Two emphases are intentional. First, *routing to owners is mandatory* — every 
 
 An **open question** is a recorded prompt for clarification, decision, or further information whose answer is not yet known and is needed (now or later) to make progress.
 
-An open question is not authoritative. It is a context artifact whose purpose is to ensure that pending uncertainties are tracked rather than forgotten.
+An open question is **non-authoritative** — it drives nothing and gates nothing — but it is a **first-class governed artifact** (display id `OQ-NNNN`), homed in the corpus, versioned, carried in checkpoints, and **linked into the traceability graph** rather than tracked in an ad-hoc side file. Its purpose is to ensure that pending uncertainties are tracked rather than forgotten. An open question's **resolution shall link to the artifact(s) that absorbed it** (a §9 clarification, a recorded assumption, a new or revised requirement, a decision, or a catalog/contract update). Per the **anti-stranding gate** (constitution §3.2 *Termination*; §15.1), an open question may be marked *resolved* only when its **design-relevant substance has been reflected in that linked authoritative artifact** — never parked on the open question itself.
 
 The lifecycle of an open question typically ends in one of:
 
@@ -513,7 +513,7 @@ The lifecycle of an open question typically ends in one of:
 - A catalog or contract update
 ```
 
-Open questions should be tracked in a way appropriate to the project's working style. The format is intentionally flexible — for example, a single `open_questions.md` file is acceptable, as is per-question entries in a database, ticketing system, or tool. What matters is that:
+Open questions are governed corpus artifacts (`OQ-NNNN`), homed and traceable like any other artifact (superseding the earlier "intentionally flexible — a single `open_questions.md` file is acceptable" guidance, which treated them as an optional side record). A project's tool may present them however suits its working style, but the artifact and its links are authoritative. What matters is that:
 
 ```text
 - The question is recorded with a unique, short reference.
