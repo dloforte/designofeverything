@@ -1,8 +1,8 @@
 # Architecture Design Process — Interpretation Guide
 
 Copyright © 2026 Dan Lo Forte. All rights reserved.
-Spec version: v1.3.0
-Last updated: 2026-08-26
+Spec version: v1.4.0
+Last updated: 2026-08-31
 
 ## 1. Purpose and status
 
@@ -326,6 +326,78 @@ The useful output is neither verdict but the **pair**: the change may proceed as
 **The relationship to §30A.1's recorded concern.** §30A.1 notes that an artifact's owner and its referrers may legitimately disagree about a change's class. Limb-wise classification **narrows** that disagreement without dissolving it: much apparent disagreement is a referrer weighting one limb that the owner weighted differently, and separating the limbs lets each side see which limb the other is answering about. It does not settle who is right — §13.2's per-referrer disposition still does that — but it changes the dispute from a clash of verdicts into a comparison of scopes, which is a smaller thing to resolve.
 
 **The honest boundary — presence, not truth.** Like the disciplines it sits beside, this reading enforces that the limbs were **enumerated** and each **classified**, not that the enumeration is complete or the classifications correct. An author can miss a limb, or split one that was really indivisible, in perfect good faith. What the reading buys is that a change carrying both a refinement and a reversal can no longer be recorded as though it carried only one — the omission becomes governance-visible. It does not certify the judgment.
+
+### §15A ↔ §9 — one anti-stranding gate, not two: OQ/CLR are homed, linked, and never authoritative
+
+**Governing decision:** DEC-1920 (Phase A / B1). **See also:** §15A (Open Question — first-class
+corpus type, mandatory resolution-link), §9 (Clarification — first-class corpus type, mandatory
+Clarifies-link), §3.2 *Termination* (the design-done enforcement point for both), §15.1 (the
+assumption-disposition discipline this gate extends), §2.1 (requirements grow more SMART over
+time — where a clarification's substance actually lands), §30A (the revision that carries it there),
+§12 (traceability), §10.5 (load-bearing ever-present), DEC-1680 R5 (the deferred question this
+closes).
+
+**The seam.** Promoting OQ and CLR to first-class, homed, exportable corpus artifacts reads at first
+like it should make them *more* authoritative — they now sit in the corpus alongside REQ/DEC/CON,
+carried in checkpoints, linked into the graph, each with its own durable id. Two questions follow
+naturally from that promotion, and both have answers that are easy to get backwards: does an OQ or
+CLR now settle a matter on its own, since it is a governed artifact with its own record? And when is
+one of them actually *done* — is filing it and writing the answer inside its own body enough?
+
+**The resolved reading.** No, on both counts, and the two glossary sections say so with the same
+mechanism. Promotion changes *where OQ/CLR are stored and whether they are durable and linked*; it
+does not change *what kind of authority they carry*. Both remain **non-authoritative context/history
+artifacts** — an OQ "drives nothing and gates nothing" even as a governed artifact (§15A); a CLR
+"remains... non-authoritative... rather than an authoritative requirement by itself" even as one
+(§9). The design **substance** — the disambiguated meaning, the actual answer — must land inside a
+core authoritative artifact (a revised REQ or DEC, a recorded assumption, a new requirement — a §30A
+revision), never inside the OQ/CLR itself. The OQ/CLR then carries the **history**: that an ambiguity
+existed, what was asked, and the reasoning that resolved it.
+
+- An OQ may reach *resolved* only when its design-relevant substance is **reflected in a linked
+  authoritative artifact** — not when the OQ's own text contains a satisfying-sounding answer. An
+  answer written only inside the OQ, with nothing to link to, is stranded: durable, findable, but
+  outside the graph the rest of the corpus actually depends on (§12).
+- A CLR's design substance is **folded into the artifact it clarifies** — the requirement or
+  decision is revised to carry the added clarity (§2.1's "more SMART over time" discipline, realized
+  as a §30A revision). The CLR is never the sole home of that substance, only its linked record.
+- The **link is mandatory on both, not optional** — this is the gate's actual working part.
+  Without it, promoting OQ/CLR to durable, comfortable, permanent-feeling homes would make stranding
+  *easier* than it was when the only option was an ad-hoc side file, not harder. §3.2 *Termination*
+  is where this is enforced: it will not certify a scope complete while an open question sits
+  unresolved (substance not reflected, or not linked) or a clarification's substance sits
+  unincorporated into what it clarifies.
+
+**Why one entry, not two.** §15A and §9 read as parallel because DEC-1920 treats them as one
+principle applied to two artifact kinds — the same rationale that already governs §15.1's assumption
+lifecycle, extended rather than reinvented: a side artifact that is easy to write into and never
+forces a reader back to the core design is exactly the shape that lets design-relevant substance sit
+unincorporated indefinitely. Splitting this into a §15A entry and a §9 entry would restate the same
+reading twice; the one place the two sections genuinely diverge — *what* each links to (an OQ links
+to whatever absorbed it; a CLR links to what it clarifies) — is a difference in the target, not in the
+gate.
+
+**Worked example.** An ambiguity in what a requirement's "response time" means under load is raised
+as `OQ-0040` against `REQ-0210`. Correctly closed: `REQ-0210` is revised (§30A) to state the meaning
+explicitly (client-observed, under the requirement's stated peak load); `CLR-0012` is authored,
+linked (`Clarifies: REQ-0210`), recording the ambiguity and the interpretation given; `OQ-0040` is
+marked *resolved*, linked (`Resolved by: CLR-0012` and/or `REQ-0210`). A later reader who opens
+`REQ-0210` sees the disambiguated requirement directly — they never need to have found `OQ-0040` to
+know what it means. Incorrectly closed (the stranding failure the gate exists to catch): `OQ-0040`'s
+own text is edited to read "resolved — response time means client-observed under peak load,"
+`REQ-0210` is left untouched, and no CLR is written. The corpus's authoritative artifact — the one
+every future reader and verification method actually consults — still carries the ambiguity; only the
+side record does not. No linked authoritative artifact reflects the substance, so the gate does not
+allow `OQ-0040` to close this way.
+
+**The honest boundary — presence, not truth.** Like the other members of this Guide's *presence, not
+truth* family (the §9.1 cell-correspondence and symmetric-correction sub-rules, §30A's limb reading),
+the gate enforces that a link exists and that some revision landed on the artifact it names — not that
+the revision is a *faithful* or *complete* reflection of the substance. An author can link an OQ to a
+REQ that was only trivially touched, in good faith or otherwise, and the gate cannot tell that apart
+from a genuine incorporation. DEC-1920 records this itself, as a Risk ("gate over-reach... must be
+scoped to design-relevant substance, not every question"); the mitigation is the same judgment §15.1
+already relies on for assumptions, not a new mechanism.
 
 ---
 
