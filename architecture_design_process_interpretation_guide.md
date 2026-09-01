@@ -2,7 +2,7 @@
 
 Copyright © 2026 Dan Lo Forte. All rights reserved.
 Spec version: v1.4.0
-Last updated: 2026-08-31
+Last updated: 2026-09-01
 
 ## 1. Purpose and status
 
@@ -398,6 +398,20 @@ REQ that was only trivially touched, in good faith or otherwise, and the gate ca
 from a genuine incorporation. DEC-1920 records this itself, as a Risk ("gate over-reach... must be
 scoped to design-relevant substance, not every question"); the mitigation is the same judgment §15.1
 already relies on for assumptions, not a new mechanism.
+
+---
+
+### §3.2 Termination — "every load-bearing decision is recorded" is a design-review judgment, not a tool gate
+
+**Governing decision:** DEC-1930 (Phase-B B5). **See also:** §3.2 *Termination* (the completion-criteria list this limb belongs to), §10.5 (load-bearing artifacts — the curated index, and *load-bearing status is itself a governance choice*), §9 (the decision record a load-bearing decision is recorded as), §3.2 *Termination*'s structural-vs-faithful distinction for the intent layer (an `enacts` edge is auditable; whether the enacting requirements faithfully realize the Aim is a judgment), the *presence, not truth* family (§9.1 cell-correspondence, §30A limb-reading, §15A ↔ §9 above).
+
+**The seam.** §3.2 *Termination* lists, among the conditions for a scope to be complete, *"every load-bearing decision is recorded (§9)."* DEC-1930 realized the other Termination criteria as enforced design-done **tool gates** — Aim/Scenario enactment (an `enacts` edge exists), assumption disposition (a Status keyword), clarification / open-question terminality (a Status keyword + a mandatory link), and fulfillment (a `satisfies` edge plus a verification method). The natural next question is whether *this* criterion gets a gate too. It reads like the others — a checkable completion condition — so a tool realizing §3.2 reaches for a gate here as well.
+
+**The resolved reading.** It does **not** get a gate, and the reason is not that the criterion is unimportant but that it has **no structural signal a tool can read.** Every gated limb keys on an artifact-level fact: an edge of a named role, a controlled-vocabulary Status word, a link. *"Load-bearing"* is none of these — it is a **curatorial judgment** (§10.5's load-bearing index is a hand-maintained companion document, not an ingested set of artifacts, and load-bearing status *is itself a governance choice per §10.5*, not a property the tool computes). And *"recorded"* here means **recorded-completely** — has every decision that actually bears weight been captured as a §9 DEC, rather than left an undocumented tacit choice? That is a question about what is **absent** from the corpus, and no scan over what is **present** can answer it. Both halves put this limb on the **judgment** side of the very line §3.2 *Termination* already draws for the intent layer: the tool can check that an `enacts` edge exists (structural), but *whether the enacting requirements faithfully realize the Aim's intent* stays a design-done judgment. *"Every load-bearing decision is recorded"* is that second kind of check. It remains a **design-review judgment at the design-done milestone** — the reviewer confirms it; the tool builds no gate for it.
+
+**Why this is not a hole.** Declining to gate limb (e) does not lower the bar §3.2 sets — the reviewer must still satisfy themselves at design-done that the load-bearing decisions are recorded. It records that **not every Termination criterion is structurally checkable**, and names which one is not, so a later reader of the termination machinery does not mistake the absence of an (e) gate for an omission in DEC-1930. The other five limbs are gated precisely because they *can* be; this one is left to judgment precisely because it *cannot* be — and inventing a proxy such as *"the LB index's DEC references all resolve"* would enforce a **different, weaker** proposition (that the *listed* decisions exist) while giving the false comfort of having gated the real one (that *every* load-bearing decision is listed).
+
+**The honest boundary — presence, not truth, taken to its limit.** The rest of this Guide's *presence, not truth* family gates the **presence** of a mark and declines to certify its **truth**. Limb (e) is the case where even the presence has no structural locus to sit on — there is nothing to mark. So it is handed to judgment whole, which is the honest treatment: a gate that cannot see its subject is worse than no gate, because it certifies something adjacent and lets the real question go unasked.
 
 ---
 
