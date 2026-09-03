@@ -1,8 +1,8 @@
 # Requirements-Constrained Architecture Design Process
 
 Copyright © 2026 Dan Lo Forte. All rights reserved.
-Spec version: v1.4.0
-Last updated: 2026-08-30
+Spec version: v1.5.0
+Last updated: 2026-09-03
 
 ## 1. Purpose
 
@@ -911,6 +911,28 @@ The §9.3 completeness check shall verify that every in-scope Active Scenario ca
 
 This sub-rule mints no authority, no artifact type, and no verdict vocabulary. The readings are §12A's own better- and worse-**aligned** terms together with §9.3's existing N/A-with-rationale shape; the verbs *satisfies* and *violates* stay reserved for the requirement↔candidate relationship and are not used of a Scenario. Nor does the sub-rule make a Scenario a gate at any stage: hard-requirement rejection is §8's Stage 1, which is Scenario-blind (§3.3, §8), and a **Demonstration** gates the **requirement**, the Scenario serving only as that Demonstration's narrative basis (glossary §12A, §2). Like §10.4's requirement-consistency pass and the cell-correspondence sub-rule above, this one enforces that the question was **asked of every in-scope Scenario** and that the answer was **recorded**; it does not certify that a reading is **correct**, and a usage nobody narrated surfaces nothing. The empirical record, the anti-gaming channels, and the honest boundaries are recorded in PO-49, not here — this clause is the procedure, not the teaching. (Intent, worked example, and domain-general readings: see Interpretation Guide §9.1 — Scenario consultation.)
 
+**Criterion-set-completeness sub-rule (added 2026-09-03 per DEC-2000 / PO-55).** The sub-rules above police the matrix's columns' provenance (criterion-grounding), its entries' truth (cell-correspondence), its post-scoring corrections (symmetric-correction), the top-priority column *when the analyst notices it is missing* (top-priority-ranking), and the readings against Active Scenarios (Scenario-consultation). None asks the one remaining flat question about the matrix: *is a criterion that would change the recommendation simply ABSENT?* A matrix whose every present criterion is grounded, whose cells are marked and depended-on-verified, whose weights are pre-committed, and whose recommendation is visibly readable can still recommend the wrong option — because the axis that would have overturned it was never on the page. This is not criterion-gaming (the anti-gaming heuristics interrogate the *motive* of a criterion that is present), and it is not a cell error (the entry is *missing*, not false). The nearest existing guard, the top-priority-ranking sub-rule, reaches only a missing *top* priority and only when the analyst *notices* it — the noticing-dependence a context-limited agent performs unreliably (the PO-31 pattern). At the moment a §9.1 recommendation is offered for **ratification** — the same moment the cell-correspondence verify-or-expose and Scenario-consultation obligations fire — the author therefore records a two-limb pass:
+
+```text
+LIMB (a) — OMITTED-CRITERION.  NAME the criterion that, if
+  added to the matrix, would flip the recommendation — or
+  ATTEST that the search was performed and none was found. A
+  named flipping-criterion is treated as a late criterion: it
+  is added, every option is scored against it (the symmetric-
+  correction sub-rule fires on that re-score), and the
+  recommendation is re-read from the cells.
+
+LIMB (b) — REDUNDANCY.  STATE whether the recommended option is
+  REDUNDANT with an existing mechanism that already provides
+  its benefit — a recommendation that merely duplicates a
+  capability the system already has is not warranted by its own
+  margin. NAME the mechanism where one is found.
+```
+
+The §9.3 completeness check shall verify that the two-limb pass is recorded. A recommendation offered for ratification with no recorded pass is FAIL-MUST-REVISE — the consequence the criterion-grounding sub-rule carries for an ungrounded criterion, for the same reason: what is gated is the **omission**, never the judgment.
+
+This sub-rule mints no authority, no artifact type, and no verdict vocabulary. Like §10.4's requirement-consistency pass, the cell-correspondence sub-rule, and the Scenario-consultation sub-rule, it enforces that the question was **asked** at a fixed moment and the answer **recorded**; it does not certify that the stated flipping-criterion (or "none found") is **correct**. It is bounded honestly on two sides. First, unlike the cell-correspondence sub-rule — which removed noticing entirely by marking every cell unconditionally — this one only **forces the adversarial question** at ratification: completeness of a criterion set is not mechanically enumerable, so a decisive criterion can still be missed in good faith, and no stronger structural form is available. Second, the pass fires **only at ratification and only where genuinely multiple options are compared**, so it adds no ceremony to a trivial derivation (§10.4). The empirical record — a recommendation this project made twice that passed every existing §9.1 check and was nonetheless wrong because two decision-flipping criteria were absent, one of them a duplication of a mechanism the system already had (DEC-1990) — and the honest boundaries are recorded in PO-55, not here; this clause is the procedure, not the teaching. (Intent, worked example, and domain-general readings: see Interpretation Guide §9.1 — criterion-set completeness.)
+
 ### 9.2 Weighted Evaluation via Swing-Weight Matrix (optional refinement)
 
 When the option-criterion evaluation in §9.1 involves criteria of genuinely different importance, and the positive/negative/neutral shorthand is insufficient to distinguish strong from weak signals, the project may use **weighted evaluation**. INCOSE practice for this is the **swing-weight matrix** ([Parnell & Trainor 2009, INCOSE International Symposium](https://www.incose.org/resource/2-3-1-using-the-swing-weight-matrix-to-weight-multiple-objectives/)).
@@ -1029,6 +1051,17 @@ The §9 template fields covered are: Decision ID; Title; Status; Version; Owner;
      and never invalidates a candidate: it is routed per
      that sub-rule, and the recommendation may stand
      carrying it.
+   - Per the §9.1 CRITERION-SET-COMPLETENESS sub-rule: the
+     author records a two-limb pass — (a) the criterion that,
+     if added, would FLIP the recommendation, NAMED (then
+     added and scored, the symmetric-correction sub-rule
+     firing on the re-score) or ATTESTED absent after search;
+     and (b) whether the recommended option is REDUNDANT with
+     an existing mechanism that already provides its benefit.
+     A recommendation offered for ratification with no
+     recorded pass is FAIL-MUST-REVISE. The gate is on the
+     pass being PRESENT, not on its being correct
+     (presence-not-truth).
    - For decisions where criteria differ materially
      in importance, the §9.2 swing-weight matrix may
      be invoked per PO-15.
